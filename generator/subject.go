@@ -63,7 +63,7 @@ func (subject Subject) GetURLForAction(action Action) url.URL {
 		return url.URL{
 			Host:   subject.Host,
 			Scheme: subject.Request.URL.Scheme,
-			Path:   "/!!/" + actionJsRequestPathKey}
+			Path:   actionJsRequestPathKey}
 
 	case ActionSavePage:
 		return url.URL{

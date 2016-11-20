@@ -10,13 +10,15 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
+
+const editorScriptTag = `<script async src="/!!/editor.js"></script>`
 
 type Generator struct {
 	settings      Settings
 	fileExplorer  FileExplorer
 	publicHandler http.Handler
-	dataHandler   http.Handler
 }
 
 func NewGenerator(path string) (*Generator, error) {
@@ -28,19 +30,21 @@ func NewGenerator(path string) (*Generator, error) {
 
 	fileExplorer := NewFileExplorer(settings)
 
-	return &Generator{settings, fileExplorer, nil, nil}, nil
+	publicHandler := http.FileServer(http.Dir(settings.Folders.Public))
+
+	return &Generator{settings, fileExplorer, publicHandler}, nil
 }
 
 func (g *Generator) Serve() error {
 
 	// Editor settings
 	prefix := fmt.Sprintf("/%v/", g.settings.Editor.Prefix)
-	http.HandleFunc(prefix, func(w http.ResponseWriter, r *http.Request) { handle(w, r, g) })
+	generatorHandler := func(w http.ResponseWriter, r *http.Request) { handle(w, r, g) }
+	http.HandleFunc(prefix, generatorHandler)
+	http.HandleFunc("/!!/", generatorHandler)
 	endPoint := fmt.Sprintf("%v:%d", g.settings.Editor.Host, g.settings.Editor.Port)
-	g.dataHandler = http.FileServer(http.Dir(g.settings.Folders.Data)) // to be used when serving static assets
 
-	// Static website
-	g.publicHandler = http.FileServer(http.Dir(g.settings.Folders.Public))
+	// Static website handaling
 	http.Handle("/", g.publicHandler)
 
 	log.Printf("Start listening at http://%s/", endPoint)
@@ -100,10 +104,27 @@ func (g *Generator) retrievePageForSubject(subject Subject) (*Page, error) {
 
 func (g *Generator) handleServeResource(subject Subject) {
 
-	log.Println(subject.Request.URL.Path)
+	path := strings.Replace(subject.Request.URL.Path, "/"+g.settings.Editor.Prefix, "", 1)
 
-	// If it is not an html file serve as static resource from data folder
-	g.dataHandler.ServeHTTP(subject.Response, subject.Request)
+	// If there is an extention in the request, it will be served through the public handler as asset reqeust
+	if strings.LastIndex(path, ".") > strings.LastIndex(path, "/") {
+		g.publicHandler.ServeHTTP(subject.Response, subject.Request)
+		return
+	}
+
+	// Otherwise, serve it as a new template with editor
+	tempalteRow, err := g.fileExplorer.ReadPageTemplate(path)
+	if err != nil {
+		log.Printf("Unable to serve template on path '%v'. Error: %v", path, err)
+		serveError(subject.Response, ErrPageNotFound)
+		return
+	}
+
+	templateSplit := strings.Split(tempalteRow, "</body>")
+	templateWithEditor := templateSplit[0] + editorScriptTag + "</body>"
+
+	subject.Response.Write([]byte(templateWithEditor))
+
 }
 
 func (g *Generator) handleJsRequest(subject Subject) {

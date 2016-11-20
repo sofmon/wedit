@@ -47,7 +47,7 @@ class Page {
 
 		_title = map[PAGE_TITLE];
 
-		_inTryMode = _site == _TRY_MODE_SITE_NAME;
+		_inTryMode = true; //_site == _TRY_MODE_SITE_NAME;
 		_inEditMode = _inTryMode;
 
 		_allowEditMode = html.window.location.hash == _ALLOW_EDIT_HASH;

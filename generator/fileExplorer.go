@@ -19,8 +19,8 @@ func NewFileExplorer(settings Settings) FileExplorer {
 
 func (f FileExplorer) ReadPageTemplate(path string) (string, error) {
 	subFolders := strings.Split(path, "/")
-	folderToCheck := f.settings.Folders.Tempalte
-	templateFolder := f.settings.Folders.Tempalte
+	folderToCheck := f.settings.Folders.Template
+	templateFolder := f.settings.Folders.Template
 	for i := 0; i < len(subFolders); i++ {
 		folderToCheck += subFolders[i] + "/"
 		stat, err := os.Stat(folderToCheck)
@@ -43,7 +43,7 @@ func (f FileExplorer) ReadPageTemplate(path string) (string, error) {
 
 func (f FileExplorer) ReadPageData(path string) (Page, error) {
 
-	file := f.settings.Folders.Data + path + dataFileName
+	file := f.settings.Folders.Public + path + dataFileName
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		log.Printf("Could not load page data file '%v'. Error: %v\n", file, err)
@@ -62,7 +62,7 @@ func (f FileExplorer) ReadPageData(path string) (Page, error) {
 
 func (f FileExplorer) WritePageData(path string, page Page) error {
 
-	folder := f.settings.Folders.Data + path
+	folder := f.settings.Folders.Public + path
 	os.MkdirAll(folder, 666)
 
 	file := folder + dataFileName
@@ -83,7 +83,7 @@ func (f FileExplorer) WritePageData(path string, page Page) error {
 }
 
 func (f FileExplorer) WriteAsset(path, asset string, data []byte) error { // TODO
-	folder := f.settings.Folders.Data + path
+	folder := f.settings.Folders.Public + path
 	os.MkdirAll(folder, 666)
 
 	file := folder + asset

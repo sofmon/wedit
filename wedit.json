@@ -1,7 +1,6 @@
 {
     "folders":{
         "template":"template",
-        "data":"data",
         "public":"public"
     },
     "editor":{

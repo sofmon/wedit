@@ -9,7 +9,7 @@ import (
 // Settings caries the wedit generator configuration
 type Settings struct {
 	Folders struct {
-		Tempalte, Data, Public string
+		Template, Public string
 	}
 	Editor struct {
 		Prefix, Host string
