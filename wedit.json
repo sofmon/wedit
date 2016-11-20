@@ -1,0 +1,12 @@
+{
+    "folders":{
+        "template":"template",
+        "data":"data",
+        "public":"public"
+    },
+    "editor":{
+        "prefix":"!",
+        "host":"localhost",
+        "port":5000
+    }
+}
