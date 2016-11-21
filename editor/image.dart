@@ -196,12 +196,12 @@ class Image {
 
 		final reader = new html.FileReader();
 		reader.onLoad.listen((e) {
-			_sendDataToServer(reader.result);
+			_sendDataToServer(file.name, reader.result);
 		});
 		reader.readAsDataUrl(file);
 	}
 
-	void _sendDataToServer(dynamic data) {
+	void _sendDataToServer(String name, dynamic data) {
 		final request = new html.HttpRequest();
 		request.onReadyStateChange.listen((html.Event e) {
 			if (request.readyState != html.HttpRequest.DONE) {
@@ -214,8 +214,8 @@ class Image {
 				_processImageUploadError(request);
 			}
 		});
-		var url = html.window.location.protocol + "://" + _page._host + "/" +
-			_page._site + "/upload-image";
+
+		var url = html.window.location.href.replaceAll("/!/", "/!upload/") + name;
 		request.open("POST", url);
 		request.send(data);
 	}
@@ -227,5 +227,17 @@ class Image {
 	void _processImageUploadError(html.HttpRequest request) {
 		print("fail");
 	}
+
+  void prepareDomForHtmlSave() {
+    	_fileUploadDomElement.remove();
+      _addImageDomElement.remove();
+      _removeImageDomElement.remove();
+  }
+
+  void restoreDomAfterHtmlSave() {
+    html.document.body.children.add(_fileUploadDomElement);
+    html.document.body.children.add(_addImageDomElement);
+    html.document.body.children.add(_removeImageDomElement);
+  }
 
 }

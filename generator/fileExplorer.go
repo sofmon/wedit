@@ -8,6 +8,7 @@ import "strings"
 
 const dataFileName = "index.json"
 const templateFileName = "index.html"
+const publicFileName = "index.html"
 
 type FileExplorer struct {
 	settings Settings
@@ -20,9 +21,9 @@ func NewFileExplorer(settings Settings) FileExplorer {
 func (f FileExplorer) ReadPageTemplate(path string) (string, error) {
 	subFolders := strings.Split(path, "/")
 	folderToCheck := f.settings.Folders.Template
-	templateFolder := f.settings.Folders.Template
+	templateFolder := f.settings.Folders.Template + "/"
 	for i := 0; i < len(subFolders); i++ {
-		folderToCheck += subFolders[i] + "/"
+		folderToCheck += "/" + subFolders[i] + "/"
 		stat, err := os.Stat(folderToCheck)
 		if err == nil && stat.IsDir() {
 			templateFolder = folderToCheck
@@ -43,9 +44,12 @@ func (f FileExplorer) ReadPageTemplate(path string) (string, error) {
 
 func (f FileExplorer) ReadPageData(path string) (Page, error) {
 
-	file := f.settings.Folders.Public + path + dataFileName
+	file := f.settings.Folders.Public + "/" + path + "/" + dataFileName
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return Page{}, nil
+		}
 		log.Printf("Could not load page data file '%v'. Error: %v\n", file, err)
 		return Page{}, err
 	}
@@ -62,10 +66,10 @@ func (f FileExplorer) ReadPageData(path string) (Page, error) {
 
 func (f FileExplorer) WritePageData(path string, page Page) error {
 
-	folder := f.settings.Folders.Public + path
-	os.MkdirAll(folder, 666)
+	folder := f.settings.Folders.Public + "/" + path
+	os.MkdirAll(folder, 0777)
 
-	file := folder + dataFileName
+	file := folder + "/" + dataFileName
 
 	data, err := json.Marshal(page)
 	if err != nil {
@@ -73,9 +77,16 @@ func (f FileExplorer) WritePageData(path string, page Page) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(file, data, 666)
+	err = ioutil.WriteFile(file, data, 0777)
 	if err != nil {
 		log.Printf("Unable to save page data at '%v'. Error: %v", file, err)
+		return err
+	}
+
+	file = folder + "/" + publicFileName
+	err = ioutil.WriteFile(file, []byte(page.HTML), 0777)
+	if err != nil {
+		log.Printf("Unable to save page HTML at '%v'. Error: %v", file, err)
 		return err
 	}
 
@@ -84,10 +95,10 @@ func (f FileExplorer) WritePageData(path string, page Page) error {
 
 func (f FileExplorer) WriteAsset(path, asset string, data []byte) error { // TODO
 	folder := f.settings.Folders.Public + path
-	os.MkdirAll(folder, 666)
+	os.MkdirAll(folder, 0777)
 
 	file := folder + asset
-	err := ioutil.WriteFile(file, data, 666)
+	err := ioutil.WriteFile(file, data, 0777)
 	if err != nil {
 		log.Printf("Unable to save asset at '%v'. Error: %v", file, err)
 		return err

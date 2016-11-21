@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"strings"
 )
 
 func WritePageAsEscapedJson(path, host string, page *Page, buffer *bytes.Buffer) error {
@@ -60,7 +61,7 @@ func WritePageAsEscapedJson(path, host string, page *Page, buffer *bytes.Buffer)
 func WriteElementAsEscapedJson(element *Element, buffer *bytes.Buffer) error {
 	err := writeBuffer(buffer,
 		"{\\\"", ELEMENT_KEY, "\\\":\\\"", element.Key,
-		"\\\",\\\"", ELEMENT_TEXT, "\\\":\\\"", element.Text,
+		"\\\",\\\"", ELEMENT_TEXT, "\\\":\\\"", strings.Replace(element.Text, "'", "\\'", -1),
 		"\\\",\\\"i1\\\":\\\"", "",
 		"\\\",\\\"i2\\\":\\\"", "",
 		"\\\"}")
@@ -83,9 +84,10 @@ func WriteRepeatAsEscapedJson(repeat *Repeat, buffer *bytes.Buffer) error {
 }
 
 type PageMessage struct {
-	T string           // Title
-	E []ElementMessage // Elements
-	R []RepeatMessage  // Repeats
+	T    string           // Title
+	E    []ElementMessage // Elements
+	R    []RepeatMessage  // Repeats
+	Html string           // HTML
 }
 
 type ElementMessage struct {
@@ -141,6 +143,7 @@ func messageToPage(pm PageMessage) (p Page) {
 
 	p = Page{}
 	p.Title = pm.T
+	p.HTML = pm.Html
 	for _, em := range pm.E {
 		p.Elements = append(p.Elements, messageToElement(em))
 	}

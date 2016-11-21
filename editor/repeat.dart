@@ -13,8 +13,6 @@ class Repeat {
 
 	html.Element _domTemplate;
 
-	html.Element _addDomElement;
-
 	Map<String, RepeatShadow> _shadows;
 	List<String> _keyOrder;
 
@@ -188,5 +186,13 @@ class Repeat {
 	List<html.Element> render() {
 		return new List<html.Element>();
 	}
+
+  void prepareDomForHtmlSave() {
+    _shadows.values.forEach((s) => s.prepareDomForHtmlSave());
+  }
+
+  void restoreDomAfterHtmlSave() {
+    _shadows.values.forEach((s) => s.restoreDomAfterHtmlSave());
+  }
 
 }

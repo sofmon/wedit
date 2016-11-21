@@ -36,4 +36,12 @@ class Message {
 		_domElement.animate( [{"opacity": "0"}, {"opacity": "1"}, {"opacity": "0"}], 1000);
 	}
 
+  void prepareDomForHtmlSave() {
+    	_domElement.remove();
+  }
+
+  void restoreDomAfterHtmlSave() {
+    html.document.body.children.add(_domElement);
+  }
+
 }

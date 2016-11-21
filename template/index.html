@@ -1,5 +1,174 @@
+<!DOCTYPE html>
+
+<!--
+    Copyright (c) 2016, WEDIT.IO. All rights reserved.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL VARCHAR.IO BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<html>
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>varchar.io</title>
+    
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+
+    <style>
+       html,body {
+    font-family: "Lato", sans-serif;
+    font-size:15px;
+    height: 100%;
+    color: #777;
+    line-height: 1.8;
+    margin: 0;
+}
+
+html {
+    overflow-x:hidden
+}
+
+    .splash {
+        min-height: 100%;
+        opacity:1;
+        filter:alpha(opacity=100);
+        position:relative
+    }
+    .splash div{
+        position:absolute;
+        top:45%;
+        left:50%;
+        transform:translate(-50%,-45%);
+        white-space:nowrap;
+    }
+    .splash div h1 {
+        font-size: 24px;
+        text-align:center;
+        padding:16px 32px;
+        margin: 0;
+        color:#fff;
+        background-color:#5d5d5d;
+        font-family:"Segoe UI",Arial,sans-serif;
+        letter-spacing:10px;
+        line-height: 1;
+        font-weight: normal;
+        animation:opac 1.5s;
+    }
+
+    .content {
+        max-width:980px;
+        margin:auto;
+        padding:0.01em 16px;
+        padding-top:64px;
+        padding-bottom:64px;
+        margin-bottom:32px;
+    }
+    .content:after{
+        content:"";
+        display:table;
+        clear:both;
+    }
+    .content h2 {
+        text-align:center;
+        margin:auto;
+        width:auto;
+    }
+
+    .center {
+        text-align:center;
+    }
+
+    .half {
+        float:left;
+        width:49.99999%;
+        margin-top:16px;
+        margin-bottom:16px;
+    }
+
+    @media (max-width:600px){.half{float:none;width:100%;}}
+
+    .circle {
+        border-radius:50%;
+    }
+
+    .down{
+        margin-top: 40px;
+    }
+
+    figure {
+        font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+        font-size: 95%;
+        line-height: 140%;
+        background: #faf8f0;
+        padding: 12px;
+        margin:auto;
+    }
+
+    footer {
+        display:block;
+        color:#fff!important;
+        background-color:#616161!important;
+        text-align:center;
+        padding-top:48px!important;
+        padding-bottom:48px!important;
+    }
+    </style>
+
 </head>
 <body>
-    <div data-var="some_ket">Hello</div>
+
+<div class="splash">
+  <div>
+    <!--
+        (1) Simple variable text
+    
+        A single variable text field
+        The "header" is a unique ket for this page
+    -->
+    <h1 data-var="header">wedit.io</h1>
+  </div>
+</div>
+
+<!--
+    (2) Repeatable elements
+
+    Make this element repeatable as we want to ask multiple questions
+    Each copy of the element has the same HTML and only the content is variable
+-->
+<div class="content" data-var-repeat="questions">
+    <h2 data-var="questions-question">What is wedit.io?</h2>
+    <p class="center"><em data-var="questions-answer">Seeing is believing: Press ctrl key and edit this web page.</em></p>
+    <p data-var="questions-description">By pressing ctrl key all editible elements will hilight and you can change them.</p>
+</div>
+
+<div class="content">
+    <h2 data-var="examples-title">Are there example websites using wedit.io?</h2>
+</div>
+
+<div class="content" data-var-repeat="examples">
+        <div class="half center">
+            <p><h3 data-var="examples-header">wedit.io</h3></p>
+            <img data-var="examples-image" src="" class="circle" alt="Photo of Me">
+        </div>
+        <div class="half down">
+            <p data-var="examples-description">Indeed, there is no way how wedit.io is not serving the content it own home page.</p>
+        </div>
+</div>
+
+<footer>
+  <p data-var="footer">wedit.io</p>
+</footer>
+
 </body>
+</html>

@@ -1,0 +1,1 @@
+{"Title":"","Repeats":null,"Elements":[{"Key":"some_ket","Text":"This is a new text here"}],"HTML":"\u003chead\u003e\n\u003ctitle\u003e\u003c/title\u003e\u003c/head\u003e\u003cbody\u003e\n    \u003cdiv data-var=\"some_ket\" style=\"\" contenteditable=\"false\"\u003eThis is a new text here\u003cbr\u003e\u003c/div\u003e\n\u003c/body\u003e"}

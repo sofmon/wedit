@@ -13,12 +13,13 @@ import (
 	"strings"
 )
 
-const editorScriptTag = `<script async src="/!!/editor.js"></script>`
+const editorScriptTag = `<script async="" src="/!editor.js"></script>`
 
 type Generator struct {
 	settings      Settings
 	fileExplorer  FileExplorer
 	publicHandler http.Handler
+	Done          chan bool
 }
 
 func NewGenerator(path string) (*Generator, error) {
@@ -32,7 +33,9 @@ func NewGenerator(path string) (*Generator, error) {
 
 	publicHandler := http.FileServer(http.Dir(settings.Folders.Public))
 
-	return &Generator{settings, fileExplorer, publicHandler}, nil
+	done := make(chan bool)
+
+	return &Generator{settings, fileExplorer, publicHandler, done}, nil
 }
 
 func (g *Generator) Serve() error {
@@ -41,7 +44,8 @@ func (g *Generator) Serve() error {
 	prefix := fmt.Sprintf("/%v/", g.settings.Editor.Prefix)
 	generatorHandler := func(w http.ResponseWriter, r *http.Request) { handle(w, r, g) }
 	http.HandleFunc(prefix, generatorHandler)
-	http.HandleFunc("/!!/", generatorHandler)
+	http.HandleFunc("/!editor.js", generatorHandler)
+	http.HandleFunc("/!save/", generatorHandler)
 	endPoint := fmt.Sprintf("%v:%d", g.settings.Editor.Host, g.settings.Editor.Port)
 
 	// Static website handaling
@@ -53,6 +57,8 @@ func (g *Generator) Serve() error {
 		log.Printf("Unable to open editor HTTP server at '%v'. Error: %v\n", endPoint, err)
 		return err
 	}
+
+	g.Done <- true
 
 	return nil
 }
@@ -87,24 +93,20 @@ var (
 func (g *Generator) retrievePageForSubject(subject Subject) (*Page, error) {
 
 	// Retrieve the page
-	page, err := NewEmptyPage(), error(nil) //TODO: LoadPageFromDatastore(subject)
+	page, err := g.fileExplorer.ReadPageData(subject.Path())
 	if err != nil && err != ErrPageNotFound {
 		return nil, err
-	}
-
-	if page != nil {
-		return page, nil
 	}
 
 	// No page found, creation new one
 	log.Printf("First request for page: Path: %v;\n", subject.Path)
 
-	return NewEmptyPage(), nil
+	return &page, nil
 }
 
 func (g *Generator) handleServeResource(subject Subject) {
 
-	path := strings.Replace(subject.Request.URL.Path, "/"+g.settings.Editor.Prefix, "", 1)
+	path := subject.Path()
 
 	// If there is an extention in the request, it will be served through the public handler as asset reqeust
 	if strings.LastIndex(path, ".") > strings.LastIndex(path, "/") {
@@ -164,7 +166,9 @@ func (g *Generator) handleSavePage(subject Subject) {
 		return
 	}
 
-	err = error(nil) //TODO: SavePageToDatastore(subject, page)
+	page.HTML = strings.Replace(page.HTML, editorScriptTag, "", 1)
+
+	err = g.fileExplorer.WritePageData(subject.Path(), *page)
 	if err != nil {
 		serveError(subject.Response, err)
 	}

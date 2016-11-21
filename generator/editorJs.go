@@ -46,7 +46,7 @@ func getPreparedJs(subject Subject, page *Page) (*string, error) {
 		return nil, err
 	}
 
-	err = WritePageAsEscapedJson(subject.Path, subject.Host, page, &buffer)
+	err = WritePageAsEscapedJson(subject.Path(), subject.Host, page, &buffer)
 	if err != nil {
 		return nil, err
 	}

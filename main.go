@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 
+	"os/exec"
+
 	"github.com/sofmon/wedit/generator"
 )
 
@@ -37,7 +39,7 @@ const (
 
 func determainAction() Action {
 	if len(os.Args) < 2 {
-		return actionUnknown
+		return actionEdit
 	}
 
 	switch os.Args[1] {
@@ -109,7 +111,12 @@ func edit() {
 	if err != nil {
 		log.Fatalf("There was an error initialising wedit. Did you forget to do 'wedit init'?")
 	}
-	generator.Serve()
+	go generator.Serve()
+
+	cmd := exec.Command("open", "http://localhost:5000/!/")
+	cmd.Start()
+
+	<-generator.Done // Wait for end of serve
 }
 
 func build() {

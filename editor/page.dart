@@ -17,28 +17,10 @@ class Page {
 	Map<String, Image> _images;
 	Map<String, Repeat> _repeats;
 
-	bool _userIsEditor = false;
-	bool _userIsAdministrator = false;
-
-	static const _ALLOW_EDIT_HASH = "#var#";
-	bool _allowEditMode;
-	bool _inEditMode;
-	bool get inEditMode => _inEditMode;
-
 	bool _ctrlPressed = false;
 	bool get ctrlPressed => _ctrlPressed;
 
-	html.IFrameElement _authFrame;
-	static const _DEFAULT_AUTH_FRAME_SHADOW = "0 0 4vw 0 rgba(0, 1, 20, 1)";
-	async.Timer _authTimer;
-
-	//PageMenu _pageMenu;
 	Message _message;
-
-	static const _TRY_MODE_SITE_NAME = "__try__";
-	bool _inTryMode;
-
-	bool get inTryMode => _inTryMode;
 
 	Page.fromMap(Map map) {
 		_host = map[PAGE_HOST];
@@ -46,11 +28,6 @@ class Page {
 		_path = map[PAGE_PATH];
 
 		_title = map[PAGE_TITLE];
-
-		_inTryMode = true; //_site == _TRY_MODE_SITE_NAME;
-		_inEditMode = _inTryMode;
-
-		_allowEditMode = html.window.location.hash == _ALLOW_EDIT_HASH;
 
 		_elements = new Map<String, Element>();
 		_images = new Map<String, Image>();
@@ -181,24 +158,17 @@ class Page {
 	void _bindEvents() {
 		html.window.onKeyDown.listen(_windowKeyDown);
 		html.window.onKeyUp.listen(_windowKeyUp);
-		html.window.onHashChange.listen(_windowHashChange);
-		//window.onKeyUp.listen(_windowKeyUp);
-
 	}
 
 	void _windowKeyDown(html.KeyboardEvent e) {
 
-		if ( _allowEditMode && !_inEditMode && e.ctrlKey && e.keyCode == html.KeyCode.E ) {
-			_enterEditMode();
-		}
-
-		if (e.ctrlKey && _inEditMode && e.keyCode == html.KeyCode.S) {
+		if (e.ctrlKey && e.keyCode == html.KeyCode.S) {
 			save();
 		}
 
 		_ctrlPressed = e.ctrlKey;
 
-		if ( _inEditMode && e.ctrlKey ) {
+		if ( e.ctrlKey ) {
 			_elements.values.forEach((e)=>e.highlight());
 			_images.values.forEach((e)=>e.highlight());
 			_repeats.values.forEach((r)=>r.highlight());
@@ -209,74 +179,26 @@ class Page {
 	void _windowKeyUp(html.KeyboardEvent e) {
 		_ctrlPressed = e.ctrlKey;
 
-		if ( _inEditMode ) {
-			_elements.values.forEach((e)=>e.normalise());
-			_images.values.forEach((e)=>e.normalise());
-			_repeats.values.forEach((r)=>r.normalise());
-		}
+    _elements.values.forEach((e)=>e.normalise());
+		_images.values.forEach((e)=>e.normalise());
+    _repeats.values.forEach((r)=>r.normalise());
 
-	}
-
-	void _windowHashChange(html.Event e) {
-		_allowEditMode = html.window.location.hash == _ALLOW_EDIT_HASH;
-	}
-
-	void _enterEditMode() {
-		//_inEditMode = true;
-
-		var url = html.window.location.protocol + "://" + _host + "/" +
-			_site + "/auth-request";
-
-		// Create iframe
-		_authFrame = new html.IFrameElement();
-		_authFrame.src = url;
-		_authFrame.style
-			..background = "#fff"
-			..border = "none"
-			..boxShadow = _DEFAULT_AUTH_FRAME_SHADOW
-			..width = "80vw"
-			..height = "80vh"
-			..position = "fixed"
-			..left = "50%"
-			..top = "50%"
-			..transform = "translateX(-50%) translateY(-50%)";
-
-		html.document.body.append(_authFrame);
-
-		_authTimer = new async.Timer.periodic(
-			new Duration(seconds: 3), _checkForPermissions);
-	}
-
-	void _checkForPermissions(async.Timer t) {
-		var url = html.window.location.protocol + "://" + _host + "/" +
-			_site + "/auth-check";
-
-		html.HttpRequest.getString(url)
-			.then((String status) {
-			Map auth = convert.JSON.decode(status);
-			_userIsEditor = auth["E"];
-			_userIsAdministrator = auth["A"];
-			if (_userIsEditor || _userIsAdministrator) {
-				_authFrame.remove();
-				_authTimer.cancel();
-				_inEditMode = true;
-				_message.ShowText("EDIT MODE");
-			}
-		})
-			.catchError((Error error) {
-			print(error);
-		});
 	}
 
 	void save() {
-		if (_inTryMode) {
-			return;
-		}
+		Map pageData = toMap();
 
-		Map map = toMap();
+    prepareDomForHtmlSave();
+    String headHtml = html.document.head.outerHtml;
+    String bodyHtml = html.document.body.outerHtml;
+    restoreDomAfterHtmlSave();
+
+    pageData[PAGE_HTML] = headHtml + bodyHtml;
+
+		String jsonData = convert.JSON.encode(pageData);
 
 		html.HttpRequest request = new html
-			.HttpRequest(); // create a new XHR
+			.HttpRequest(); // create a new XHR./wedit
 
 		// add an event handler that is called when the request finishes
 		request.onReadyStateChange.listen((_) {
@@ -289,13 +211,30 @@ class Page {
 			}
 		});
 
-		var url = html.window.location.protocol + "://" + _host + "/" +
-			_site + "/save-page";
+    print(html.window.location.protocol);
+		var url = html.window.location.href.replaceAll("/!/", "/!save/");
 
 		request.open("POST", url, async: false);
-		String jsonData = convert.JSON.encode(map);
 		request.onLoad.listen((e)=>_message.ShowText("SAVED"));
 		request.send(jsonData);
 	}
+
+  void prepareDomForHtmlSave() {
+    _elements.values.forEach((e)=>e.normalise());
+		_images.values.forEach((e)=>e.normalise());
+    _repeats.values.forEach((r)=>r.normalise());
+
+    _elements.values.forEach((e)=>e.prepareDomForHtmlSave());
+		_images.values.forEach((e)=>e.prepareDomForHtmlSave());
+    _repeats.values.forEach((r)=>r.prepareDomForHtmlSave());
+    _message.prepareDomForHtmlSave();
+  }
+
+  void restoreDomAfterHtmlSave() {
+    _elements.values.forEach((e)=>e.restoreDomAfterHtmlSave());
+		_images.values.forEach((e)=>e.restoreDomAfterHtmlSave());
+    _repeats.values.forEach((r)=>r.restoreDomAfterHtmlSave());
+    _message.restoreDomAfterHtmlSave();
+  }
 
 }

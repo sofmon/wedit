@@ -9,6 +9,8 @@ const PAGE_TITLE = "t";
 const PAGE_ELEMENTS = "e";
 const PAGE_REPEATS = "r";
 
+const PAGE_HTML = "html";
+
 const ELEMENT_KEY = "k";
 const ELEMENT_TEXT = "t";
 

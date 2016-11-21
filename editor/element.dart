@@ -146,4 +146,10 @@ class Element {
 
 	}
 
+  void prepareDomForHtmlSave() {
+  }
+
+  void restoreDomAfterHtmlSave() {
+  }
+
 }

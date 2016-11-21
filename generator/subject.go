@@ -38,21 +38,44 @@ type Subject struct {
 	Host string
 
 	// Unique path to the requested page
-	Path string
+	//Path string
 
 	// Action to be taken on that page
 	Action Action
 
 	// A key targeted by the action
-	Key string
+	//Key string
 }
 
 const (
-	actionJsRequestPathKey   = "editor.js"
-	actionSavePagePathKey    = "save-page"
-	actionLoadPagePathKey    = "load-page"
-	actionUploadImagePathKey = "upload-image"
+	actionJsRequestPathKey   = "!editor.js"
+	actionEditPagePathKey    = "!"
+	actionSavePagePathKey    = "!save"
+	actionLoadPagePathKey    = "!load"
+	actionUploadImagePathKey = "!upload"
 )
+
+func (subject Subject) Path() string {
+
+	switch subject.Action {
+	case ActionJsRequest:
+		ref, err := url.Parse(subject.Request.Referer())
+		if err == nil {
+			return strings.Replace(ref.Path, "/"+actionEditPagePathKey+"/", "", 1)
+		}
+		return "/" // TODO: evaluate
+	case ActionServeResource:
+		return strings.Replace(subject.Request.URL.Path, "/"+actionEditPagePathKey+"/", "", 1)
+	case ActionSavePage:
+		return strings.Replace(subject.Request.URL.Path, "/"+actionSavePagePathKey+"/", "", 1)
+	case ActionLoadPage:
+		return strings.Replace(subject.Request.URL.Path, "/"+actionLoadPagePathKey+"/", "", 1)
+	case ActionUploadImage:
+		return strings.Replace(subject.Request.URL.Path, "/"+actionUploadImagePathKey+"/", "", 1)
+	}
+
+	return subject.Request.URL.Path
+}
 
 // GetURLForAction retrieves the URL for a specific action
 func (subject Subject) GetURLForAction(action Action) url.URL {
@@ -69,19 +92,19 @@ func (subject Subject) GetURLForAction(action Action) url.URL {
 		return url.URL{
 			Host:   subject.Host,
 			Scheme: subject.Request.URL.Scheme,
-			Path:   "/!!/" + actionSavePagePathKey}
+			Path:   actionSavePagePathKey}
 
 	case ActionLoadPage:
 		return url.URL{
 			Host:   subject.Host,
 			Scheme: subject.Request.URL.Scheme,
-			Path:   "/!!/" + actionLoadPagePathKey}
+			Path:   actionLoadPagePathKey}
 
 	case ActionUploadImage:
 		return url.URL{
 			Host:   subject.Host,
 			Scheme: subject.Request.URL.Scheme,
-			Path:   "/!!/" + actionUploadImagePathKey}
+			Path:   actionUploadImagePathKey}
 	}
 
 	return url.URL{
@@ -105,9 +128,9 @@ func NewSubject(request *http.Request, responseWriter http.ResponseWriter) Subje
 
 	// The action to be taken by the server
 	subject.Action = ActionServeResource
-	if len(pathSplit) > 1 && pathSplit[0] == "!!" {
+	if len(pathSplit) > 0 {
 		// Action on the page
-		switch strings.ToLower(pathSplit[1]) {
+		switch strings.ToLower(pathSplit[0]) {
 		case actionJsRequestPathKey:
 			subject.Action = ActionJsRequest
 			break
@@ -123,20 +146,21 @@ func NewSubject(request *http.Request, responseWriter http.ResponseWriter) Subje
 		}
 	}
 
-	// Get the key
-	query := request.URL.Query()
-	subject.Key = query.Get("k")
+	/*
+		// Get the key
+		query := request.URL.Query()
+		subject.Key = query.Get("k")
 
-	// Get path to the current CMS-able page from the script referer
-	subject.Path = query.Get("p")
-	if subject.Path == "" {
-		ref, err := url.Parse(request.Referer())
-		if err == nil {
-			subject.Path = ref.Path
-		} else {
-			subject.Path = "/"
+		// Get path to the current CMS-able page from the script referer
+		subject.Path = query.Get("p")
+		if subject.Path == "" {
+			ref, err := url.Parse(request.Referer())
+			if err == nil {
+				subject.Path = ref.Path
+			} else {
+				subject.Path = "/"
+			}
 		}
-	}
-
+	*/
 	return subject
 }

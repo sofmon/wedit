@@ -274,4 +274,18 @@ class RepeatShadow {
 		e.preventDefault();
 	}
 
+  void prepareDomForHtmlSave() {
+    if(_addDomElement != null) _addDomElement.remove();
+    if(_removeDomElement != null) _removeDomElement.remove();
+    if(_moveUpDomElement != null) _moveUpDomElement.remove();
+    if(_moveDownDomElement != null) _moveDownDomElement.remove();
+  }
+
+  void restoreDomAfterHtmlSave() {
+    if(_addDomElement != null) html.document.body.children.add(_addDomElement);
+    if(_removeDomElement != null) html.document.body.children.add(_removeDomElement);
+    if(_moveUpDomElement != null) html.document.body.children.add(_moveUpDomElement);
+    if(_moveDownDomElement != null) html.document.body.children.add(_moveDownDomElement);
+  }
+
 }
