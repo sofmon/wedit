@@ -8,11 +8,15 @@ const PAGE_PATH = "p";
 const PAGE_TITLE = "t";
 const PAGE_ELEMENTS = "e";
 const PAGE_REPEATS = "r";
-
-const PAGE_HTML = "html";
+const PAGE_IMAGES = "i";
 
 const ELEMENT_KEY = "k";
 const ELEMENT_TEXT = "t";
 
 const REPEAT_KEY = "k";
 const REPEAT_COPY_KEYS = "c";
+
+const IMAGE_KEY = "k";
+const IMAGE_SRC = "s";
+
+const PAGE_HTML = "html";

@@ -14,6 +14,9 @@ type Page struct {
 	// The page variable elements
 	Elements []Element
 
+	// The page variable elements
+	Images []Image
+
 	// The compleate HTML of the page as rendered by the browser
 	HTML string
 }
@@ -23,6 +26,7 @@ func NewEmptyPage() *Page {
 		Title:    "",
 		Repeats:  []Repeat{},
 		Elements: []Element{},
+		Images:   []Image{},
 		HTML:     "",
 	}
 }

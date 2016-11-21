@@ -1,10 +1,13 @@
 package generator
 
-import "os"
-import "io/ioutil"
-import "encoding/json"
-import "log"
-import "strings"
+import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
+)
 
 const dataFileName = "index.json"
 const templateFileName = "index.html"
@@ -93,11 +96,14 @@ func (f FileExplorer) WritePageData(path string, page Page) error {
 	return nil
 }
 
-func (f FileExplorer) WriteAsset(path, asset string, data []byte) error { // TODO
-	folder := f.settings.Folders.Public + path
+func (f FileExplorer) WriteAsset(path string, data []byte) error {
+
+	dir, file := filepath.Split(path)
+
+	folder := f.settings.Folders.Public + "/" + dir
 	os.MkdirAll(folder, 0777)
 
-	file := folder + asset
+	file = folder + "/" + file
 	err := ioutil.WriteFile(file, data, 0777)
 	if err != nil {
 		log.Printf("Unable to save asset at '%v'. Error: %v", file, err)

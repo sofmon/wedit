@@ -8,6 +8,7 @@ import (
 
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -46,6 +47,7 @@ func (g *Generator) Serve() error {
 	http.HandleFunc(prefix, generatorHandler)
 	http.HandleFunc("/!editor.js", generatorHandler)
 	http.HandleFunc("/!save/", generatorHandler)
+	http.HandleFunc("/!upload/", generatorHandler)
 	endPoint := fmt.Sprintf("%v:%d", g.settings.Editor.Host, g.settings.Editor.Port)
 
 	// Static website handaling
@@ -98,9 +100,6 @@ func (g *Generator) retrievePageForSubject(subject Subject) (*Page, error) {
 		return nil, err
 	}
 
-	// No page found, creation new one
-	log.Printf("First request for page: Path: %v;\n", subject.Path)
-
 	return &page, nil
 }
 
@@ -110,6 +109,8 @@ func (g *Generator) handleServeResource(subject Subject) {
 
 	// If there is an extention in the request, it will be served through the public handler as asset reqeust
 	if strings.LastIndex(path, ".") > strings.LastIndex(path, "/") {
+		subject.Request.URL.RawPath = strings.Replace(subject.Request.URL.RawPath, "/!/", "/", 1)
+		subject.Request.URL.Path = strings.Replace(subject.Request.URL.Path, "/!/", "/", 1)
 		g.publicHandler.ServeHTTP(subject.Response, subject.Request)
 		return
 	}
@@ -134,7 +135,7 @@ func (g *Generator) handleJsRequest(subject Subject) {
 	// Retrieve page for the current request
 	page, pageErr := g.retrievePageForSubject(subject)
 	if pageErr != nil {
-		log.Printf("Could not create page data. Path: %v; Error: %v;\n", subject.Path, pageErr)
+		log.Printf("Could not create page data. Path: %v; Error: %v;\n", subject.Path(), pageErr)
 		serveError(subject.Response, pageErr)
 		return
 	}
@@ -142,7 +143,7 @@ func (g *Generator) handleJsRequest(subject Subject) {
 	// Generate the varchar JS for the requested page
 	preparedJs, err := getPreparedJs(subject, page)
 	if err != nil {
-		log.Printf("Could not prepare varchar.js. Key: %v; Error: %v;\n", subject.Path, err)
+		log.Printf("Could not prepare varchar.js. Key: %v; Error: %v;\n", subject.Path(), err)
 		serveError(subject.Response, pageErr)
 		return
 	}
@@ -178,7 +179,17 @@ func (g *Generator) handleSavePage(subject Subject) {
 }
 
 func (g *Generator) handleUploadImage(subject Subject) {
-	// HERE
+	data, err := ioutil.ReadAll(subject.Request.Body)
+	if err != nil {
+		log.Printf("Could not save asset. Path: %v; Error: %v;\n", subject.Path(), err)
+		serveError(subject.Response, err)
+	}
+
+	err = g.fileExplorer.WriteAsset(subject.Path(), data)
+	if err != nil {
+		log.Printf("Could not save asset. Path: %v; Error: %v;\n", subject.Path(), err)
+		serveError(subject.Response, err)
+	}
 }
 
 func handle(w http.ResponseWriter, r *http.Request, g *Generator) {

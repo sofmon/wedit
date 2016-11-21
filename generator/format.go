@@ -50,6 +50,23 @@ func WritePageAsEscapedJson(path, host string, page *Page, buffer *bytes.Buffer)
 		}
 	}
 
+	err = writeBuffer(buffer, "],\\\"", PAGE_IMAGES, "\\\":[")
+	if err != nil {
+		return err
+	}
+
+	for index, image := range page.Images {
+
+		if index > 0 {
+			buffer.WriteRune(',')
+		}
+
+		err := WriteImageAsEscapedJson(&image, buffer)
+		if err != nil {
+			return err
+		}
+	}
+
 	_, err = buffer.WriteString("]}")
 	if err != nil {
 		return err
@@ -62,8 +79,6 @@ func WriteElementAsEscapedJson(element *Element, buffer *bytes.Buffer) error {
 	err := writeBuffer(buffer,
 		"{\\\"", ELEMENT_KEY, "\\\":\\\"", element.Key,
 		"\\\",\\\"", ELEMENT_TEXT, "\\\":\\\"", strings.Replace(element.Text, "'", "\\'", -1),
-		"\\\",\\\"i1\\\":\\\"", "",
-		"\\\",\\\"i2\\\":\\\"", "",
 		"\\\"}")
 	if err != nil {
 		return err
@@ -83,10 +98,22 @@ func WriteRepeatAsEscapedJson(repeat *Repeat, buffer *bytes.Buffer) error {
 	return nil
 }
 
+func WriteImageAsEscapedJson(image *Image, buffer *bytes.Buffer) error {
+	err := writeBuffer(buffer,
+		"{\\\"", IMAGE_KEY, "\\\":\\\"", image.Key,
+		"\\\",\\\"", IMAGE_SRC, "\\\":\\\"", image.Src,
+		"\\\"}")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 type PageMessage struct {
 	T    string           // Title
 	E    []ElementMessage // Elements
 	R    []RepeatMessage  // Repeats
+	I    []ImageMessage   // Repeats
 	Html string           // HTML
 }
 
@@ -98,6 +125,11 @@ type ElementMessage struct {
 type RepeatMessage struct {
 	K string // Key
 	C string // CopyKeys
+}
+
+type ImageMessage struct {
+	K string // Key
+	S string // Src
 }
 
 func pageToMessage(p Page) (pm PageMessage) {
@@ -114,6 +146,12 @@ func pageToMessage(p Page) (pm PageMessage) {
 		return
 	}
 
+	imageToMessage := func(i Image) (im ImageMessage) {
+		im.K = i.Key
+		im.S = i.Src
+		return
+	}
+
 	pm.T = p.Title
 
 	for _, e := range p.Elements {
@@ -122,6 +160,10 @@ func pageToMessage(p Page) (pm PageMessage) {
 
 	for _, r := range p.Repeats {
 		pm.R = append(pm.R, repeatToMessage(r))
+	}
+
+	for _, i := range p.Images {
+		pm.I = append(pm.I, imageToMessage(i))
 	}
 
 	return
@@ -141,6 +183,12 @@ func messageToPage(pm PageMessage) (p Page) {
 		return
 	}
 
+	messageToImage := func(im ImageMessage) (i Image) {
+		i.Key = im.K
+		i.Src = im.S
+		return
+	}
+
 	p = Page{}
 	p.Title = pm.T
 	p.HTML = pm.Html
@@ -149,6 +197,9 @@ func messageToPage(pm PageMessage) (p Page) {
 	}
 	for _, rm := range pm.R {
 		p.Repeats = append(p.Repeats, messageToRepeat(rm))
+	}
+	for _, im := range pm.I {
+		p.Images = append(p.Images, messageToImage(im))
 	}
 	return
 }

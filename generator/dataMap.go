@@ -9,10 +9,14 @@ const (
 	PAGE_TITLE    = "t"
 	PAGE_ELEMENTS = "e"
 	PAGE_REPEATS  = "r"
+	PAGE_IMAGES   = "i"
 
 	ELEMENT_KEY  = "k"
 	ELEMENT_TEXT = "t"
 
 	REPEAT_KEY       = "k"
 	REPEAT_COPY_KEYS = "c"
+
+	IMAGE_KEY = "k"
+	IMAGE_SRC = "s"
 )

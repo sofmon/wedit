@@ -12,6 +12,7 @@ class Page {
 
 	Map<String, Map> _mappedElementsData;
 	Map<String, Map> _mappedRepeatsData;
+	Map<String, Map> _mappedImagesData;
 
 	Map<String, Element> _elements;
 	Map<String, Image> _images;
@@ -34,12 +35,13 @@ class Page {
 		_repeats = new Map<String, Repeat>();
 
 		_mappedElementsData = new Map<String, Map>();
-		map[PAGE_ELEMENTS].forEach((e) =>
-		_mappedElementsData[e[ELEMENT_KEY]] = e);
+		map[PAGE_ELEMENTS].forEach((e) => _mappedElementsData[e[ELEMENT_KEY]] = e);
 
 		_mappedRepeatsData = new Map<String, Map>();
-		map[PAGE_REPEATS].forEach((r) =>
-		_mappedRepeatsData[r[REPEAT_KEY]] = r);
+		map[PAGE_REPEATS].forEach((r) => _mappedRepeatsData[r[REPEAT_KEY]] = r);
+
+		_mappedImagesData = new Map<String, Map>();
+		map[PAGE_IMAGES].forEach((r) => _mappedImagesData[r[IMAGE_KEY]] = r);
 
 		_syncElements();
 		_bindEvents();
@@ -67,6 +69,10 @@ class Page {
 		_repeats.values.forEach((r) => rList.add(r.toMap()));
 		map[PAGE_REPEATS] = rList;
 
+    List iList = new List();
+		_images.values.forEach((i) => iList.add(i.toMap()));
+		map[PAGE_IMAGES] = iList;
+
 		return map;
 	}
 
@@ -74,6 +80,22 @@ class Page {
 		var key = domElement.dataset["var"];
 
 		if (key == null || key.isEmpty) return;
+
+    if(Image.SUPPORTED_IMAGE_TAGS.contains(domElement.tagName.toLowerCase())) {
+
+      Map cmsData = _mappedImagesData[key];
+
+      Image image = new Image.fromMap(
+        this, key, domElement, cmsData);
+
+      _images[key] = image;
+
+      image.render();
+      return;
+    }
+
+
+      print("register element:" + domElement.tagName);
 
 		Map cmsData = _mappedElementsData[key];
 
@@ -87,14 +109,19 @@ class Page {
 
 	void unregisterElement(html.Element domElement) {
 		var key = domElement.dataset["var"];
+
+    if(Image.SUPPORTED_IMAGE_TAGS.contains(domElement.tagName.toLowerCase())) {
+      _images.remove(key);
+      return;
+    }
+
 		_elements.remove(key);
 	}
 
 	void _syncElements() {
 		html.document.title = _title;
 
-		List<html.Element> repeatedDomElements = new List<
-			html.Element>();
+		List<html.Element> repeatedDomElements = new List<html.Element>();
 
 		html.ElementList<html.Element> domElements = html
 			.querySelectorAll("[data-var],[data-var-repeat]");
@@ -111,13 +138,10 @@ class Page {
 					this, key, domElement, cmsData);
 				_repeats[key] = repeat;
 
-				List<html.Element> repeatedElements = repeat
-					.render();
+				List<html.Element> repeatedElements = repeat.render();
 
-				for (int ri = 0; ri < repeatedElements.length;
-				ri++) {
-					_processDomElement(
-						repeatedElements[ri]);
+				for (int ri = 0; ri < repeatedElements.length; ri++) {
+					_processDomElement(repeatedElements[ri]);
 				}
 
 				continue;
@@ -133,11 +157,11 @@ class Page {
 
 		if (key == null || key.isEmpty) return;
 
-		Map cmsData = _mappedElementsData[key];
-
 		String elementTag = domElement.tagName.toLowerCase();
 
 		if(Image.SUPPORTED_IMAGE_TAGS.contains(elementTag)) {
+
+      Map cmsData = _mappedImagesData[key];
 
 			Image image = new Image.fromMap(
 				this, key, domElement, cmsData
@@ -147,6 +171,8 @@ class Page {
 			image.render();
 			return;
 		}
+
+		Map cmsData = _mappedElementsData[key];
 
 		Element element = new Element.fromMap(
 			this, key, domElement, cmsData);

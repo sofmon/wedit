@@ -6,6 +6,6 @@ type Image struct {
 	// The unique element key in the HTML
 	Key string
 
-	// The serving URL for the image
-	Url string
+	// The serving src for the image
+	Src string
 }
