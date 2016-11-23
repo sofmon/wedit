@@ -167,8 +167,6 @@ func (g *Generator) handleSavePage(subject Subject) {
 		return
 	}
 
-	page.HTML = strings.Replace(page.HTML, editorScriptTag, "", 1)
-
 	err = g.fileExplorer.WritePageData(subject.Path(), *page)
 	if err != nil {
 		serveError(subject.Response, err)
@@ -193,6 +191,10 @@ func (g *Generator) handleUploadImage(subject Subject) {
 }
 
 func handle(w http.ResponseWriter, r *http.Request, g *Generator) {
+
+	w.Header().Add("ache-Control", "no-cache, no-store, must-revalidate")
+	w.Header().Add("Pragma", "no-cache")
+	w.Header().Add("Expires", "0")
 
 	subject := NewSubject(r, w)
 

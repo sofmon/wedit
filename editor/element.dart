@@ -8,7 +8,16 @@ class Element {
 
 	String _key;
 
-	String _text;
+	String _text; // in Markdown
+  String get _html => _getHtml(_text); // in HTML
+
+  String _getHtml(String text) {
+    var result = md.markdownToHtml(text).toString();
+    if(result.indexOf("<p>") == result.lastIndexOf("<p>")) {
+      return result.replaceAll("<p>", "").replaceAll("</p>", "");
+    }
+    return result;
+  }
 
 	html.Element _domElement;
 
@@ -25,12 +34,12 @@ class Element {
 	bool _wasEmpty;
 	static const _NON_BREAKING_SPACE_HTML = "&nbsp;";
 
-
 	String _originalPointerEvents;
 
 	Element.fromMap(this._page, this._key, this._domElement, Map map) {
 		if (map != null) {
 			_text = map[ELEMENT_TEXT];
+      _text = _text.replaceAll("<br>", "\n").replaceAll("<q>", "\"");
 		}
 
 		_syncElement();
@@ -49,7 +58,7 @@ class Element {
 
 		map[ELEMENT_KEY] = _key;
 
-		_text = _domElement.text;
+		//_text = _domElement.text;
 		map[ELEMENT_TEXT] = _text;
 
 		return map;
@@ -117,7 +126,13 @@ class Element {
 		_domElement.style.pointerEvents = _originalPointerEvents;
 		_domElement.contentEditable = "true";
 		_domElement.focus();
-		_isEditing = true;
+		
+    if(_isEditing) {
+      return;
+    }
+
+    _domElement.innerHtml = _text.replaceAll("\n", "<br>");
+    _isEditing = true;
 
 		// Ensure that no links will be triggered
 		e.stopPropagation();
@@ -135,15 +150,13 @@ class Element {
 		_wasEmpty = _domElement.text == "";
 
 		_isHighlighted = _isEditing = false;
+
+    _text = _domElement.innerHtml.replaceAll("<br>", "\n");
+    _domElement.innerHtml = _html;
 	}
 
 	void render() {
-		_domElement.text = _text;
-
-		// TODO: 1 render edit elements
-		// TODO: 2 render text
-		// TODO: 3 render image
-
+		_domElement.innerHtml = _html;
 	}
 
   void prepareDomForHtmlSave() {

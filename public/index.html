@@ -1,0 +1,262 @@
+<!DOCTYPE html><!--
+    Copyright (c) 2016, WEDIT.IO. All rights reserved.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL VARCHAR.IO BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--><html><head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>varchar.io</title>
+    
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato"/>
+
+    <style>
+       html,body {
+    font-family: "Lato", sans-serif;
+    font-size:15px;
+    height: 100%;
+    color: #777;
+    line-height: 1.8;
+    margin: 0;
+}
+
+html {
+    overflow-x:hidden
+}
+
+    .splash {
+        min-height: 100%;
+        opacity:1;
+        filter:alpha(opacity=100);
+        position:relative
+    }
+    .splash div{
+        position:absolute;
+        top:45%;
+        left:50%;
+        transform:translate(-50%,-45%);
+        white-space:nowrap;
+    }
+    .splash div h1 {
+        font-size: 24px;
+        text-align:center;
+        padding:16px 32px;
+        margin: 0;
+        color:#fff;
+        background-color:#5d5d5d;
+        font-family:"Segoe UI",Arial,sans-serif;
+        letter-spacing:10px;
+        line-height: 1;
+        font-weight: normal;
+        animation:opac 1.5s;
+    }
+
+    .content {
+        max-width:980px;
+        margin:auto;
+        padding:0.01em 16px;
+        padding-top:32px;
+        padding-bottom:32px;
+        margin-bottom:32px;
+    }
+    .content:after{
+        content:"";
+        display:table;
+        clear:both;
+    }
+    .content h2 {
+        text-align:center;
+        margin:auto;
+        width:auto;
+    }
+
+    .center {
+        text-align:center;
+    }
+
+    .half {
+        float:left;
+        width:49.99999%;
+        margin-top:16px;
+        margin-bottom:16px;
+    }
+
+    @media (max-width:600px){.half{float:none;width:100%;}}
+
+    .circle {
+        border-radius:50%;
+    }
+
+    .down{
+        margin-top: 100px;
+    }
+
+    figure {
+        font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+        font-size: 95%;
+        line-height: 140%;
+        background: #faf8f0;
+        padding: 12px;
+        margin:auto;
+    }
+
+    footer {
+        display:block;
+        color:#fff!important;
+        background-color:#616161!important;
+        text-align:center;
+        padding-top:48px!important;
+        padding-bottom:48px!important;
+    }
+    a {
+        color: #A44;
+    }
+
+    footer a {
+        color: #faa;
+    }
+    </style>
+
+</head>
+<body>
+
+<div class="splash">
+  <div>
+    <!--
+        (1) Simple variable text
+    
+        A single variable text field
+        The "header" is a unique ket for this page
+    -->
+    <h1>wedit.io
+</h1>
+  </div>
+</div>
+
+<!--
+    (2) Repeatable elements
+
+    Make this element repeatable as we want to ask multiple questions
+    Each copy of the element has the same HTML and only the content is variable
+-->
+<div class="content">
+    <h2>What is wedit.io?
+</h2>
+    <p class="center"><em>Seeing is believing: Press the &#39;ctrl&#39; key and edit this page
+</em></p>
+    <p><p>Wedit is a static site generation tool that is using the web browser as a WYSIWYG HTML editor based on user defined HTML template.</p>
+
+<p>Wedit is an Open Source project under MIT license. We believe you have the right to know what is running on your machines.</p>
+
+<p>You are more than welcome to contribute. Fork us on <a href="https://github.com/sofmon/wedit">github</a> and get wild.</p>
+</p>
+</div><div class="content">
+    <h2>How can I use it?
+</h2>
+    <p class="center"><em>Just get the Wedit tool on your MAC, Windows or Linux machine
+</em></p>
+    <p><p>You can install Wedit tool using:</p>
+
+<ul>
+<li>Brew for MAC: <em>brew install wedit</em></li>
+<li>Scoop for Windows: <em>scoop install wedit</em></li>
+<li>Even though we don&#39;t recommend it, you can get [direct binaries] for your operating system</li>
+<li>Or compile your own version from our <a href="https://github.com/sofmon/wedit">Git repository</a> using <a href="https://golang.org/">Go</a> and <a href="https://www.dartlang.org/">Dart</a></li>
+</ul>
+
+<p>The tool is statically compiled so once you have it working there is no needs for any external dependencies.</p>
+</p>
+</div><div class="content">
+    <h2>How it works?
+</h2>
+    <p class="center"><em>Get a beautiful  static HTML  website and turn it into a template
+</em></p>
+    <p><h3>Setup solution</h3>
+
+<ul>
+<li>Ensure you have &#39;wedit&#39; tool installed on your working environment</li>
+<li>Create a working folder: <em>&lt;site&gt;</em></li>
+<li>Within the working folder run: <em>wedit init</em></li>
+<li>Put your HTML template into folder: <em>&lt;site&gt;/template/</em></li>
+<li>Modify the template by adding attributes: <em>data-var</em></li>
+</ul>
+
+<h3>Template structure</h3>
+
+<ul>
+<li>Each page in your template must have own sub-folder that is to be mapped to the request URL</li>
+<li>All HTML templates must be located within the corresponding sub-folders and be named index.html</li>
+</ul>
+
+For example URL: http://&lt;your_site&gt;/something/here will hit template &lt;site&gt;/something/here/index.html
+
+<h3>data-var= &#39;key &#39;</h3>
+
+<ul>
+<li>In your template index.html add data-var= &#39;&lt;key&gt; &#39; attribute to any item you want to be able to edit.</li>
+<li>The &lt;key&gt; must be unique for the page.</li>
+</ul>
+
+<h3>data-var-repeat= &#39;&lt;key&gt; &#39;</h3>
+
+<ul>
+<li>In your template index.html add data-var-repeat= &#39;key &#39; for all items you want to be repeatable.</li>
+<li>The &lt;key&gt; must be unique for the page</li>
+</ul>
+
+<h3>Adding multiple pages per template</h3>
+</p>
+</div>
+
+<div class="content">
+    <h2>Are there example websites using <a href="https://wedit.io">wedit.io</a>?
+</h2>
+</div>
+
+<div class="content">
+        <div class="half center">
+            <h3><a href="https://wedit.io">wedit.io</a>
+</h3>
+            <img src="./Pasted image at 2016_11_09 02_05 PM.png" class="circle" alt="" style="width:200px"/>
+        </div>
+        <div class="half down">
+            <p><p>This website uses the Wedit tool for its generation.</p>
+
+<p>The web browser editor, as part of Wedit tool, is also included into this static website in order to show of the WYSIWYG editing.</p>
+
+<p>In usual setup the Wedit WYSIWYG editor is not part of your HTML.</p>
+</p>
+        </div>
+</div><div class="content">
+        <div class="half center">
+            <h3><a href="https://www.sofmon.com">sofmon.com</a>
+</h3>
+            <img src="./Screen Shot 2016-10-17 at 4.53.29 PM.png" class="circle" alt="" style="width:200px"/>
+        </div>
+        <div class="half down">
+            <p><p><a href="https://www.sofmon.com">Sofmon</a> is the hub for all software monsters.</p>
+
+<p>You can find other projects like Wedit or blogs of the monsters.</p>
+</p>
+        </div>
+</div>
+
+<footer>
+  <p>Contact us at <a href="mailto:info@sofmon.com">info@sofmon.com</a>
+</p>
+</footer>
+
+
+
+</body></html>

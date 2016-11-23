@@ -111,10 +111,14 @@ class Page {
 		var key = domElement.dataset["var"];
 
     if(Image.SUPPORTED_IMAGE_TAGS.contains(domElement.tagName.toLowerCase())) {
+      var image = _images[key];
+      image.prepareDomForHtmlSave();
       _images.remove(key);
       return;
     }
 
+    var element = _elements[key];
+    element.prepareDomForHtmlSave();
 		_elements.remove(key);
 	}
 
@@ -213,13 +217,6 @@ class Page {
 
 	void save() {
 		Map pageData = toMap();
-
-    prepareDomForHtmlSave();
-    String headHtml = html.document.head.outerHtml;
-    String bodyHtml = html.document.body.outerHtml;
-    restoreDomAfterHtmlSave();
-
-    pageData[PAGE_HTML] = headHtml + bodyHtml;
 
 		String jsonData = convert.JSON.encode(pageData);
 

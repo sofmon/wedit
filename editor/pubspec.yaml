@@ -1,0 +1,4 @@
+name: wedit
+version: 0.0.1
+dependencies:
+  markdown: 0.11.1

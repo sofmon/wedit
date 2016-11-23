@@ -21,7 +21,7 @@ func NewFileExplorer(settings Settings) FileExplorer {
 	return FileExplorer{settings}
 }
 
-func (f FileExplorer) ReadPageTemplate(path string) (string, error) {
+func (f FileExplorer) findTemplateFile(path string) string {
 	subFolders := strings.Split(path, "/")
 	folderToCheck := f.settings.Folders.Template
 	templateFolder := f.settings.Folders.Template + "/"
@@ -34,8 +34,12 @@ func (f FileExplorer) ReadPageTemplate(path string) (string, error) {
 			break
 		}
 	}
+	return templateFolder + templateFileName
+}
 
-	file := templateFolder + templateFileName
+func (f FileExplorer) ReadPageTemplate(path string) (string, error) {
+	file := f.findTemplateFile(path)
+
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		log.Printf("Could not read page template file '%v'. Error: %v\n", file, err)
@@ -86,8 +90,11 @@ func (f FileExplorer) WritePageData(path string, page Page) error {
 		return err
 	}
 
-	file = folder + "/" + publicFileName
-	err = ioutil.WriteFile(file, []byte(page.HTML), 0777)
+	indexFile := folder + "/" + publicFileName
+	templateFile := f.findTemplateFile(path)
+
+	err = writePageAsHtml(indexFile, templateFile, &page)
+	//err = ioutil.WriteFile(file, []byte(page.HTML), 0777)
 	if err != nil {
 		log.Printf("Unable to save page HTML at '%v'. Error: %v", file, err)
 		return err

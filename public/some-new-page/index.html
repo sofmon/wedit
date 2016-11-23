@@ -1,26 +1,9 @@
-<!DOCTYPE html>
-
-<!--
-    Copyright (c) 2016, WEDIT.IO. All rights reserved.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED. IN NO EVENT SHALL VARCHAR.IO BE LIABLE FOR ANY
-    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
--->
-<html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>varchar.io</title>
+    <title></title>
     
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
@@ -70,8 +53,8 @@ html {
         max-width:980px;
         margin:auto;
         padding:0.01em 16px;
-        padding-top:32px;
-        padding-bottom:32px;
+        padding-top:64px;
+        padding-bottom:64px;
         margin-bottom:32px;
     }
     .content:after{
@@ -123,17 +106,9 @@ html {
         padding-top:48px!important;
         padding-bottom:48px!important;
     }
-    a {
-        color: #A44;
-    }
-
-    footer a {
-        color: #faa;
-    }
     </style>
 
-</head>
-<body>
+</head><body>
 
 <div class="splash">
   <div>
@@ -143,7 +118,7 @@ html {
         A single variable text field
         The "header" is a unique ket for this page
     -->
-    <h1 data-var="header">wedit.io</h1>
+    <h1 data-var="header" style="" contenteditable="false">This is a new page<br></h1>
   </div>
 </div>
 
@@ -153,29 +128,28 @@ html {
     Make this element repeatable as we want to ask multiple questions
     Each copy of the element has the same HTML and only the content is variable
 -->
-<div class="content" data-var-repeat="questions">
-    <h2 data-var="questions-question">What is wedit.io?</h2>
-    <p class="center"><em data-var="questions-answer">Seeing is believing: Press ctrl key and edit this web page.</em></p>
-    <p data-var="questions-description">By pressing ctrl key all editible elements will hilight and you can change them.</p>
+<div class="content" data-var-repeat="questions" style="">
+    <h2 data-var="questions-question" style="" contenteditable="false">Based</h2>
+    <p class="center"><em data-var="questions-answer" style="">Seeing is believing: Press ctrl key and edit this web page.</em></p>
+    <p data-var="questions-description" style="">By pressing ctrl key all editible elements will hilight and you can change them.</p>
 </div>
 
 <div class="content">
-    <h2 data-var="examples-title">Are there example websites using wedit.io?</h2>
+    <h2 data-var="examples-title" style="">Are there example websites using wedit.io?</h2>
 </div>
 
-<div class="content" data-var-repeat="examples">
+<div class="content" data-var-repeat="examples" style="">
         <div class="half center">
-            <h3 data-var="examples-header">wedit.io</h3>
-            <img data-var="examples-image" src="" class="circle" alt="" style="width:200px">
+            <p></p><h3 data-var="examples-header" style="">wedit.io</h3><p></p>
+            <img data-var="examples-image" src="null" class="circle" alt="" style="width: 200px;">
         </div>
         <div class="half down">
-            <p data-var="examples-description">Indeed, there is no way how wedit.io is not serving the content it own home page.</p>
+            <p data-var="examples-description" style="">Indeed, there is no way how wedit.io is not serving the content it own home page.</p>
         </div>
 </div>
 
 <footer>
-  <p data-var="footer">wedit.io</p>
+  <p data-var="footer" style="">wedit.io</p>
 </footer>
 
 </body>
-</html>
