@@ -1,3 +1,11 @@
-# compiled binaries
-wedit
-debug
+# Go compiled binaries
+./wedit
+./debug
+
+# Dart compiled files
+./editor/.pub/
+./editor/.packages
+./editor/editor.js
+./editor/editor.js.deps
+./editor/editor.js.map
+./editor/editor.go
