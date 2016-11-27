@@ -1,5 +1,5 @@
-// Copyright (c) 2015, Haralampi Staykov. All rights reserved. Use of this source code
-// is governed by a BSD-style license that can be found in the LICENSE file.
+// Copyright (c) 2016, Haralampi Staykov (http://haralampi.com). All rights reserved.
+// Use of this source code is governed by MIT license that can be found in the LICENSE file.
 library wedit;
 
 import 'dart:html' as html;
