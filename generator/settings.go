@@ -15,8 +15,8 @@ type Settings struct {
 		Template, Public string
 	}
 	Editor struct {
-		Prefix, Host string
-		Port         int
+		Host string
+		Port int
 	}
 }
 

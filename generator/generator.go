@@ -42,9 +42,8 @@ func NewGenerator(path string) (*Generator, error) {
 func (g *Generator) Serve() error {
 
 	// Editor settings
-	prefix := fmt.Sprintf("/%v/", g.settings.Editor.Prefix)
 	generatorHandler := func(w http.ResponseWriter, r *http.Request) { handle(w, r, g) }
-	http.HandleFunc(prefix, generatorHandler)
+	http.HandleFunc("/!/", generatorHandler)
 	http.HandleFunc("/!editor.js", generatorHandler)
 	http.HandleFunc("/!save/", generatorHandler)
 	http.HandleFunc("/!upload/", generatorHandler)
@@ -112,6 +111,11 @@ func (g *Generator) handleServeResource(subject Subject) {
 		subject.Request.URL.RawPath = strings.Replace(subject.Request.URL.RawPath, "/!/", "/", 1)
 		subject.Request.URL.Path = strings.Replace(subject.Request.URL.Path, "/!/", "/", 1)
 		g.publicHandler.ServeHTTP(subject.Response, subject.Request)
+		return
+	}
+
+	if !strings.HasSuffix(subject.Request.URL.RawPath, "/") {
+		http.Redirect(subject.Response, subject.Request, subject.Request.URL.RawPath+"/", http.StatusPermanentRedirect)
 		return
 	}
 
