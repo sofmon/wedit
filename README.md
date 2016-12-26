@@ -72,11 +72,5 @@ The result is saved in the **public** folder.
 The build requires setup for [Go](https://golang.org/) and [Dart](https://www.dartlang.org/) environments.
 
 - On Linux or MAC run **./build.sh**
-- Windows build is coming soon, but you can check the **./build.sh** file for clues
+- On Windows run Windows **./build.ps1**
 - Brew, Scoop and other packages are coming soon
-
-# Hey, this thing doesn't work on Windows!
-
-Please be patient. If you read this page, you most probably found it while Wedit is still finding its way to production readiness.
-
-A full Windows support is coming in few days.
