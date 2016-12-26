@@ -72,5 +72,5 @@ The result is saved in the **public** folder.
 The build requires setup for [Go](https://golang.org/) and [Dart](https://www.dartlang.org/) environments.
 
 - On Linux or MAC run **./build.sh**
-- On Windows run Windows **./build.ps1**
-- Brew, Scoop and other packages are coming soon
+- On Windows run **./build.ps1**
+- Brew, Scoop and other packages are coming soon ...
