@@ -16,10 +16,12 @@ const dataFileName = "index.json"
 const templateFileName = "index.html"
 const publicFileName = "index.html"
 
+// FileExplorer is used for i/o operations on the file system
 type FileExplorer struct {
 	settings Settings
 }
 
+// NewFileExplorer creates new file explorer
 func NewFileExplorer(settings Settings) FileExplorer {
 	return FileExplorer{settings}
 }

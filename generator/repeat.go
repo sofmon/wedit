@@ -3,7 +3,7 @@
 
 package generator
 
-// Repeatable element on a page
+// Repeat represents a repeatable element on a page
 type Repeat struct {
 	// The unique element key in the HTML
 	Key string

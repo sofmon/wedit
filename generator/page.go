@@ -3,7 +3,7 @@
 
 package generator
 
-// CMS-able page
+// Page represents an html page
 type Page struct {
 
 	// The page title
@@ -19,6 +19,7 @@ type Page struct {
 	Images []Image
 }
 
+// NewEmptyPage creates a new empty page
 func NewEmptyPage() *Page {
 	return &Page{
 		Title:    "",

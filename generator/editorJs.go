@@ -7,11 +7,11 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/sofmon/wedit/editor"
+	editor "github.com/sofmon/wedit/editor"
 )
 
 const (
-	page_data_template = "{\"h\":\"\",\"s\":\"\",\"p\":\"\",\"t\":\"\",\"e\":[],\"r\":[]}"
+	pageDataTemplate = "{\"h\":\"\",\"s\":\"\",\"p\":\"\",\"t\":\"\",\"e\":[],\"r\":[]}"
 )
 
 var editorJsPart1 *string
@@ -23,9 +23,9 @@ func getEditorJs() (*string, *string, error) {
 		return editorJsPart1, editorJsPart2, nil
 	}
 
-	varcharJSBuff := []byte(editor.EditorJSCode)
+	weditJSBuff := []byte(editor.EditorJSCode)
 
-	split := strings.Split(string(varcharJSBuff), page_data_template)
+	split := strings.Split(string(weditJSBuff), pageDataTemplate)
 
 	editorJsPart1 = &split[0]
 	editorJsPart2 = &split[1]

@@ -5,7 +5,6 @@ package generator
 
 import (
 	"errors"
-
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -16,6 +15,7 @@ import (
 
 const editorScriptTag = `<script async="" src="/!editor.js"></script>`
 
+// Generator is used to generate static HTML websites through wedit web editor
 type Generator struct {
 	settings      Settings
 	fileExplorer  FileExplorer
@@ -23,6 +23,7 @@ type Generator struct {
 	Done          chan bool
 }
 
+// NewGenerator creates new wedit Generator
 func NewGenerator(path string) (*Generator, error) {
 
 	settings, err := NewSettings(path)
@@ -39,6 +40,7 @@ func NewGenerator(path string) (*Generator, error) {
 	return &Generator{settings, fileExplorer, publicHandler, done}, nil
 }
 
+// Serve blocks the current goroutine, opens a port, listen and serves requests for wedit
 func (g *Generator) Serve() error {
 
 	// Editor settings
@@ -49,7 +51,7 @@ func (g *Generator) Serve() error {
 	http.HandleFunc("/!upload/", generatorHandler)
 	endPoint := fmt.Sprintf("%v:%d", g.settings.Editor.Host, g.settings.Editor.Port)
 
-	// Static website handaling
+	// Static website handling
 	http.Handle("/", g.publicHandler)
 
 	log.Printf("Start listening at http://%s/", endPoint)
@@ -85,9 +87,14 @@ func serveError(w http.ResponseWriter, err error) {
 }
 
 var (
+	// ErrMethodNotSupported is returned when the HTTP method is not supported
 	ErrMethodNotSupported = errors.New("HTTP method not supported")
-	ErrEmptyPageSave      = errors.New("Page save request has empty page body")
-	ErrPageNotFound       = errors.New("Page not found")
+
+	// ErrEmptyPageSave is returned when save page request is empty
+	ErrEmptyPageSave = errors.New("Page save request has empty page body")
+
+	// ErrPageNotFound is returned when a page is not found
+	ErrPageNotFound = errors.New("Page not found")
 )
 
 // Get requested page by subject
@@ -106,7 +113,7 @@ func (g *Generator) handleServeResource(subject Subject) {
 
 	path := subject.Path()
 
-	// If there is an extention in the request, it will be served through the public handler as asset reqeust
+	// If there is an extension in the request, it will be served through the public handler as asset reqeust
 	if strings.LastIndex(path, ".") > strings.LastIndex(path, "/") {
 		subject.Request.URL.RawPath = strings.Replace(subject.Request.URL.RawPath, "/!/", "/", 1)
 		subject.Request.URL.Path = strings.Replace(subject.Request.URL.Path, "/!/", "/", 1)
@@ -120,14 +127,14 @@ func (g *Generator) handleServeResource(subject Subject) {
 	}
 
 	// Otherwise, serve it as a new template with editor
-	tempalteRow, err := g.fileExplorer.ReadPageTemplate(path)
+	templateRow, err := g.fileExplorer.ReadPageTemplate(path)
 	if err != nil {
 		log.Printf("Unable to serve template on path '%v'. Error: %v", path, err)
 		serveError(subject.Response, ErrPageNotFound)
 		return
 	}
 
-	templateSplit := strings.Split(tempalteRow, "</body>")
+	templateSplit := strings.Split(templateRow, "</body>")
 	templateWithEditor := templateSplit[0] + editorScriptTag + "</body>"
 
 	subject.Response.Write([]byte(templateWithEditor))
@@ -144,15 +151,15 @@ func (g *Generator) handleJsRequest(subject Subject) {
 		return
 	}
 
-	// Generate the varchar JS for the requested page
+	// Generate the wedit JS for the requested page
 	preparedJs, err := getPreparedJs(subject, page)
 	if err != nil {
-		log.Printf("Could not prepare varchar.js. Key: %v; Error: %v;\n", subject.Path(), err)
+		log.Printf("Could not prepare wedit.js. Key: %v; Error: %v;\n", subject.Path(), err)
 		serveError(subject.Response, pageErr)
 		return
 	}
 
-	// Returned the prepared site varchar JS
+	// Returned the prepared site wedit JS
 	subject.Response.Header().Set("Content-Type", "text/javascript; charset=utf-8")
 	subject.Response.Write([]byte(*preparedJs))
 

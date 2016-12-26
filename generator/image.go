@@ -3,7 +3,7 @@
 
 package generator
 
-// CMS-able element on a page
+// Image represents an image on a page
 type Image struct {
 
 	// The unique element key in the HTML

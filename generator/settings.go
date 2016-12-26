@@ -20,6 +20,7 @@ type Settings struct {
 	}
 }
 
+// NewSettings creates new settings from file
 func NewSettings(path string) (Settings, error) {
 	file, err := ioutil.ReadFile(path)
 	if err != nil {

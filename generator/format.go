@@ -10,14 +10,33 @@ import (
 	"strings"
 )
 
+const (
+	keyPageHost    = "h"
+	keyPageSite    = "s"
+	keyPagePath    = "p"
+	keyPageTitle   = "t"
+	keyPageElement = "e"
+	keyPageRepeat  = "r"
+	keyPageImages  = "i"
+
+	keyElementKey  = "k"
+	keyElementText = "t"
+
+	keyRepeatKey      = "k"
+	keyRepeatCopyKeys = "c"
+
+	keyImageKey = "k"
+	keyImageSrc = "s"
+)
+
 func WritePageAsEscapedJson(path, host string, page *Page, buffer *bytes.Buffer) error {
 
 	err := writeBuffer(buffer,
-		"{\\\"", PAGE_SITE, "\\\":\\\"", "",
-		"\\\",\\\"", PAGE_PATH, "\\\":\\\"", path,
-		"\\\",\\\"", PAGE_HOST, "\\\":\\\"", host,
-		"\\\",\\\"", PAGE_TITLE, "\\\":\\\"", page.Title,
-		"\\\",\\\"", PAGE_ELEMENTS, "\\\":[")
+		"{\\\"", keyPageSite, "\\\":\\\"", "",
+		"\\\",\\\"", keyPagePath, "\\\":\\\"", path,
+		"\\\",\\\"", keyPageHost, "\\\":\\\"", host,
+		"\\\",\\\"", keyPageTitle, "\\\":\\\"", page.Title,
+		"\\\",\\\"", keyPageElement, "\\\":[")
 	if err != nil {
 		return err
 	}
@@ -34,7 +53,7 @@ func WritePageAsEscapedJson(path, host string, page *Page, buffer *bytes.Buffer)
 		}
 	}
 
-	err = writeBuffer(buffer, "],\\\"", PAGE_REPEATS, "\\\":[")
+	err = writeBuffer(buffer, "],\\\"", keyPageRepeat, "\\\":[")
 	if err != nil {
 		return err
 	}
@@ -51,7 +70,7 @@ func WritePageAsEscapedJson(path, host string, page *Page, buffer *bytes.Buffer)
 		}
 	}
 
-	err = writeBuffer(buffer, "],\\\"", PAGE_IMAGES, "\\\":[")
+	err = writeBuffer(buffer, "],\\\"", keyPageImages, "\\\":[")
 	if err != nil {
 		return err
 	}
@@ -83,8 +102,8 @@ func WriteElementAsEscapedJson(element *Element, buffer *bytes.Buffer) error {
 	escaped = strings.Replace(escaped, "\"", "<q>", -1)
 
 	err := writeBuffer(buffer,
-		"{\\\"", ELEMENT_KEY, "\\\":\\\"", element.Key,
-		"\\\",\\\"", ELEMENT_TEXT, "\\\":\\\"", escaped,
+		"{\\\"", keyElementKey, "\\\":\\\"", element.Key,
+		"\\\",\\\"", keyElementText, "\\\":\\\"", escaped,
 		"\\\"}")
 	if err != nil {
 		return err
@@ -94,8 +113,8 @@ func WriteElementAsEscapedJson(element *Element, buffer *bytes.Buffer) error {
 
 func WriteRepeatAsEscapedJson(repeat *Repeat, buffer *bytes.Buffer) error {
 	err := writeBuffer(buffer,
-		"{\\\"", REPEAT_KEY, "\\\":\\\"", repeat.Key,
-		"\\\",\\\"", REPEAT_COPY_KEYS, "\\\":\\\"", repeat.CopyKeys,
+		"{\\\"", keyRepeatKey, "\\\":\\\"", repeat.Key,
+		"\\\",\\\"", keyRepeatCopyKeys, "\\\":\\\"", repeat.CopyKeys,
 		"\\\"}")
 	if err != nil {
 		return err
@@ -106,8 +125,8 @@ func WriteRepeatAsEscapedJson(repeat *Repeat, buffer *bytes.Buffer) error {
 
 func WriteImageAsEscapedJson(image *Image, buffer *bytes.Buffer) error {
 	err := writeBuffer(buffer,
-		"{\\\"", IMAGE_KEY, "\\\":\\\"", image.Key,
-		"\\\",\\\"", IMAGE_SRC, "\\\":\\\"", image.Src,
+		"{\\\"", keyImageKey, "\\\":\\\"", image.Key,
+		"\\\",\\\"", keyImageSrc, "\\\":\\\"", image.Src,
 		"\\\"}")
 	if err != nil {
 		return err

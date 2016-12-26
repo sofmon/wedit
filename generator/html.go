@@ -5,14 +5,12 @@ package generator
 
 import (
 	"bufio"
-
 	"bytes"
 	"io/ioutil"
-
 	"strings"
 
-	"github.com/russross/blackfriday"
-	"golang.org/x/net/html"
+	blackfriday "github.com/russross/blackfriday"
+	html "golang.org/x/net/html"
 )
 
 func writePageAsHtml(indexFile, templateFile string, page *Page) error {

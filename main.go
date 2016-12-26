@@ -8,13 +8,12 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	"os/exec"
+
+	"runtime"
 
 	"github.com/sofmon/wedit/generator"
 )
-
-var s generator.Subject
 
 // Version is initialized in compilation time by go build.
 var Version string
@@ -25,9 +24,9 @@ var Name string
 func init() {
 	log.SetFlags(0)
 	log.SetOutput(os.Stdout)
-	//log.SetPrefix("🍀  ")
 }
 
+// Action requested when running wedit
 type Action int
 
 const (
@@ -40,7 +39,7 @@ const (
 	//ActionTry
 )
 
-func determainAction() Action {
+func determineAction() Action {
 	if len(os.Args) < 2 {
 		return actionEdit
 	}
@@ -76,7 +75,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "\n")
 	}
 
-	action := determainAction()
+	action := determineAction()
 
 	if action == actionUnknown {
 		flag.Usage()
@@ -91,7 +90,7 @@ func main() {
 		os.Exit(0)
 		break
 	case actionInit:
-		initialie()
+		initialize()
 		os.Exit(0)
 		break
 	case actionEdit:
@@ -105,19 +104,36 @@ func main() {
 	}
 }
 
-func initialie() {
+func initialize() {
 
 }
 
 func edit() {
 	generator, err := generator.NewGenerator("wedit.json")
 	if err != nil {
-		log.Fatalf("There was an error initialising wedit. Did you forget to do 'wedit init'?")
+		log.Fatalf("There was an error initializing wedit. Did you forget to do 'wedit init'?")
 	}
 	go generator.Serve()
 
-	cmd := exec.Command("open", "http://localhost:5000/!/")
-	cmd.Start()
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+
+	case "darwin":
+		exec.Command("open", "http://localhost:5000/!/")
+		break
+	case "windows":
+		cmd = exec.Command("start", "http://localhost:5000/!/")
+		break
+	case "linux":
+		cmd = exec.Command("xdg-open", "http://localhost:5000/!/")
+		break
+
+	}
+
+	if cmd != nil {
+		cmd.Start()
+	}
 
 	<-generator.Done // Wait for end of serve
 }

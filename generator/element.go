@@ -3,7 +3,7 @@
 
 package generator
 
-// CMS-able element on a page
+// Element represents an html element on a page
 type Element struct {
 
 	// The unique element key in the HTML
