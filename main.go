@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"runtime"
 
@@ -120,11 +121,17 @@ func edit() {
 	switch runtime.GOOS {
 
 	case "darwin":
-		exec.Command("open", "http://localhost:5000/!/")
+		cmd = exec.Command("open", "http://localhost:5000/!/")
 		break
+
 	case "windows":
-		cmd = exec.Command("start", "http://localhost:5000/!/")
+		cmd = exec.Command(
+			filepath.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"),
+			"url.dll,FileProtocolHandler",
+			"http://localhost:5000/!/",
+		)
 		break
+
 	case "linux":
 		cmd = exec.Command("xdg-open", "http://localhost:5000/!/")
 		break

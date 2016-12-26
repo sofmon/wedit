@@ -1,5 +1,6 @@
 # Go compiled binaries
 /wedit
+/wedit.exe
 /debug
 
 # Dart compiled files
@@ -9,3 +10,4 @@
 /editor/editor.js.deps
 /editor/editor.js.map
 /editor/editor.go
+/editor/pubspec.lock
