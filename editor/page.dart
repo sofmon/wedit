@@ -194,6 +194,10 @@ class Page {
 
 		if (e.ctrlKey && e.keyCode == html.KeyCode.S) {
 			save();
+      // Stop the browser default behaivier
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      e.preventDefault();
 		}
 
 		_ctrlPressed = e.ctrlKey;
