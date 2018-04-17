@@ -113,7 +113,7 @@ func (r *renderer) processElement(k model.Key, n *html.Node, p *model.Page) {
 		return
 	}
 
-	text := string(blackfriday.MarkdownBasic([]byte(element.Text)))
+	text := string(blackfriday.Run([]byte(element.Text)))
 	if strings.Index(text, "<p>") == strings.LastIndex(text, "<p>") {
 		text = strings.Replace(text, "<p>", "", 1)
 		text = strings.Replace(text, "</p>", "", 1)

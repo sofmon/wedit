@@ -12,6 +12,4 @@ $jsContent = $jsContent.Replace("``","``+""``""+``")  #fix bug in golang with lo
 $jsContent | Out-File ./editor/editor.go -Encoding UTF8 -Append
 "``" | Out-File ./editor/editor.go -Encoding UTF8 -Append
 Write-Host "=== Start building go applicaiton === "
-go get github.com/russross/blackfriday
-go get golang.org/x/net/html
-go build
+go build -o wedit
