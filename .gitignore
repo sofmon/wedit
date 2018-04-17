@@ -11,3 +11,7 @@
 /editor/editor.js.map
 /editor/editor.go
 /editor/pubspec.lock
+
+# Local test sites
+/public
+/template
