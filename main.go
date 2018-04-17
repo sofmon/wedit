@@ -1,19 +1,25 @@
-// Copyright (c) 2016, Haralampi Staykov (http://haralampi.com). All rights reserved.
+// Package main as wedit entry point
+// Part of `wedit` project (https://wedit.io) (https://github.com/sofmon/wedit)
 // Use of this source code is governed by MIT license that can be found in the LICENSE file.
-
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
+	"time"
+
+	"github.com/sofmon/wedit/renderer"
+
+	"github.com/sofmon/wedit/explorer"
 
 	"runtime"
 
-	"github.com/sofmon/wedit/generator"
+	"github.com/sofmon/wedit/config"
+	"github.com/sofmon/wedit/service"
 )
 
 // Version is initialized in compilation time by go build.
@@ -28,123 +34,128 @@ func init() {
 }
 
 // Action requested when running wedit
-type Action int
+type Action string
 
 const (
-	actionUnknown Action = iota
-	actionHelp
-	actionVersion
-	actionInit
-	actionEdit
-	actionBuild
-	//ActionTry
+	actionHelp    Action = "help"
+	actionVersion Action = "version"
+	actionInit    Action = "init"
+	actionEdit    Action = "edit"
+	actionBuild   Action = "build"
 )
 
 func determineAction() Action {
+
 	if len(os.Args) < 2 {
 		return actionEdit
 	}
 
-	switch os.Args[1] {
-	case "help":
-		return actionHelp
-	case "version":
-		return actionVersion
-	case "init":
-		return actionInit
-	case "edit":
-		return actionEdit
-	case "build":
-		return actionBuild
-	}
-
-	return actionUnknown
+	return Action(strings.ToLower(os.Args[1]))
 }
 
 func main() {
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Web edit tool from wedit.io provided by sofmon.com\n\n")
-		fmt.Fprintf(os.Stderr, "Usage: wedit\n  Edit the current wedit project or shows the help text\n\n")
-		fmt.Fprintf(os.Stderr, "Usage: wedit action\n")
-		fmt.Fprintf(os.Stderr, "  actions:\n")
-		fmt.Fprintf(os.Stderr, "    help    - Prints this message.\n")
-		fmt.Fprintf(os.Stderr, "    version - Prints wedit version.\n")
-		fmt.Fprintf(os.Stderr, "    init    - Prepare the current folder as a wedit project.\n")
-		fmt.Fprintf(os.Stderr, "    edit    - Edit the website using web browser.\n")
-		fmt.Fprintf(os.Stderr, "    build   - (Re)Generate the static website. Usualy after template change.\n")
-		//fmt.Fprintf(os.Stderr, "    try - Prepare the current folder for wedit\n")
-		fmt.Fprintf(os.Stderr, "\n")
-	}
 
 	action := determineAction()
 
-	if action == actionUnknown {
-		flag.Usage()
-		os.Exit(0)
-	}
-
-	flag.Parse()
-
 	switch action {
-	case actionVersion:
-		log.Println(Version)
-		os.Exit(0)
-		break
+
 	case actionInit:
 		initialize()
-		os.Exit(0)
-		break
+
 	case actionEdit:
 		edit()
-		os.Exit(0)
-		break
+
 	case actionBuild:
 		build()
-		os.Exit(0)
-		break
+
+	case actionVersion:
+		log.Printf("wedit version %s\n", Version)
+
+	case actionHelp:
+		printHelp()
+
+	default:
+		log.Printf("unknown action '%s'\n", action)
+		printHelp()
+		os.Exit(1)
 	}
+
+	os.Exit(0)
 }
 
 func initialize() {
-
+	log.Fatalln("TODO: init action not implemented")
 }
 
 func edit() {
-	generator, err := generator.NewGenerator("wedit.json")
-	if err != nil {
-		log.Fatalf("There was an error initializing wedit. Did you forget to do 'wedit init'?")
-	}
-	go generator.Serve()
 
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+	}
+
+	rend := renderer.NewRenderer(cfg.Renderer)
+	ex := explorer.NewExplorer(cfg.Explorer, rend)
+	svc := service.NewService(cfg.Service, cfg.Explorer.PublicFolder, ex)
+
+	done := make(chan error)
+
+	go func() {
+		done <- svc.ListenAndServe()
+	}()
+
+	if cfg.Edit.OpenBrowser {
+		time.Sleep(1 * time.Second) // wait 1s for web server to start
+		openBrowser(fmt.Sprintf("http://%s:%d/!/", cfg.Service.Host, cfg.Service.Port))
+	}
+
+	err = <-done
+	if err != nil {
+		log.Fatalf("main: error in serving wedit http requests doe to an error: %v\n", err)
+	}
+}
+
+func build() {
+	log.Fatalln("TODO: build action not implemented")
+}
+
+func openBrowser(url string) {
 	var cmd *exec.Cmd
 
 	switch runtime.GOOS {
 
 	case "darwin":
-		cmd = exec.Command("open", "http://localhost:5000/!/")
-		break
-
+		cmd = exec.Command("open", url)
 	case "windows":
 		cmd = exec.Command(
 			filepath.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"),
 			"url.dll,FileProtocolHandler",
-			"http://localhost:5000/!/",
+			url,
 		)
-		break
-
 	case "linux":
-		cmd = exec.Command("xdg-open", "http://localhost:5000/!/")
-		break
-
+		cmd = exec.Command("xdg-open", url)
 	}
 
 	if cmd != nil {
-		cmd.Start()
+		err := cmd.Start()
+		if err != nil {
+			log.Fatalf("main: unable to start browser due to an error: %v\n", err)
+		}
 	}
-
-	<-generator.Done // Wait for end of serve
 }
 
-func build() {
+func printHelp() {
+	log.Print(
+		`
+		Web edit tool from wedit.io
 
+		Usage: wedit [action]
+		actions:
+		help    - Prints this message
+		version - Prints wedit version
+		init    - Prepare the current folder as a wedit project
+		edit    - Edit website using web browser (default action)
+		build   - (Re)Generate the static website, for example after template change
+		`,
+	)
 }

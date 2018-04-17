@@ -1,4 +1,4 @@
-// Copyright (c) 2016, Haralampi Staykov (http://haralampi.com). All rights reserved.
+// Part of `wedit` project (https://wedit.io) (https://github.com/sofmon/wedit)
 // Use of this source code is governed by MIT license that can be found in the LICENSE file.
 part of wedit;
 

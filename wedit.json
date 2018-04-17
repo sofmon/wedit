@@ -1,10 +1,22 @@
 {
-    "folders":{
-        "template":"template",
-        "public":"public"
+    "explorer":{
+        "templateFolder":"./template",
+        "publicFolder":"./public"
     },
-    "editor":{
+    "service":{
         "host":"localhost",
         "port":5000
+    },
+    "renderer":{
+        "editAttribute": "data-var",
+        "repeatAttribute": "data-var-repeat",
+        "keepAttribute": false
+    },
+    "edit": {
+        "openBrowser": true
+    },
+    "shellCommands": {
+        "{ctl}+r": "git reset --hard origin/develop && git pull",
+        "{ctl}+p": "git add . && git commit -m '{publish}' && git push"
     }
 }
