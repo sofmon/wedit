@@ -31,7 +31,7 @@ func (s *service) saveHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.ex.WritePageData(path, page)
+	err = s.bld.WritePage(path, page)
 	if err != nil {
 		log.Printf("unable to save page for path '%v'; error: %v", path, err)
 		http.Error(w, "unable to save page", http.StatusInternalServerError)

@@ -12,9 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/sofmon/wedit/builder"
 	"github.com/sofmon/wedit/renderer"
-
-	"github.com/sofmon/wedit/explorer"
 
 	"runtime"
 
@@ -95,8 +94,8 @@ func edit() {
 	}
 
 	rend := renderer.NewRenderer(cfg.Renderer)
-	ex := explorer.NewExplorer(cfg.Explorer, rend)
-	svc := service.NewService(cfg.Service, cfg.Explorer.PublicFolder, ex)
+	bld := builder.NewBuilder(cfg.Builder, rend)
+	svc := service.NewService(cfg.Service, cfg.Builder.PublicFolder, bld)
 
 	done := make(chan error)
 
@@ -104,7 +103,7 @@ func edit() {
 		done <- svc.ListenAndServe()
 	}()
 
-	if cfg.Edit.OpenBrowser {
+	if cfg.Service.OpenBrowser {
 		time.Sleep(1 * time.Second) // wait 1s for web server to start
 		openBrowser(fmt.Sprintf("http://%s:%d/!/", cfg.Service.Host, cfg.Service.Port))
 	}
@@ -116,7 +115,19 @@ func edit() {
 }
 
 func build() {
-	log.Fatalln("TODO: build action not implemented")
+
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+	}
+
+	rend := renderer.NewRenderer(cfg.Renderer)
+	bld := builder.NewBuilder(cfg.Builder, rend)
+
+	err = bld.RebuildAll()
+	if err != nil {
+		log.Fatalf("main: error in building public folder doe to an error: %v\n", err)
+	}
 }
 
 func openBrowser(url string) {

@@ -10,6 +10,10 @@ const PAGE_ELEMENTS = "e";
 const PAGE_REPEATS = "r";
 const PAGE_IMAGES = "i";
 
+const PAGE_SETTINGS = "s";
+const PAGE_SETTINGS_EDITATTR = "e";
+const PAGE_SETTINGS_REPEATATTR = "r";
+
 const ELEMENT_KEY = "k";
 const ELEMENT_TEXT = "t";
 
@@ -18,3 +22,4 @@ const REPEAT_COPY_KEYS = "c";
 
 const IMAGE_KEY = "k";
 const IMAGE_SRC = "s";
+

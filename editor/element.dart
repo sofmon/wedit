@@ -134,6 +134,8 @@ class Element {
     _domElement.innerHtml = _text.replaceAll("\n", "<br>");
     _isEditing = true;
 
+		print(_text);
+
 		// Ensure that no links will be triggered
 		e.stopPropagation();
 		e.stopImmediatePropagation();
@@ -151,8 +153,11 @@ class Element {
 
 		_isHighlighted = _isEditing = false;
 
-    _text = _domElement.innerHtml.replaceAll("<br>", "\n");
+    _text = _domElement.innerHtml.replaceAll("<div>", "\n").replaceAll("</dib>", "").replaceAll("<br>", "\n");
     _domElement.innerHtml = _html;
+
+		print(_text);
+		print(_html);
 	}
 
 	void render() {

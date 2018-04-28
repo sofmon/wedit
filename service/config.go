@@ -5,6 +5,9 @@ package service
 
 // Config for the wedit http service
 type Config struct {
-	Host string `json:"host"`
-	Port int    `json:"port"`
+	Host        string `json:"host"`
+	Port        int    `json:"port"`
+	OpenBrowser bool   `json:"openBrowser"`
+	EditAttr    string `json:"editAttr"`
+	RepeatAttr  string `json:"repeatAttr"`
 }

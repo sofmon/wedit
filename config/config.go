@@ -8,19 +8,16 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/sofmon/wedit/explorer"
+	"github.com/sofmon/wedit/builder"
 	"github.com/sofmon/wedit/renderer"
 	"github.com/sofmon/wedit/service"
 )
 
 // Config for the wedit project
 type Config struct {
-	Explorer explorer.Config `json:"explorer"`
+	Builder  builder.Config  `json:"builder"`
 	Service  service.Config  `json:"service"`
 	Renderer renderer.Config `json:"renderer"`
-	Edit     struct {
-		OpenBrowser bool `json:"openBrowser"`
-	} `json:"edit"`
 }
 
 const configFile = "wedit.json"
@@ -39,6 +36,9 @@ func LoadConfig() (cfg Config, err error) {
 		err = fmt.Errorf("config: unable to parse config file (%s) as JSON due to error: %v", configFile, err)
 		return
 	}
+
+	cfg.Service.EditAttr = cfg.Renderer.EditAttr
+	cfg.Service.RepeatAttr = cfg.Renderer.RepeatAttr
 
 	return
 }

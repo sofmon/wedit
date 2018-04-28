@@ -21,12 +21,21 @@ class Page {
 	bool _ctrlPressed = false;
 	bool get ctrlPressed => _ctrlPressed;
 
+	String _editAttribute;
+	String get editAttribute => _editAttribute;
+	String _repeatAttribute;
+	String get repeatAttribute => _repeatAttribute;
+
 	Message _message;
 
 	Page.fromMap(Map map) {
 		_host = map[PAGE_HOST];
 		_site = map[PAGE_SITE];
 		_path = map[PAGE_PATH];
+
+		var settings = map[PAGE_SETTINGS];
+		_editAttribute = settings[PAGE_SETTINGS_EDITATTR];
+		_repeatAttribute = settings[PAGE_SETTINGS_REPEATATTR];
 
 		_title = map[PAGE_TITLE];
 
@@ -46,7 +55,7 @@ class Page {
 		_syncElements();
 		_bindEvents();
 
-		html.window.dispatchEvent(new html.Event("varReady"));
+		html.window.dispatchEvent(new html.Event("wedit-ready"));
 
 		_message = new Message();
 		//_pageMenu = new PageMenu(this);
@@ -77,7 +86,7 @@ class Page {
 	}
 
 	void registerElement(html.Element domElement) {
-		var key = domElement.dataset["var"];
+		var key = domElement.getAttribute(_editAttribute);
 
 		if (key == null || key.isEmpty) return;
 
@@ -108,7 +117,7 @@ class Page {
 	}
 
 	void unregisterElement(html.Element domElement) {
-		var key = domElement.dataset["var"];
+		var key = domElement.getAttribute(_editAttribute);
 
     if(Image.SUPPORTED_IMAGE_TAGS.contains(domElement.tagName.toLowerCase())) {
       var image = _images[key];
@@ -128,12 +137,12 @@ class Page {
 		List<html.Element> repeatedDomElements = new List<html.Element>();
 
 		html.ElementList<html.Element> domElements = html
-			.querySelectorAll("[data-var],[data-var-repeat]");
+			.querySelectorAll("[" + _editAttribute + "],[" + _repeatAttribute + "]");
 
 		for (int i = 0; i < domElements.length; i++) {
 			html.Element domElement = domElements[i];
 
-			String key = domElement.dataset["var-repeat"];
+			String key = domElement.getAttribute(_repeatAttribute);
 
 			if (key != null && !key.isEmpty) {
 				Map cmsData = _mappedRepeatsData[key];
@@ -157,7 +166,7 @@ class Page {
 	}
 
 	void _processDomElement(html.Element domElement) {
-		String key = domElement.dataset["var"];
+		String key = domElement.getAttribute(_editAttribute);
 
 		if (key == null || key.isEmpty) return;
 

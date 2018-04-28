@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	pageDataTemplate = `{"h":"","s":"","p":"","t":"","e":[],"r":[]}`
+	pageDataTemplate = `{"h":"","s":"","p":"","t":"","e":[],"r":[],"s":{"e":"","r":""}}`
 )
 
 var editorJsPart1 *string
@@ -37,7 +37,7 @@ func getEditorJs() (*string, *string) {
 	return editorJsPart1, editorJsPart2
 }
 
-func getPreparedJs(page model.Page) (string, error) {
+func getPreparedJs(page model.PageWithSettings) (string, error) {
 
 	var buffer bytes.Buffer
 
@@ -52,8 +52,6 @@ func getPreparedJs(page model.Page) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	// TODO: more escapes
 
 	_, err = buffer.WriteString(string(pageJSON))
 	if err != nil {
@@ -72,14 +70,22 @@ func (s *service) editorHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := getPathWithoutAction(r)
 
-	page, err := s.ex.ReadPageData(path)
+	page, err := s.bld.ReadPageData(path)
 	if err != nil {
 		log.Printf("could not create page data; path: %v; error: %v;\n", path, err)
 		http.Error(w, "could not create page data", http.StatusInternalServerError)
 		return
 	}
 
-	preparedJs, err := getPreparedJs(page)
+	pageWithSettings := model.PageWithSettings{
+		Page: page,
+		Settings: model.Settings{
+			EditAttribute:   s.cfg.EditAttr,
+			RepeatAttribute: s.cfg.RepeatAttr,
+		},
+	}
+
+	preparedJs, err := getPreparedJs(pageWithSettings)
 	if err != nil {
 		log.Printf("could not prepare editor.js; path: %v; error: %v;\n", path, err)
 		http.Error(w, "could not prepare editor.js", http.StatusInternalServerError)

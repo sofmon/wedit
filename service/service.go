@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/sofmon/wedit/explorer"
+	"github.com/sofmon/wedit/builder"
 )
 
 // Service processing wedit HTTP requests
@@ -20,13 +20,13 @@ type Service interface {
 type service struct {
 	cfg           Config
 	pub           string
-	ex            explorer.Explorer
+	bld           builder.Builder
 	staticHandler http.Handler
 }
 
 // NewService for processing wedit HTTP requests
-func NewService(cfg Config, pub string, ex explorer.Explorer) Service {
-	return &service{cfg, pub, ex, http.FileServer(http.Dir(pub))}
+func NewService(cfg Config, pub string, bld builder.Builder) Service {
+	return &service{cfg, pub, bld, http.FileServer(http.Dir(pub))}
 }
 
 // ListenAndServe blocks the current go routine and start serving the wedit HTTP request

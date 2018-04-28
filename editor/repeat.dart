@@ -50,7 +50,7 @@ class Repeat {
 
 	void _syncElements() {
 		_domTemplate = _domElement.clone(true);
-		_domTemplate.dataset.remove("var-repeat");
+		_domTemplate.attributes.remove(_page.repeatAttribute);
 	}
 
 	void _renderShadows(List<String> copyKeys) {
@@ -106,7 +106,7 @@ class Repeat {
 			return;
 		}
 
-		html.ElementList<html.Element> elements = targetDomElement.querySelectorAll("[data-var]");
+		html.ElementList<html.Element> elements = targetDomElement.querySelectorAll("[" + _page.editAttribute + "]");
 
 		for(int i=0; i<elements.length; i++) {
 
@@ -170,13 +170,13 @@ class Repeat {
 
 		html.Element copyElement = _domTemplate.clone(true);
 
-		copyElement.dataset.remove("var-repeat");
-		html.ElementList<html.Element> elements = copyElement.querySelectorAll("[data-var]");
+		copyElement.attributes.remove(_page.repeatAttribute);
+		html.ElementList<html.Element> elements = copyElement.querySelectorAll("[" + _page.editAttribute + "]");
 
 		for(int i=0;i<elements.length;i++) {
-			String eKey = elements[i].dataset["var"] + key;
-			elements[i].dataset.remove("var");
-			elements[i].dataset["var"] = eKey;
+			String eKey = elements[i].getAttribute(_page.editAttribute) + key;
+			elements[i].attributes.remove(_page.editAttribute);
+			elements[i].setAttribute(_page.editAttribute, eKey);
 			_page.registerElement(elements[i]);
 		}
 
