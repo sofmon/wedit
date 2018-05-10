@@ -5,7 +5,6 @@ package builder
 
 import (
 	"github.com/sofmon/wedit/model"
-	"github.com/sofmon/wedit/renderer"
 )
 
 // Builder builds the wedit public folder
@@ -17,13 +16,12 @@ type Builder interface {
 }
 
 type builder struct {
-	cfg  Config
-	rend renderer.Renderer
+	cfg Config
 }
 
 // NewBuilder creates new wedit Builder
-func NewBuilder(cfg Config, rend renderer.Renderer) Builder {
-	return &builder{cfg, rend}
+func NewBuilder(cfg Config) Builder {
+	return &builder{cfg}
 }
 
 /*

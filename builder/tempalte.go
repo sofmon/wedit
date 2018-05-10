@@ -4,7 +4,6 @@
 package builder
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -33,9 +32,9 @@ func (b *builder) findTemplateFile(path string) string {
 func (b *builder) ReadPageTemplate(path string) (string, error) {
 	file := b.findTemplateFile(path)
 
-	data, err := ioutil.ReadFile(file)
+	data, err := b.prepareIncludes(file)
 	if err != nil {
-		log.Printf("Could not read page template file '%v'. Error: %v\n", file, err)
+		log.Printf("could not read page template file '%v'. Error: %v\n", file, err)
 		return "", err
 	}
 

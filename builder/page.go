@@ -77,7 +77,7 @@ func (b *builder) WritePage(path string, page model.Page) error {
 	indexFile := publicFolder + "/" + b.cfg.PageHTMLFile
 	templateFile := b.findTemplateFile(path)
 
-	err = b.rend.RenderHTML(indexFile, templateFile, page)
+	err = b.renderHTML(indexFile, templateFile, page)
 	if err != nil {
 		log.Printf("unable to save page HTML at '%v'; error: %v", file, err)
 		return err

@@ -9,15 +9,13 @@ import (
 	"io/ioutil"
 
 	"github.com/sofmon/wedit/builder"
-	"github.com/sofmon/wedit/renderer"
 	"github.com/sofmon/wedit/service"
 )
 
 // Config for the wedit project
 type Config struct {
-	Builder  builder.Config  `json:"builder"`
-	Service  service.Config  `json:"service"`
-	Renderer renderer.Config `json:"renderer"`
+	Builder builder.Config `json:"builder"`
+	Service service.Config `json:"service"`
 }
 
 const configFile = "wedit.json"
@@ -37,8 +35,8 @@ func LoadConfig() (cfg Config, err error) {
 		return
 	}
 
-	cfg.Service.EditAttr = cfg.Renderer.EditAttr
-	cfg.Service.RepeatAttr = cfg.Renderer.RepeatAttr
+	cfg.Service.EditAttr = cfg.Builder.EditAttr
+	cfg.Service.RepeatAttr = cfg.Builder.RepeatAttr
 
 	return
 }

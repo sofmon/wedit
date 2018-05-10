@@ -1,4 +1,4 @@
-package renderer
+package builder
 
 import (
 	"strings"
@@ -10,7 +10,7 @@ import (
 	"github.com/sofmon/wedit/model"
 )
 
-func (r *renderer) processElement(k model.Key, n *html.Node, p *model.Page) {
+func processElement(k model.Key, n *html.Node, p *model.Page) {
 
 	element, found := p.Elements[k]
 	if !found {

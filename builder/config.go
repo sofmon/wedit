@@ -13,4 +13,8 @@ type Config struct {
 	PageJSONFile     string `json:"pageJsonFile"`
 	RootJSONFile     string `json:"rootJsonFile"`
 	RootKeyPrefix    string `json:"rootKeyPrefix"`
+	EditAttr         string `json:"editAttribute"`
+	RepeatAttr       string `json:"repeatAttribute"`
+	IncludeAttr      string `json:"includeAttribute"`
+	KeepWeditAttrs   bool   `json:"keepAttributes"`
 }

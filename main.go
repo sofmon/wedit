@@ -9,14 +9,11 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
 	"github.com/sofmon/wedit/builder"
-	"github.com/sofmon/wedit/renderer"
-
-	"runtime"
-
 	"github.com/sofmon/wedit/config"
 	"github.com/sofmon/wedit/service"
 )
@@ -93,8 +90,7 @@ func edit() {
 		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
 	}
 
-	rend := renderer.NewRenderer(cfg.Renderer)
-	bld := builder.NewBuilder(cfg.Builder, rend)
+	bld := builder.NewBuilder(cfg.Builder)
 	svc := service.NewService(cfg.Service, cfg.Builder.PublicFolder, bld)
 
 	done := make(chan error)
@@ -121,8 +117,7 @@ func build() {
 		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
 	}
 
-	rend := renderer.NewRenderer(cfg.Renderer)
-	bld := builder.NewBuilder(cfg.Builder, rend)
+	bld := builder.NewBuilder(cfg.Builder)
 
 	err = bld.RebuildAll()
 	if err != nil {

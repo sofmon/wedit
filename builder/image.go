@@ -1,4 +1,4 @@
-package renderer
+package builder
 
 import (
 	"strings"
@@ -8,7 +8,7 @@ import (
 	"github.com/sofmon/wedit/model"
 )
 
-func (r *renderer) processImage(k model.Key, n *html.Node, p *model.Page) {
+func processImage(k model.Key, n *html.Node, p *model.Page) {
 
 	image, found := p.Images[k]
 	if !found {

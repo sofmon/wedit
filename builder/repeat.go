@@ -1,4 +1,4 @@
-package renderer
+package builder
 
 import (
 	"bufio"
@@ -10,7 +10,7 @@ import (
 	"github.com/sofmon/wedit/model"
 )
 
-func (r *renderer) processRepeat(k model.Key, n *html.Node, p *model.Page) {
+func (b *builder) processRepeat(k model.Key, n *html.Node, p *model.Page) {
 
 	repeat, found := p.Repeats[k]
 	if !found {
@@ -25,17 +25,17 @@ func (r *renderer) processRepeat(k model.Key, n *html.Node, p *model.Page) {
 			continue
 		}
 
-		cn := r.cloneNode(n)
+		cn := b.cloneNode(n)
 
 		for i, a := range cn.Attr {
-			if strings.ToLower(a.Key) == r.cfg.RepeatAttr {
+			if strings.ToLower(a.Key) == b.cfg.RepeatAttr {
 				cn.Attr = append(cn.Attr[:i], cn.Attr[i+1:]...)
 				break
 			}
 		}
 
-		r.updateVarValues(cn, k)
-		r.processNode(cn, p)
+		b.updateVarValues(cn, k)
+		b.renderProcessNode(cn, p)
 
 		if before {
 			n.Parent.InsertBefore(cn, n)
@@ -49,10 +49,10 @@ func (r *renderer) processRepeat(k model.Key, n *html.Node, p *model.Page) {
 	}
 }
 
-func (r *renderer) cloneNode(n *html.Node) *html.Node {
+func (b *builder) cloneNode(n *html.Node) *html.Node {
 
-	var b bytes.Buffer
-	w := bufio.NewWriter(&b)
+	var buf bytes.Buffer
+	w := bufio.NewWriter(&buf)
 
 	err := html.Render(w, n)
 	if err != nil {
@@ -64,7 +64,7 @@ func (r *renderer) cloneNode(n *html.Node) *html.Node {
 		return nil
 	}
 
-	cn, err := html.ParseFragment(bytes.NewReader(b.Bytes()), n.Parent)
+	cn, err := html.ParseFragment(bytes.NewReader(buf.Bytes()), n.Parent)
 	if err != nil {
 		return nil
 	}
@@ -76,16 +76,16 @@ func (r *renderer) cloneNode(n *html.Node) *html.Node {
 	return cn[0]
 }
 
-func (r *renderer) updateVarValues(n *html.Node, k model.Key) {
+func (b *builder) updateVarValues(n *html.Node, k model.Key) {
 
 	for i, a := range n.Attr {
-		if strings.ToLower(a.Key) == r.cfg.EditAttr {
+		if strings.ToLower(a.Key) == b.cfg.EditAttr {
 			n.Attr[i].Val = a.Val + string(k)
 			break
 		}
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		r.updateVarValues(c, k)
+		b.updateVarValues(c, k)
 	}
 }
