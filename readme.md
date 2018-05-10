@@ -58,6 +58,8 @@ Every editable element within template `index.html` file can have one of the att
 
 You can not use `wedit`, `wedit-repeat` or `wedit-include` on the same HTML element.
 
+If `{unique-key}` start with prefix `!`, its value will be the same side wide (useful for headers and footers)
+
 ## 3. Edit the website through the browser
 
 Run `wedit` tool within the project folder:
