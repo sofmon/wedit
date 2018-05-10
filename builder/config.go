@@ -6,6 +6,7 @@ package builder
 // Config for the wedit (file) explorer
 type Config struct {
 	TemplateFolder   string `json:"templateFolder"`
+	ContentFolder    string `json:"contentFolder"`
 	PublicFolder     string `json:"publicFolder"`
 	TemplateHTMLFile string `json:"templateHtmlFile"`
 	PageHTMLFile     string `json:"pageHtmlFile"`

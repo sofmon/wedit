@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func (b *builder) findTemplateFile(path string) string {
+func (b *builder) findTemplatePath(path string) string {
 	subFolders := strings.Split(path, "/")
 	folderToCheck := b.cfg.TemplateFolder
 	templateFolder := b.cfg.TemplateFolder + "/"
@@ -23,7 +23,11 @@ func (b *builder) findTemplateFile(path string) string {
 			break
 		}
 	}
-	return templateFolder + b.cfg.TemplateHTMLFile
+	return templateFolder
+}
+
+func (b *builder) findTemplateFile(path string) string {
+	return b.findTemplatePath(path) + b.cfg.TemplateHTMLFile
 }
 
 func (b *builder) ReadPageTemplate(path string) (string, error) {

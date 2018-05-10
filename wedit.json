@@ -1,6 +1,7 @@
 {
     "builder": {
         "templateFolder": "./template",
+        "contentFolder": "./content",
         "publicFolder": "./public",
         "templateHtmlFile": "index.html",
         "pageHtmlFile": "index.html",

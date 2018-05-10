@@ -14,7 +14,7 @@ import (
 
 func (b *builder) ReadPageData(path string) (page model.Page, error error) {
 
-	file := b.cfg.PublicFolder + "/" + path + "/" + b.cfg.PageJSONFile
+	file := b.cfg.ContentFolder + "/" + path + "/" + b.cfg.PageJSONFile
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -35,12 +35,30 @@ func (b *builder) ReadPageData(path string) (page model.Page, error error) {
 	return b.addRootData(page)
 }
 
+func (b *builder) clearPublic(path string) error {
+
+	publicFolder := b.cfg.PublicFolder + "/" + path
+	os.MkdirAll(publicFolder, 0777)
+
+	templateFolder := b.findTemplatePath(path)
+
+	return copyDir(templateFolder, publicFolder)
+}
+
 func (b *builder) WritePage(path string, page model.Page) error {
 
-	folder := b.cfg.PublicFolder + "/" + path
-	os.MkdirAll(folder, 0777)
+	err := b.clearPublic(path)
+	if err != nil {
+		return err
+	}
 
-	file := folder + "/" + b.cfg.PageJSONFile
+	publicFolder := b.cfg.PublicFolder + "/" + path
+	os.MkdirAll(publicFolder, 0777)
+
+	contentFolder := b.cfg.ContentFolder + "/" + path
+	os.MkdirAll(contentFolder, 0777)
+
+	file := contentFolder + "/" + b.cfg.PageJSONFile
 
 	localData, rootData := b.splitRootData(page)
 
@@ -56,7 +74,7 @@ func (b *builder) WritePage(path string, page model.Page) error {
 		return err
 	}
 
-	indexFile := folder + "/" + b.cfg.PageHTMLFile
+	indexFile := publicFolder + "/" + b.cfg.PageHTMLFile
 	templateFile := b.findTemplateFile(path)
 
 	err = b.rend.RenderHTML(indexFile, templateFile, page)
