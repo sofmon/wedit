@@ -18,8 +18,15 @@
         "port": 5000,
         "openBrowser": true,
         "shellCommands": {
-            "{ctl}+r": "git reset --hard origin/develop && git pull",
-            "{ctl}+p": "git add . && git commit -m '{publish}' && git push"
+            "reset": [
+                "git reset --hard origin/develop",
+                "git pull"
+            ],
+            "publish": [
+                "git add .",
+                "git commit -m 'content update by wedit'",
+                "git push"
+            ]
         }
     }
 }
