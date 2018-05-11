@@ -107,7 +107,7 @@ Once the page is loaded at `http://{localhost}:{port}/!/...` you can press `CTRL
 
 As long as you are in edit mode (under the `/!/` root path), you can generate new pages just by navigating to the desired URL.
 
-Once done go to the menu and press `save` (shortcut `CTRL+S`) to save the page.
+Once done go to the menu (`CTRL` + hover on top of the page) and press `save` to save the page.
 
 The result is saved in the `public` folder.
 
