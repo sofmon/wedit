@@ -3,133 +3,162 @@
 part of wedit;
 
 class PageMenu {
+  static const _DEFAULT_MENU_COLOR = "#aaa";
+  static const _DEFAULT_MENU_OPACITY = ".6";
+  static const _DEFAULT_MENU_WIDTH = 400;
+  static const _DEFAULT_MENU_TRIGGER_SIZE = 20;
+  static const _DEFAULT_MENU_BUTTON_HEIGHT = 40;
+  static const _DEFAULT_MENU_BOX_SHADOW =
+      "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  static const _DEFAULT_MENU_HOVER_BOX_SHADOW =
+      "0 0 2vw 0 rgba(0, 0, 0, 1), inset 0 0 2vw 0 rgba(255, 255, 255, 1)";
+  static const _DEFAULT_COMMAND_SAVE_TEXT = "save";
+  static const _DEFAULT_COMMAND_SUCCESS_TEXT = "ok";
+  static const _DEFAULT_COMMAND_FAILURE_TEXT = "ERROR";
 
-	static const _DEFAULT_MENU_COLOR = "#aaa";
-	static const _DEFAULT_MENU_OPACITY = ".6";
-	static const _DEFAULT_MENU_WIDTH = 400;
-	static const _DEFAULT_MENU_HEIGHT = 100;
-	static const _DEFAULT_MENU_TRIGGER_SIZE = 20;
-	static const _DEFAULT_MENU_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-	static const _DEFAULT_MENU_HOVER_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, 1), inset 0 0 2vw 0 rgba(255, 255, 255, 1)";
+  Page _page;
+  Map<String, String> _commands;
+  String _menuTextColor;
 
-	Page _page;
+  html.Element _domElement;
+  html.Element _saveDomElement;
 
-	html.Element _domElement;
-	html.InputElement _titleInputElement;
-	html.Element _saveDomElement;
-	html.Element _publishDomElement;
-	html.Element _deleteDomElement;
+  Map<String, html.Element> _commandDomElements;
 
-	html.Point _pointer;
-	bool _holdPointer;
+  bool _lockMenu;
 
-	PageMenu(this._page) {
+  PageMenu(this._page, this._commands, this._menuTextColor) {
+    _bindControls();
+  }
 
-		_bindControls();
-	}
+  void _bindControls() {
+    _domElement = new html.Element.div();
 
-	void _bindControls() {
+    _domElement.style
+      ..display = "none"
+      ..zIndex = "999999"
+      ..position = "fixed"
+      ..backgroundColor = _DEFAULT_MENU_COLOR
+      ..width = _DEFAULT_MENU_WIDTH.toString() + "px"
+      ..height = _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"
+      ..top = "0px"
+      ..left = "50%"
+      ..overflow = "hidden"
+      ..borderBottomLeftRadius =
+          (_DEFAULT_MENU_TRIGGER_SIZE / 2).toString() + "px"
+      ..borderBottomRightRadius =
+          (_DEFAULT_MENU_TRIGGER_SIZE / 2).toString() + "px"
+      ..opacity = _DEFAULT_MENU_OPACITY
+      ..boxShadow = _DEFAULT_MENU_BOX_SHADOW
+      ..zIndex = "1000000"
+      ..transform = "translateX(-50%) translateZ(1000000em)"
+      ..cursor = "pointer";
 
-		_domElement = new html.Element.div();
+    _domElement
+      ..onMouseEnter.listen(_mouseOver)
+      ..onMouseLeave.listen(_mouseLeave);
 
-		_domElement.style
-			..display = "none"
-			..zIndex = "999999"
-			..position = "fixed"
-			..backgroundColor = _DEFAULT_MENU_COLOR
-			..width = _DEFAULT_MENU_WIDTH.toString() + "px"
-			..height = _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"
-			..top = "0px"
-			..left = "50%"
-			..transform = "translateX(-50%)"
-			..overflow = "hidden"
-			..borderBottomLeftRadius = (_DEFAULT_MENU_TRIGGER_SIZE/2).toString() + "px"
-			..borderBottomRightRadius = (_DEFAULT_MENU_TRIGGER_SIZE/2).toString() + "px"
-			..opacity = _DEFAULT_MENU_OPACITY
-			..boxShadow = _DEFAULT_MENU_BOX_SHADOW
-			..cursor = "pointer";
+    _saveDomElement = new html.Element.div();
+    _saveDomElement.style
+      ..marginTop = _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"
+      ..marginLeft = (0.05 * _DEFAULT_MENU_WIDTH).toString() + "px"
+      ..width = (0.90 * _DEFAULT_MENU_WIDTH).toString() + "px"
+      ..height = _DEFAULT_MENU_BUTTON_HEIGHT.toString() + "px"
+      ..borderRadius = (_DEFAULT_MENU_BUTTON_HEIGHT / 2).toString() + "px"
+      ..fontSize = _DEFAULT_MENU_BUTTON_HEIGHT.toString() + "px"
+      ..textAlign = "center"
+      ..color = _menuTextColor
+      ..backgroundColor = "#666666";
+    _saveDomElement.text = _DEFAULT_COMMAND_SAVE_TEXT;
+    _saveDomElement.onClick.listen(_saveClick);
+    _domElement.children.add(_saveDomElement);
 
-		_domElement
-			..onMouseEnter.listen(_mouseOver)
-			..onMouseLeave.listen(_mouseLeave);
+    html.document.body.children.add(_domElement);
 
-		_titleInputElement = new html.InputElement();
-		_titleInputElement.style
-			..padding = "1px"
-			..borderWidth = "2px"
-			..margin = _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"
-			..width = (_DEFAULT_MENU_WIDTH - 2*_DEFAULT_MENU_TRIGGER_SIZE - 6).toString() + "px";
-		_titleInputElement.text = _page.title;
-		_domElement.children.add(_titleInputElement);
+    _commandDomElements = new Map<String, html.Element>();
+    _commands.forEach((k, v) => _createCommandElement(k, v));
 
-		_saveDomElement = new html.Element.div();
-		_saveDomElement.style
-			..marginLeft = _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"
-			..width = (2*_DEFAULT_MENU_TRIGGER_SIZE).toString() + "px"
-			..height = (2*_DEFAULT_MENU_TRIGGER_SIZE).toString() + "px"
-			..backgroundColor = "red";
-		_domElement.children.add(_saveDomElement);
+    //html.document.onMouseMove.listen(_mouseMove);
+    html.window.onKeyDown.listen(_windowKeyDown);
+    html.window.onKeyUp.listen(_windowKeyUp);
+  }
 
+  void _createCommandElement(String command, String color) {
+    html.Element el = new html.Element.div();
+    el.style
+      ..marginTop = (0.5 * _DEFAULT_MENU_TRIGGER_SIZE).toString() + "px"
+      ..marginBottom = (0.5 * _DEFAULT_MENU_TRIGGER_SIZE).toString() + "px"
+      ..marginLeft = (0.05 * _DEFAULT_MENU_WIDTH).toString() + "px"
+      ..width = (0.90 * _DEFAULT_MENU_WIDTH).toString() + "px"
+      ..height = _DEFAULT_MENU_BUTTON_HEIGHT.toString() + "px"
+      ..borderRadius = (_DEFAULT_MENU_BUTTON_HEIGHT / 2).toString() + "px"
+      ..fontSize = _DEFAULT_MENU_BUTTON_HEIGHT.toString() + "px"
+      ..textAlign = "center"
+      ..color = _menuTextColor
+      ..backgroundColor = color;
+    el.text = command;
+    el.onClick.listen(_commandClick);
+    _commandDomElements[command] = el;
+    _domElement.children.add(el);
+  }
 
-		html.document.body.children.add(_domElement);
+  void _windowKeyDown(html.KeyboardEvent e) {
+    if (e.ctrlKey) {
+      show();
+    }
+  }
 
-		//html.document.onMouseMove.listen(_mouseMove);
-		html.window.onKeyDown.listen(_windowKeyDown);
-		html.window.onKeyUp.listen(_windowKeyUp);
+  void _windowKeyUp(html.KeyboardEvent e) {
+    if (!_lockMenu) {
+      hide();
+    }
+  }
 
-	}
+  void _mouseOver(html.MouseEvent event) {
+    _domElement.style
+      ..animationDelay = "2s"
+      ..height = ""
+      ..boxShadow = _DEFAULT_MENU_HOVER_BOX_SHADOW;
 
-	void _windowKeyDown(html.KeyboardEvent e) {
-		if (e.ctrlKey && _page.inEditMode) {
-			show();
-		}
-	}
+    _lockMenu = true;
+  }
 
-	void _windowKeyUp(html.KeyboardEvent e) {
-		hide();
-	}
+  void _mouseLeave(html.MouseEvent event) {
+    _domElement.style
+      ..animationDelay = "2s"
+      ..height = _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"
+      ..boxShadow = _DEFAULT_MENU_BOX_SHADOW;
 
-	void _mouseOver(html.MouseEvent event) {
+    _lockMenu = false;
 
-		_domElement.animate([
-			{"height": _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"},
-			{"height": _DEFAULT_MENU_HEIGHT.toString() + "px"}
-		], 100);
+    hide();
+  }
 
-		_domElement.style
-			..animationDelay = "2s"
-			..height = _DEFAULT_MENU_HEIGHT.toString() + "px"
-			..boxShadow = _DEFAULT_MENU_HOVER_BOX_SHADOW;
-	}
+  void _saveClick(html.MouseEvent event) {
+    _page.save(() => _saveDomElement.text = _DEFAULT_COMMAND_SUCCESS_TEXT,
+        () => _saveDomElement.text = _DEFAULT_COMMAND_FAILURE_TEXT);
+  }
 
-	void _mouseLeave(html.MouseEvent event) {
+  void _commandClick(html.MouseEvent event) {
+    html.Element el = event.target;
+    String cmd = el.text;
+    if (cmd == _DEFAULT_COMMAND_SUCCESS_TEXT ||
+        cmd == _DEFAULT_COMMAND_FAILURE_TEXT) {
+      return;
+    }
 
-		_domElement.animate([
-			{"height": _DEFAULT_MENU_HEIGHT.toString() + "px"},
-			{"height": _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"}
-		], 100);
+    _page.command(cmd, () => el.text = _DEFAULT_COMMAND_SUCCESS_TEXT,
+        () => el.text = _DEFAULT_COMMAND_FAILURE_TEXT);
+  }
 
-		_domElement.style
-			..animationDelay = "2s"
-			..height = _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"
-			..boxShadow = _DEFAULT_MENU_BOX_SHADOW;
-	}
+  void show() {
+    _domElement.style.display = "block";
 
-	void show() {
+    _saveDomElement.text = _DEFAULT_COMMAND_SAVE_TEXT;
+    _commandDomElements.forEach((k, v) => v.text = k);
+  }
 
-		_domElement.style
-			..display = "block";
-
-		_holdPointer = true;
-
-	}
-
-	void hide() {
-
-		_domElement.style
-			..display = "none";
-
-		_holdPointer = false;
-	}
-
+  void hide() {
+    _domElement.style..display = "none";
+  }
 }

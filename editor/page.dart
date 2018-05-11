@@ -25,7 +25,8 @@ class Page {
   String _repeatAttribute;
   String get repeatAttribute => _repeatAttribute;
 
-  Message _message;
+  PageMenu _pageMenu;
+  Map<String, String> _commands;
 
   Page.fromMap(Map map) {
     _host = map[PAGE_HOST];
@@ -35,6 +36,11 @@ class Page {
     var settings = map[PAGE_SETTINGS];
     _editAttribute = settings[PAGE_SETTINGS_EDITATTR];
     _repeatAttribute = settings[PAGE_SETTINGS_REPEATATTR];
+
+    _commands = new Map<String, String>();
+    settings[PAGE_SETTINGS_COMMANDS].forEach((c) =>
+        _commands[c[PAGE_SETTINGS_COMMANDS_NAME]] =
+            c[PAGE_SETTINGS_COMMANDS_COLOR]);
 
     _title = map[PAGE_TITLE];
 
@@ -56,8 +62,8 @@ class Page {
 
     html.window.dispatchEvent(new html.Event("wedit-ready"));
 
-    _message = new Message();
-    //_pageMenu = new PageMenu(this);
+    _pageMenu =
+        new PageMenu(this, _commands, settings[PAGE_SETTINGS_MENUTEXTCOLOR]);
   }
 
   Map toMap() {
@@ -189,14 +195,6 @@ class Page {
   }
 
   void _windowKeyDown(html.KeyboardEvent e) {
-    if (e.ctrlKey && e.keyCode == html.KeyCode.S) {
-      save();
-      // Stop the browser default behaivier
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      e.preventDefault();
-    }
-
     _ctrlPressed = e.ctrlKey;
 
     if (e.ctrlKey) {
@@ -214,7 +212,7 @@ class Page {
     _repeats.values.forEach((r) => r.normalise());
   }
 
-  void save() {
+  void save(Function onSuccess, Function onFailure) {
     Map pageData = toMap();
 
     String jsonData = convert.JSON.encode(pageData);
@@ -229,14 +227,50 @@ class Page {
         // data saved OK.
         print(request.responseText);
         // output the response from the server
+        if (onSuccess != null) {
+          onSuccess();
+        }
+      } else {
+        if (onFailure != null) {
+          onFailure();
+        }
       }
     });
 
-    print(html.window.location.protocol);
     var url = html.window.location.href.replaceAll("/!/", "/!save/");
 
     request.open("POST", url, async: false);
-    request.onLoad.listen((e) => _message.ShowText("SAVED"));
+    request.send(jsonData);
+  }
+
+  void command(String cmd, Function onSuccess, Function onFailure) {
+    Map pageData = toMap();
+
+    String jsonData = convert.JSON.encode(pageData);
+
+    html.HttpRequest request =
+        new html.HttpRequest(); // create a new XHR./wedit
+
+    // add an event handler that is called when the request finishes
+    request.onReadyStateChange.listen((_) {
+      if (request.readyState == html.HttpRequest.DONE &&
+          (request.status == 200 || request.status == 0)) {
+        // data saved OK.
+        print(request.responseText);
+        // output the response from the server
+        if (onSuccess != null) {
+          onSuccess();
+        }
+      } else {
+        if (onFailure != null) {
+          onFailure();
+        }
+      }
+    });
+
+    var url = html.window.location.href.replaceAll("/!/", "/!" + cmd + "/");
+
+    request.open("POST", url, async: false);
     request.send(jsonData);
   }
 
@@ -248,13 +282,11 @@ class Page {
     _elements.values.forEach((e) => e.prepareDomForHtmlSave());
     _images.values.forEach((e) => e.prepareDomForHtmlSave());
     _repeats.values.forEach((r) => r.prepareDomForHtmlSave());
-    _message.prepareDomForHtmlSave();
   }
 
   void restoreDomAfterHtmlSave() {
     _elements.values.forEach((e) => e.restoreDomAfterHtmlSave());
     _images.values.forEach((e) => e.restoreDomAfterHtmlSave());
     _repeats.values.forEach((r) => r.restoreDomAfterHtmlSave());
-    _message.restoreDomAfterHtmlSave();
   }
 }

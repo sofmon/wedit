@@ -14,7 +14,7 @@ part 'image.dart';
 part 'repeat.dart';
 part 'repeatShadow.dart';
 part 'page.dart';
-part 'message.dart';
+part 'pageMenu.dart';
 
 const PAGE_DATA_TEMPLATE =
     '{"h":"","s":"","p":"","t":"","e":[],"r":[],"s":{"e":"","r":""}}';

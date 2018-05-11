@@ -1,6 +1,6 @@
 # Web edit tool ([wedit.io](https://wedit.io))
 
-Wedit is a static website edit tool using web browser as WYSIWYG editor.
+`wedit` is a static website edit tool using web browser as WYSIWYG editor.
 
 # How it works
 
@@ -107,7 +107,7 @@ Once the page is loaded at `http://{localhost}:{port}/!/...` you can press `CTRL
 
 As long as you are in edit mode (under the `/!/` root path), you can generate new pages just by navigating to the desired URL.
 
-Once done go to the menu and press `save` - shortcut `CTRL+S` to save the page.
+Once done go to the menu and press `save` (shortcut `CTRL+S`) to save the page.
 
 The result is saved in the `public` folder.
 
@@ -138,17 +138,25 @@ Default `wedit.json` file with two example `shellCommands`:
         "host": "localhost",
         "port": 5000,
         "openBrowser": true,
+        "menuTextColor": "#ffffff",
         "shellCommands": {
-            "reset": [
-                "git reset --hard origin/master",
-                "git pull"
-            ],
-            "publish": [
-                "git add content",
-                "git add public",
-                "git commit -m 'content update by wedit'",
-                "git push"
-            ]
+            "reset": {
+                "color": "#99d250",
+                "script": [
+                    "git reset --hard origin/master",
+                    "git pull"
+                ]
+            }
+            ,
+            "publish": {
+                "color": "#d40d22",
+                "script": [
+                    "git add content",
+                    "git add public",
+                    "git commit -m 'content update by wedit'",
+                    "git push"
+                ]
+            }
         }
     }
 }

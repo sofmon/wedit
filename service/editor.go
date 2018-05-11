@@ -82,7 +82,18 @@ func (s *service) editorHandler(w http.ResponseWriter, r *http.Request) {
 		Settings: model.Settings{
 			EditAttribute:   s.cfg.EditAttr,
 			RepeatAttribute: s.cfg.RepeatAttr,
+			MenuTextColor:   s.cfg.MenuTextColor,
 		},
+	}
+
+	for k, v := range s.cfg.ShellCommands {
+		pageWithSettings.Settings.Commands = append(
+			pageWithSettings.Settings.Commands,
+			model.Command{
+				Name:  k,
+				Color: v.Color,
+			},
+		)
 	}
 
 	preparedJs, err := getPreparedJs(pageWithSettings)

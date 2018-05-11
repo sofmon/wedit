@@ -36,7 +36,14 @@ func (s *service) ListenAndServe() error {
 	http.HandleFunc("/!editor.js", s.editorHandler) // editor.go
 	http.HandleFunc("/!save/", s.saveHandler)       // save.go
 	http.HandleFunc("/!picture/", s.pictureHandler) // picture.go
-	http.HandleFunc("/!custom/", s.customHandler)   // custom.go
+
+	for k := range s.cfg.ShellCommands {
+		passValue := k
+		http.HandleFunc("/!"+k+"/", func(w http.ResponseWriter, r *http.Request) {
+			s.shellCommandHandler(w, r, passValue) // shell.go
+		},
+		)
+	}
 
 	http.Handle("/", s.staticHandler)
 

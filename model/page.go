@@ -34,10 +34,18 @@ type Repeat struct {
 	CopyKeys []Key `json:"ck"`
 }
 
+// Command available for the user
+type Command struct {
+	Name  string `json:"n"`
+	Color string `json:"c"`
+}
+
 // Settings for the wedit page
 type Settings struct {
-	EditAttribute   string `json:"e"`
-	RepeatAttribute string `json:"r"`
+	EditAttribute   string    `json:"e"`
+	RepeatAttribute string    `json:"r"`
+	MenuTextColor   string    `json:"m"`
+	Commands        []Command `json:"c"`
 }
 
 // Page represents an html page
