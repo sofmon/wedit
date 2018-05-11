@@ -5,6 +5,7 @@ package model
 
 import (
 	"encoding/json"
+	"sort"
 	"strings"
 )
 
@@ -79,9 +80,17 @@ type PageRepeats map[Key]Repeat
 // MarshalJSON converts a map to a json list
 func (x PageRepeats) MarshalJSON() ([]byte, error) {
 	l := []Repeat{}
-	for _, v := range x {
-		l = append(l, v)
+
+	var keys []string
+	for k := range x {
+		keys = append(keys, string(k))
 	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		l = append(l, x[Key(k)])
+	}
+
 	return json.Marshal(l)
 }
 
@@ -105,9 +114,17 @@ type PageElements map[Key]Element
 // MarshalJSON converts a map to a json list
 func (x PageElements) MarshalJSON() ([]byte, error) {
 	l := []Element{}
-	for _, v := range x {
-		l = append(l, v)
+
+	var keys []string
+	for k := range x {
+		keys = append(keys, string(k))
 	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		l = append(l, x[Key(k)])
+	}
+
 	return json.Marshal(l)
 }
 
@@ -131,9 +148,17 @@ type PageImages map[Key]Image
 // MarshalJSON converts a map to a json list
 func (x PageImages) MarshalJSON() ([]byte, error) {
 	l := []Image{}
-	for _, v := range x {
-		l = append(l, v)
+
+	var keys []string
+	for k := range x {
+		keys = append(keys, string(k))
 	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		l = append(l, x[Key(k)])
+	}
+
 	return json.Marshal(l)
 }
 

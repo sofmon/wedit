@@ -62,7 +62,7 @@ func (b *builder) WritePage(path string, page model.Page) error {
 
 	localData, rootData := b.splitRootData(page)
 
-	data, err := json.Marshal(localData)
+	data, err := json.MarshalIndent(localData, "", "  ")
 	if err != nil {
 		log.Printf("unable to save page data at '%v'; error: %v", file, err)
 		return err

@@ -111,7 +111,7 @@ func (b *builder) updateRootData(page model.Page) (wasUpdated bool, err error) {
 
 	file := b.cfg.ContentFolder + "/" + b.cfg.RootJSONFile
 
-	data, err := json.Marshal(newRootData)
+	data, err := json.MarshalIndent(newRootData, "", "  ")
 	if err != nil {
 		log.Printf("unable to save root data at '%v'; error: %v", file, err)
 		return false, err
