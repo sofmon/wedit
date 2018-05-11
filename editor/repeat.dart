@@ -3,189 +3,182 @@
 part of wedit;
 
 class Repeat {
+  Page _page;
 
-	Page _page;
+  String _key;
+  String get key => _key;
 
-	String _key;
-	String get key => _key;
+  html.Element _domElement;
 
-	html.Element _domElement;
+  html.Element _domTemplate;
 
-	html.Element _domTemplate;
+  Map<String, RepeatShadow> _shadows;
+  List<String> _keyOrder;
 
-	Map<String, RepeatShadow> _shadows;
-	List<String> _keyOrder;
+  Repeat.fromMap(this._page, this._key, this._domElement, Map map) {
+    _bindControls();
 
-	Repeat.fromMap(this._page, this._key, this._domElement, Map map) {
+    _syncElements();
 
-		_bindControls();
+    _shadows = new Map<String, RepeatShadow>();
+    _shadows[_key] = new RepeatShadow.fromRepeat(this, _key, _domElement);
 
-		_syncElements();
+    if (map != null) {
+      String keysString = map[REPEAT_COPY_KEYS];
+      _keyOrder = keysString.split(",");
+      _renderShadows(_keyOrder);
+    } else {
+      _keyOrder = new List<String>();
+      _keyOrder.add(_key);
+    }
+  }
 
-		_shadows = new Map<String, RepeatShadow>();
-		_shadows[_key] = new RepeatShadow.fromRepeat(this, _key, _domElement);
+  Map toMap() {
+    Map map = new Map();
 
-		if (map != null) {
-			String keysString = map[REPEAT_COPY_KEYS];
-			_keyOrder = keysString.split(",");
-			_renderShadows(_keyOrder);
-		} else {
-			_keyOrder = new List<String>();
-			_keyOrder.add(_key);
-		}
-	}
+    map[REPEAT_KEY] = _key;
+    map[REPEAT_COPY_KEYS] = _keyOrder.join(",");
 
-	Map toMap() {
-		Map map = new Map();
+    return map;
+  }
 
-		map[REPEAT_KEY] = _key;
-		map[REPEAT_COPY_KEYS] = _keyOrder.join(",");
+  void _bindControls() {
+    // nothing here
+  }
 
-		return map;
-	}
+  void _syncElements() {
+    _domTemplate = _domElement.clone(true);
+    _domTemplate.attributes.remove(_page.repeatAttribute);
+  }
 
-	void _bindControls() {
-		// nothing here
-	}
+  void _renderShadows(List<String> copyKeys) {
+    if (copyKeys == null) {
+      return;
+    }
 
-	void _syncElements() {
-		_domTemplate = _domElement.clone(true);
-		_domTemplate.attributes.remove(_page.repeatAttribute);
-	}
+    bool beforeTemplate = true;
 
-	void _renderShadows(List<String> copyKeys) {
+    for (int i = 0; i < copyKeys.length; i++) {
+      String key = copyKeys[i];
 
-		if(copyKeys == null) {
-			return;
-		}
+      if (key == _key) {
+        beforeTemplate = false;
+        continue;
+      }
 
-		bool beforeTemplate = true;
+      html.Element copyElement = _createCopyDomElement(key);
+      _domElement.insertAdjacentElement(
+          beforeTemplate ? "beforeBegin" : "afterEnd", copyElement);
 
-		for(int i=0; i<copyKeys.length; i++) {
+      _shadows[key] = new RepeatShadow.fromRepeat(this, key, copyElement);
+    }
+  }
 
-			String key = copyKeys[i];
+  void highlight() {
+    _shadows.values.forEach((rs) => rs.show());
+  }
 
-			if(key == _key) {
-				beforeTemplate = false;
-				continue;
-			}
+  void normalise() {
+    _shadows.values.forEach((rs) => rs.hide());
+  }
 
-			html.Element copyElement = _createCopyDomElement(key);
-			_domElement.insertAdjacentElement(beforeTemplate ? "beforeBegin" : "afterEnd", copyElement);
+  void addCopy(String copyKey, html.Element targetDomElement) {
+    String key = new DateTime.now().millisecondsSinceEpoch.toString();
 
-			_shadows[key] = new RepeatShadow.fromRepeat(this, key, copyElement);
-		}
-	}
+    html.Element copyElement = _createCopyDomElement(key);
+    targetDomElement.insertAdjacentElement("afterEnd", copyElement);
 
-	void highlight() {
-		_shadows.values.forEach((rs) => rs.show());
-	}
+    _shadows[key] = new RepeatShadow.fromRepeat(this, key, copyElement);
+    _keyOrder.insert(_keyOrder.indexOf(copyKey) + 1, key);
 
-	void normalise() {
-		_shadows.values.forEach((rs) => rs.hide());
-	}
+    if (_page.ctrlPressed) {
+      _shadows.values.forEach((rs) => rs.show());
+    }
+  }
 
-	void addCopy(String copyKey, html.Element targetDomElement) {
+  void removeCopy(String copyKey, html.Element targetDomElement) {
+    if (copyKey == _key) {
+      return;
+    }
 
-		String key = new DateTime.now().millisecondsSinceEpoch.toString();
+    html.ElementList<html.Element> elements =
+        targetDomElement.querySelectorAll("[" + _page.editAttribute + "]");
 
-		html.Element copyElement = _createCopyDomElement(key);
-		targetDomElement.insertAdjacentElement("afterEnd", copyElement);
+    for (int i = 0; i < elements.length; i++) {
+      _page.unregisterElement(elements[i]);
+    }
 
-		_shadows[key] = new RepeatShadow.fromRepeat(this, key, copyElement);
-		_keyOrder.insert(_keyOrder.indexOf(copyKey)+1, key);
+    targetDomElement.remove();
 
-		if(_page.ctrlPressed) {
-			_shadows.values.forEach((rs) => rs.show());
-		}
-	}
+    _shadows.remove(copyKey);
+    _keyOrder.remove(copyKey);
 
-	void removeCopy(String copyKey, html.Element targetDomElement) {
+    // Fix the position of the other repeat elements shadows
+    _shadows.values.forEach((s) => s.show());
+  }
 
-		if(copyKey == _key) {
-			return;
-		}
+  void moveCopyUp(String copyKey) {
+    int orderIndex = _keyOrder.indexOf(copyKey);
+    if (orderIndex == 0) {
+      return;
+    }
 
-		html.ElementList<html.Element> elements = targetDomElement.querySelectorAll("[" + _page.editAttribute + "]");
+    _keyOrder.remove(copyKey);
+    _keyOrder.insert(orderIndex - 1, copyKey);
 
-		for(int i=0; i<elements.length; i++) {
+    html.Element copyDomElement = _shadows[copyKey].domElement;
+    html.Element previousSibling = copyDomElement.previousElementSibling;
+    if (previousSibling == null) {
+      return;
+    }
+    copyDomElement.remove();
+    previousSibling.insertAdjacentElement("beforeBegin", copyDomElement);
 
-			_page.unregisterElement(elements[i]);
-		}
+    // Fix the position of the other repeat elements shadows
+    _shadows.values.forEach((s) => s.show());
+  }
 
-		targetDomElement.remove();
+  void moveCopyDown(String copyKey) {
+    int orderIndex = _keyOrder.indexOf(copyKey);
+    if (orderIndex >= _keyOrder.length - 1) {
+      return;
+    }
 
-		_shadows.remove(copyKey);
-		_keyOrder.remove(copyKey);
+    _keyOrder.remove(copyKey);
+    _keyOrder.insert(orderIndex + 1, copyKey);
 
-		// Fix the position of the other repeat elements shadows
-		_shadows.values.forEach((s) => s.show());
-	}
+    html.Element copyDomElement = _shadows[copyKey].domElement;
+    html.Element nextSibling = copyDomElement.nextElementSibling;
+    if (nextSibling == null) {
+      return;
+    }
+    copyDomElement.remove();
+    nextSibling.insertAdjacentElement("afterEnd", copyDomElement);
 
-	void moveCopyUp(String copyKey) {
+    // Fix the position of the other repeat elements shadows
+    _shadows.values.forEach((s) => s.show());
+  }
 
-		int orderIndex = _keyOrder.indexOf(copyKey);
-		if(orderIndex == 0) {
-			return;
-		}
+  html.Element _createCopyDomElement(String key) {
+    html.Element copyElement = _domTemplate.clone(true);
 
-		_keyOrder.remove(copyKey);
-		_keyOrder.insert(orderIndex-1, copyKey);
+    copyElement.attributes.remove(_page.repeatAttribute);
+    html.ElementList<html.Element> elements =
+        copyElement.querySelectorAll("[" + _page.editAttribute + "]");
 
-		html.Element copyDomElement = _shadows[copyKey].domElement;
-		html.Element previousSibling = copyDomElement.previousElementSibling;
-		if(previousSibling == null) {
-			return;
-		}
-		copyDomElement.remove();
-		previousSibling.insertAdjacentElement("beforeBegin", copyDomElement);
+    for (int i = 0; i < elements.length; i++) {
+      String eKey = elements[i].getAttribute(_page.editAttribute) + key;
+      elements[i].attributes.remove(_page.editAttribute);
+      elements[i].setAttribute(_page.editAttribute, eKey);
+      _page.registerElement(elements[i]);
+    }
 
-		// Fix the position of the other repeat elements shadows
-		_shadows.values.forEach((s) => s.show());
-	}
+    return copyElement;
+  }
 
-	void moveCopyDown(String copyKey) {
-
-		int orderIndex = _keyOrder.indexOf(copyKey);
-		if(orderIndex >= _keyOrder.length-1) {
-			return;
-		}
-
-		_keyOrder.remove(copyKey);
-		_keyOrder.insert(orderIndex+1, copyKey);
-
-		html.Element copyDomElement = _shadows[copyKey].domElement;
-		html.Element nextSibling = copyDomElement.nextElementSibling;
-		if(nextSibling == null) {
-			return;
-		}
-		copyDomElement.remove();
-		nextSibling.insertAdjacentElement("afterEnd", copyDomElement);
-
-		// Fix the position of the other repeat elements shadows
-		_shadows.values.forEach((s) => s.show());
-	}
-
-	html.Element _createCopyDomElement(String key) {
-
-		html.Element copyElement = _domTemplate.clone(true);
-
-		copyElement.attributes.remove(_page.repeatAttribute);
-		html.ElementList<html.Element> elements = copyElement.querySelectorAll("[" + _page.editAttribute + "]");
-
-		for(int i=0;i<elements.length;i++) {
-			String eKey = elements[i].getAttribute(_page.editAttribute) + key;
-			elements[i].attributes.remove(_page.editAttribute);
-			elements[i].setAttribute(_page.editAttribute, eKey);
-			_page.registerElement(elements[i]);
-		}
-
-		return copyElement;
-	}
-
-	List<html.Element> render() {
-		return new List<html.Element>();
-	}
+  List<html.Element> render() {
+    return new List<html.Element>();
+  }
 
   void prepareDomForHtmlSave() {
     _shadows.values.forEach((s) => s.prepareDomForHtmlSave());
@@ -194,5 +187,4 @@ class Repeat {
   void restoreDomAfterHtmlSave() {
     _shadows.values.forEach((s) => s.restoreDomAfterHtmlSave());
   }
-
 }

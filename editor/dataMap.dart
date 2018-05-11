@@ -22,4 +22,3 @@ const REPEAT_COPY_KEYS = "c";
 
 const IMAGE_KEY = "k";
 const IMAGE_SRC = "s";
-

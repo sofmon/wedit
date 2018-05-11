@@ -16,9 +16,10 @@ part 'repeatShadow.dart';
 part 'page.dart';
 part 'message.dart';
 
-const PAGE_DATA_TEMPLATE = '{"h":"","s":"","p":"","t":"","e":[],"r":[],"s":{"e":"","r":""}}';
+const PAGE_DATA_TEMPLATE =
+    '{"h":"","s":"","p":"","t":"","e":[],"r":[],"s":{"e":"","r":""}}';
 
 void main() {
-	Map map = convert.JSON.decode(PAGE_DATA_TEMPLATE);
-	new Page.fromMap(map);
+  Map map = convert.JSON.decode(PAGE_DATA_TEMPLATE);
+  new Page.fromMap(map);
 }
