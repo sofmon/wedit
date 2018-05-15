@@ -40,11 +40,7 @@ func (b *builder) processRepeat(k model.Key, n *html.Node, p *model.Page) {
 		if before {
 			n.Parent.InsertBefore(cn, n)
 		} else {
-			if n.NextSibling != nil {
-				n.Parent.InsertBefore(cn, n.NextSibling)
-			} else {
-				n.Parent.AppendChild(cn)
-			}
+			n.Parent.AppendChild(cn)
 		}
 	}
 }

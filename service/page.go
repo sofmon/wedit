@@ -83,7 +83,8 @@ func processEditLinksNode(n *html.Node) {
 
 	if n.Data == "a" {
 		for i, a := range n.Attr {
-			if a.Key == "href" {
+			if a.Key == "href" &&
+				strings.HasPrefix(a.Val, "/") {
 				n.Attr[i].Val = "/!" + a.Val
 			}
 		}
