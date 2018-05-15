@@ -32,7 +32,7 @@ type Image struct {
 // Repeat represents a repeatable element on a page
 type Repeat struct {
 	Key      Key   `json:"k"`
-	CopyKeys []Key `json:"ck"`
+	CopyKeys []Key `json:"c"`
 }
 
 // Command available for the user
@@ -55,7 +55,6 @@ type Page struct {
 	Repeats  PageRepeats  `json:"r"`
 	Elements PageElements `json:"e"`
 	Images   PageImages   `json:"i"`
-	Settings Settings     `json:"s"`
 }
 
 // PageWithSettings is used to transmit page and global settings

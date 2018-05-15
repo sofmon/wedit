@@ -4,20 +4,16 @@
 package service
 
 import (
-	"bytes"
-	"encoding/json"
-	"log"
 	"net/http"
-	"strings"
 
 	"github.com/sofmon/wedit/editor"
-	"github.com/sofmon/wedit/model"
 )
 
 const (
 	pageDataTemplate = `{"h":"","s":"","p":"","t":"","e":[],"r":[],"s":{"e":"","r":""}}`
 )
 
+/*
 var editorJsPart1 *string
 var editorJsPart2 *string
 
@@ -65,44 +61,45 @@ func getPreparedJs(page model.PageWithSettings) (string, error) {
 
 	return buffer.String(), nil
 }
-
+*/
 func (s *service) editorHandler(w http.ResponseWriter, r *http.Request) {
+	/*
+		path := getPathWithoutAction(r)
 
-	path := getPathWithoutAction(r)
+		page, err := s.bld.ReadPageData(path)
+		if err != nil {
+			log.Printf("could not create page data; path: %v; error: %v;\n", path, err)
+			http.Error(w, "could not create page data", http.StatusInternalServerError)
+			return
+		}
 
-	page, err := s.bld.ReadPageData(path)
-	if err != nil {
-		log.Printf("could not create page data; path: %v; error: %v;\n", path, err)
-		http.Error(w, "could not create page data", http.StatusInternalServerError)
-		return
-	}
-
-	pageWithSettings := model.PageWithSettings{
-		Page: page,
-		Settings: model.Settings{
-			EditAttribute:   s.cfg.EditAttr,
-			RepeatAttribute: s.cfg.RepeatAttr,
-			MenuTextColor:   s.cfg.MenuTextColor,
-		},
-	}
-
-	for k, v := range s.cfg.ShellCommands {
-		pageWithSettings.Settings.Commands = append(
-			pageWithSettings.Settings.Commands,
-			model.Command{
-				Name:  k,
-				Color: v.Color,
+		pageWithSettings := model.PageWithSettings{
+			Page: page,
+			Settings: model.Settings{
+				EditAttribute:   s.cfg.EditAttr,
+				RepeatAttribute: s.cfg.RepeatAttr,
+				MenuTextColor:   s.cfg.MenuTextColor,
 			},
-		)
-	}
+		}
 
-	preparedJs, err := getPreparedJs(pageWithSettings)
-	if err != nil {
-		log.Printf("could not prepare editor.js; path: %v; error: %v;\n", path, err)
-		http.Error(w, "could not prepare editor.js", http.StatusInternalServerError)
-		return
-	}
+		for k, v := range s.cfg.ShellCommands {
+			pageWithSettings.Settings.Commands = append(
+				pageWithSettings.Settings.Commands,
+				model.Command{
+					Name:  k,
+					Color: v.Color,
+				},
+			)
+		}
+
+		preparedJs, err := getPreparedJs(pageWithSettings)
+		if err != nil {
+			log.Printf("could not prepare editor.js; path: %v; error: %v;\n", path, err)
+			http.Error(w, "could not prepare editor.js", http.StatusInternalServerError)
+			return
+		}
+	*/
 
 	w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
-	w.Write([]byte(preparedJs))
+	w.Write([]byte(editor.EditorJSCode))
 }

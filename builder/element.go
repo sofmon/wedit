@@ -18,6 +18,7 @@ func processElement(k model.Key, n *html.Node, p *model.Page) {
 	}
 
 	text := string(blackfriday.Run([]byte(element.Text)))
+
 	if strings.Index(text, "<p>") == strings.LastIndex(text, "<p>") {
 		text = strings.Replace(text, "<p>", "", 1)
 		text = strings.Replace(text, "</p>", "", 1)

@@ -47,6 +47,8 @@ func (b *builder) clearPublic(path string) error {
 
 func (b *builder) WritePage(path string, page model.Page) error {
 
+	log.Printf("updating page: %s", path)
+
 	err := b.clearPublic(path)
 	if err != nil {
 		return err

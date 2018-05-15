@@ -76,7 +76,11 @@ func (b *builder) renderHTML(targetFilePath, templateFilePath string, page model
 		return err
 	}
 
-	b.includesProcessNode(doc)
+	err = b.includesProcessNode(doc)
+	if err != nil {
+		return err
+	}
+
 	b.renderProcessNode(doc, &page)
 
 	err = saveTargetHTML(targetFilePath, doc)

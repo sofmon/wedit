@@ -20,6 +20,38 @@ const PAGE_DATA_TEMPLATE =
     '{"h":"","s":"","p":"","t":"","e":[],"r":[],"s":{"e":"","r":""}}';
 
 void main() {
-  Map map = convert.JSON.decode(PAGE_DATA_TEMPLATE);
+  String url = getLoadUrl(html.window.location.href);
+  html.HttpRequest.getString(url).then(onDataLoaded);
+}
+
+String getLoadUrl(String url) {
+  var sb = new StringBuffer();
+
+  if (url.startsWith("http://", 0)) {
+    sb.write("http://");
+    url = url.substring(7);
+  } else if (url.startsWith("https://", 0)) {
+    sb.write("https://");
+    url = url.substring(8);
+  }
+
+  List<String> split = url.split("/");
+  if(split.length <= 2) {
+    print("unable to parse current browser URL");
+    return "";
+  }
+
+  sb.write(split[0]);
+  split.removeAt(0); // {doamin}
+  split.removeAt(0); // /!/
+
+  sb.write("/!load/");
+  sb.write(split.join("/"));
+  
+  return sb.toString();
+}
+
+void onDataLoaded(String responseText) {
+  Map map = convert.JSON.decode(responseText);
   new Page.fromMap(map);
 }

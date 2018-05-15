@@ -24,8 +24,7 @@ class Repeat {
     _shadows[_key] = new RepeatShadow.fromRepeat(this, _key, _domElement);
 
     if (map != null) {
-      String keysString = map[REPEAT_COPY_KEYS];
-      _keyOrder = keysString.split(",");
+      _keyOrder = map[REPEAT_COPY_KEYS];
       _renderShadows(_keyOrder);
     } else {
       _keyOrder = new List<String>();
@@ -37,7 +36,7 @@ class Repeat {
     Map map = new Map();
 
     map[REPEAT_KEY] = _key;
-    map[REPEAT_COPY_KEYS] = _keyOrder.join(",");
+    map[REPEAT_COPY_KEYS] = _keyOrder;
 
     return map;
   }
@@ -56,20 +55,33 @@ class Repeat {
       return;
     }
 
+    List<String> before = new List<String>();
+    List<String> after = new List<String>();
     bool beforeTemplate = true;
-
     for (int i = 0; i < copyKeys.length; i++) {
       String key = copyKeys[i];
-
       if (key == _key) {
         beforeTemplate = false;
         continue;
       }
+      if(beforeTemplate){
+        before.add(copyKeys[i]);
+      } else {
+        after.add(copyKeys[i]);
+      }
+    }
 
+    for (int i = 0; i < before.length; i++) {
+      String key = before[i];
       html.Element copyElement = _createCopyDomElement(key);
-      _domElement.insertAdjacentElement(
-          beforeTemplate ? "beforeBegin" : "afterEnd", copyElement);
+      _domElement.insertAdjacentElement("beforeBegin", copyElement);
+      _shadows[key] = new RepeatShadow.fromRepeat(this, key, copyElement);
+    }
 
+    for(int i=after.length-1; i>=0; i--) {
+      String key = after[i];
+      html.Element copyElement = _createCopyDomElement(key);
+      _domElement.insertAdjacentElement("afterEnd", copyElement);
       _shadows[key] = new RepeatShadow.fromRepeat(this, key, copyElement);
     }
   }

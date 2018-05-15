@@ -4,11 +4,14 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 )
 
 func (b *builder) RebuildAll() (err error) {
 
-	filepath.Walk(
+	var paths []string
+
+	err = filepath.Walk(
 		b.cfg.TemplateFolder,
 		func(path string, info os.FileInfo, theErr error) error {
 
@@ -36,29 +39,34 @@ func (b *builder) RebuildAll() (err error) {
 				relPath = ""
 			}
 
-			local, err := b.ReadPageData(relPath)
-			if err != nil {
-				log.Printf("%40s - not processed due %v\n", relPath, err)
-				return nil
-			}
-
-			page, err := b.addRootData(local)
-			if err != nil {
-				log.Printf("%40s - not processed due %v\n", relPath, err)
-				return nil
-			}
-
-			err = b.WritePage(relPath, page)
-			if err != nil {
-				log.Printf("%40s - not processed due %v\n", relPath, err)
-				return nil
-			}
-
-			log.Printf("%40s - rebuild\n", relPath)
+			paths = append(paths, relPath)
 
 			return nil
 		},
 	)
+
+	sort.Strings(paths)
+
+	for _, relPath := range paths {
+
+		local, err := b.ReadPageData(relPath)
+		if err != nil {
+			log.Printf("%40s - not processed due %v\n", relPath, err)
+			continue
+		}
+
+		page, err := b.addRootData(local)
+		if err != nil {
+			log.Printf("%40s - not processed due %v\n", relPath, err)
+			continue
+		}
+
+		err = b.WritePage(relPath, page)
+		if err != nil {
+			log.Printf("%40s - not processed due %v\n", relPath, err)
+			continue
+		}
+	}
 
 	return
 }

@@ -34,6 +34,7 @@ func (s *service) ListenAndServe() error {
 
 	http.HandleFunc("/!/", s.pageHandler)           // page.go
 	http.HandleFunc("/!editor.js", s.editorHandler) // editor.go
+	http.HandleFunc("/!load/", s.loadHandler)       // load.go
 	http.HandleFunc("/!save/", s.saveHandler)       // save.go
 	http.HandleFunc("/!picture/", s.pictureHandler) // picture.go
 

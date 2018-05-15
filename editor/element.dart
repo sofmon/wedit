@@ -75,8 +75,6 @@ class Element {
       _text = _domElement.text;
     }
 
-    // Bind image
-    // TODO
   }
 
   void _bindControls() {
@@ -133,8 +131,6 @@ class Element {
     _domElement.innerHtml = _text.replaceAll("\n", "<br>");
     _isEditing = true;
 
-    print(_text);
-
     // Ensure that no links will be triggered
     e.stopPropagation();
     e.stopImmediatePropagation();
@@ -154,7 +150,7 @@ class Element {
 
     _text = _domElement.innerHtml
         .replaceAll("<div>", "\n")
-        .replaceAll("</dib>", "")
+        .replaceAll("</div>", "")
         .replaceAll("<br>", "\n");
     _domElement.innerHtml = _html;
 
