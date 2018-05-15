@@ -159,6 +159,17 @@ class RepeatShadow {
     html.document.body.children.add(_moveDownDomElement);
   }
 
+  int _getOffsetTop(html.Element el) {
+    int res = 0;
+
+    while(el != null) {
+      res += el.offsetTop;
+      el = el.offsetParent;
+    }
+
+    return res;
+  }
+
   void show() {
     _isShown = true;
 
@@ -171,7 +182,7 @@ class RepeatShadow {
               .toString() +
           "px"
       ..top =
-          (_domElement.offsetTop - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
+          (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
       ..display = "block";
 
     if (_canBeDeleted) {
@@ -182,7 +193,7 @@ class RepeatShadow {
                 .toString() +
             "px"
         ..top =
-            (_domElement.offsetTop - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
+            (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
         ..display = "block";
     }
 
@@ -193,7 +204,7 @@ class RepeatShadow {
               .toString() +
           "px"
       ..top =
-          (_domElement.offsetTop - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
+          (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
       ..display = "block";
 
     _moveDownDomElement.style
@@ -203,7 +214,7 @@ class RepeatShadow {
               .toString() +
           "px"
       ..top =
-          (_domElement.offsetTop + _REPEAT_BUTTON_SIZE * 0.6).toString() + "px"
+          (_getOffsetTop(_domElement) + _REPEAT_BUTTON_SIZE * 0.6).toString() + "px"
       ..display = "block";
   }
 
