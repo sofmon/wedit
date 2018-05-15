@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 /* MIT License
@@ -37,6 +38,12 @@ import (
 // of the source file. The file mode will be copied from the source and
 // the copied data is synced/flushed to stable storage.
 func copyFile(src, dst string) (err error) {
+
+	// TODO: currently ignore copying index.html files
+	if strings.HasSuffix(src, "index.html") {
+		return
+	}
+
 	in, err := os.Open(src)
 	if err != nil {
 		return

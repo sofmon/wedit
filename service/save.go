@@ -31,6 +31,31 @@ func (s *service) saveHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	oldPage, err := s.bld.ReadPageData(path)
+	if err != nil {
+		log.Printf("unable to read old page data path '%v'; error: %v", path, err)
+		http.Error(w, "unable to read old page data ", http.StatusInternalServerError)
+		return
+	}
+
+	for k, v := range oldPage.Elements {
+		if _, ok := page.Elements[k]; !ok {
+			page.Elements[k] = v
+		}
+	}
+
+	for k, v := range oldPage.Images {
+		if _, ok := page.Images[k]; !ok {
+			page.Images[k] = v
+		}
+	}
+
+	for k, v := range oldPage.Repeats {
+		if _, ok := page.Repeats[k]; !ok {
+			page.Repeats[k] = v
+		}
+	}
+
 	err = s.bld.WritePage(path, page)
 	if err != nil {
 		log.Printf("unable to save page for path '%v'; error: %v", path, err)

@@ -29,7 +29,7 @@ func (b *builder) getRootData() (page model.Page, err error) {
 		return
 	}
 
-	file := b.cfg.ContentFolder + "/" + b.cfg.RootJSONFile
+	file := b.cfg.ContentFolder + b.cfg.RootJSONFile
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -109,7 +109,7 @@ func (b *builder) updateRootData(page model.Page) (wasUpdated bool, err error) {
 
 	rootData = &newRootData
 
-	file := b.cfg.ContentFolder + "/" + b.cfg.RootJSONFile
+	file := b.cfg.ContentFolder + b.cfg.RootJSONFile
 
 	data, err := json.MarshalIndent(newRootData, "", "  ")
 	if err != nil {

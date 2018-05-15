@@ -147,8 +147,7 @@ func getURLForAction(r *http.Request, a Action) url.URL {
 // getAction extracts request action
 func getAction(r *http.Request) (a Action) {
 
-	path := strings.Trim(r.URL.Path, "/")
-	pathSplit := strings.Split(path, "/")
+	pathSplit := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
 
 	if len(pathSplit) < 0 {
 		return ActionGetPage

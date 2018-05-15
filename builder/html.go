@@ -71,7 +71,7 @@ func saveTargetHTML(targetFilePath string, doc *html.Node) (err error) {
 
 func (b *builder) renderHTML(targetFilePath, templateFilePath string, page model.Page) error {
 
-	doc, err := openTemlateHTML(targetFilePath)
+	doc, err := openTemlateHTML(templateFilePath)
 	if err != nil {
 		return err
 	}
@@ -119,9 +119,11 @@ func (b *builder) renderProcessNode(n *html.Node, page *model.Page) {
 	}
 }
 
-func (b *builder) prepareIncludes(targetFilePath string) (outHTML []byte, err error) {
+func (b *builder) prepareIncludes(path string) (outHTML []byte, err error) {
 
-	doc, err := openTemlateHTML(targetFilePath)
+	templateFilePath := b.findTemplateFile(path)
+
+	doc, err := openTemlateHTML(templateFilePath)
 	if err != nil {
 		return
 	}
@@ -186,7 +188,7 @@ func (b *builder) includesProcessNode(n *html.Node) error {
 
 func (b *builder) getInclude(path string, parent *html.Node) (nodes []*html.Node, err error) {
 
-	filePath := strings.TrimSuffix(b.cfg.TemplateFolder, "/") + "/" + strings.TrimPrefix(path, "/")
+	filePath := b.cfg.TemplateFolder + path
 
 	return openIncludeHTML(filePath, parent)
 }

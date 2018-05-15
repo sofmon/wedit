@@ -23,22 +23,3 @@ type builder struct {
 func NewBuilder(cfg Config) Builder {
 	return &builder{cfg}
 }
-
-/*
-func (e *explorer) WriteAsset(path string, data []byte) error {
-
-	dir, file := filepath.Split(path)
-
-	folder := e.settings.Folders.Public + "/" + dir
-	os.MkdirAll(folder, 0777)
-
-	file = folder + "/" + file
-	err := ioutil.WriteFile(file, data, 0777)
-	if err != nil {
-		log.Printf("Unable to save asset at '%v'. Error: %v", file, err)
-		return err
-	}
-
-	return nil
-}
-*/

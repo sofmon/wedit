@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 )
 
 func (b *builder) RebuildAll() (err error) {
@@ -37,6 +38,10 @@ func (b *builder) RebuildAll() (err error) {
 
 			if relPath == "." {
 				relPath = ""
+			}
+
+			if !strings.HasSuffix(relPath, "/") {
+				relPath += "/"
 			}
 
 			paths = append(paths, relPath)

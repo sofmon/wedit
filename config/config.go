@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"github.com/sofmon/wedit/builder"
 	"github.com/sofmon/wedit/service"
@@ -33,6 +34,16 @@ func LoadConfig() (cfg Config, err error) {
 	if err != nil {
 		err = fmt.Errorf("config: unable to parse config file (%s) as JSON due to error: %v", configFile, err)
 		return
+	}
+
+	if !strings.HasSuffix(cfg.Builder.ContentFolder, "/") {
+		cfg.Builder.ContentFolder = cfg.Builder.ContentFolder + "/"
+	}
+	if !strings.HasSuffix(cfg.Builder.TemplateFolder, "/") {
+		cfg.Builder.TemplateFolder = cfg.Builder.TemplateFolder + "/"
+	}
+	if !strings.HasSuffix(cfg.Builder.PublicFolder, "/") {
+		cfg.Builder.PublicFolder = cfg.Builder.PublicFolder + "/"
 	}
 
 	cfg.Service.EditAttr = cfg.Builder.EditAttr
