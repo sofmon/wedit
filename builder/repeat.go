@@ -18,6 +18,7 @@ func (b *builder) processRepeat(k model.Key, n *html.Node, p *model.Page) {
 	}
 
 	before := true
+	latestNode := n
 	for _, k := range repeat.CopyKeys {
 
 		if k == repeat.Key {
@@ -40,7 +41,12 @@ func (b *builder) processRepeat(k model.Key, n *html.Node, p *model.Page) {
 		if before {
 			n.Parent.InsertBefore(cn, n)
 		} else {
-			n.Parent.AppendChild(cn)
+			if latestNode.NextSibling != nil {
+				n.Parent.InsertBefore(cn, latestNode.NextSibling)
+			} else {
+				n.Parent.AppendChild(cn)
+			}
+			latestNode = cn
 		}
 	}
 }
