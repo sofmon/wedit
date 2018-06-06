@@ -127,29 +127,52 @@ class Image {
         _isHighlighted ? _DEFAULT_MARK_BOX_SHADOW : _originalBoxShadow;
   }
 
+  int _getOffsetTop(html.Element el) {
+    int res = 0;
+
+    while(el != null) {
+      res += el.offsetTop;
+      el = el.offsetParent;
+    }
+
+    return res;
+  }
+
+  int _getOffsetLeft(html.Element el) {
+    int res = 0;
+
+    while(el != null) {
+      res += el.offsetLeft;
+      el = el.offsetParent;
+    }
+
+    return res;
+  }
+
+
   void highlight() {
     _isHighlighted = true;
 
     _mark();
 
     _addImageDomElement.style
-      ..left = (_domElement.offsetLeft +
+      ..left = (_getOffsetLeft(_domElement) +
                   _domElement.offsetWidth -
                   _DEFAULT_BUTTON_SIZE * 2)
               .toString() +
           "px"
       ..top =
-          (_domElement.offsetTop - _DEFAULT_BUTTON_SIZE / 2).toString() + "px"
+          (_getOffsetTop(_domElement) - _DEFAULT_BUTTON_SIZE / 2).toString() + "px"
       ..display = "block";
 
     _removeImageDomElement.style
-      ..left = (_domElement.offsetLeft +
+      ..left = (_getOffsetLeft(_domElement) +
                   _domElement.offsetWidth -
                   _DEFAULT_BUTTON_SIZE / 2)
               .toString() +
           "px"
       ..top =
-          (_domElement.offsetTop - _DEFAULT_BUTTON_SIZE / 2).toString() + "px"
+          (_getOffsetTop(_domElement) - _DEFAULT_BUTTON_SIZE / 2).toString() + "px"
       ..display = "block";
   }
 

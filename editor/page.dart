@@ -106,8 +106,6 @@ class Page {
       return;
     }
 
-    print("register element:" + domElement.tagName);
-
     Map cmsData = _mappedElementsData[key];
 
     Element element = new Element.fromMap(this, key, domElement, cmsData);

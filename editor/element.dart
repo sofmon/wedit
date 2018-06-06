@@ -13,7 +13,7 @@ class Element {
   String _getHtml(String text) {
     var result = md.markdownToHtml(text).toString();
     if (result.indexOf("<p>") == result.lastIndexOf("<p>")) {
-      return result.replaceAll("<p>", "").replaceAll("</p>", "");
+      result = result.replaceAll("<p>", "").replaceAll("</p>", "");
     }
     return result;
   }
@@ -74,7 +74,6 @@ class Element {
     if (_text == null || _text.isEmpty) {
       _text = _domElement.text;
     }
-
   }
 
   void _bindControls() {
@@ -148,21 +147,43 @@ class Element {
 
     _isHighlighted = _isEditing = false;
 
-    _text = _domElement.innerHtml
-        .replaceAll("<div>", "\n")
-        .replaceAll("</div>", "")
-        .replaceAll("<br>", "\n");
-    _domElement.innerHtml = _html;
+    _text = _htmlToMd(_domElement.innerHtml);
+    _domElement.setInnerHtml(_html, treeSanitizer: html.NodeTreeSanitizer.trusted);
 
-    print(_text);
-    print(_html);
+    _page.save(null, null);
   }
 
   void render() {
-    _domElement.innerHtml = _html;
+    _domElement.setInnerHtml(_html, treeSanitizer: html.NodeTreeSanitizer.trusted);
   }
 
   void prepareDomForHtmlSave() {}
 
   void restoreDomAfterHtmlSave() {}
+
+  String _htmlToMd(String html) {
+    if (html.indexOf("<") == -1) {
+      return html;
+    }
+
+    StringBuffer sb = new StringBuffer();
+
+    List<String> s1 = html.split(">");
+
+    for (int i = 0; i < s1.length; i++) {
+      List<String> s2 = s1[i].split("<");
+      if (i != 0) {
+        sb.write("\n");
+      }
+      sb.write(s2[0]);
+    }
+
+    String res = sb.toString();
+
+    while (res.lastIndexOf("\n\n\n") != -1) {
+      res = res.replaceAll("\n\n\n", "\n\n");
+    }
+
+    return res;
+  }
 }
