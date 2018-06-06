@@ -11,7 +11,7 @@
         "editAttribute": "wedit",
         "repeatAttribute": "wedit-repeat",
         "includeAttribute": "wedit-include",
-        "keepAttributes": false
+        "keepAttributes": true
     },
     "service": {
         "host": "localhost",
