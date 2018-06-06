@@ -37,8 +37,8 @@ String getLoadUrl(String url) {
 
   List<String> split = url.split("/");
   if(split.length <= 2) {
-    print("unable to parse current browser URL");
-    return "";
+    print("unable to parse current browser URL. Trying demo mode.");
+    return "/!load.json";
   }
 
   sb.write(split[0]);
