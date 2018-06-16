@@ -13,6 +13,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
+  html_unescape:
+    description:
+      name: html_unescape
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   markdown:
     description:
       name: markdown
@@ -20,4 +26,4 @@ packages:
     source: hosted
     version: "2.0.0"
 sdks:
-  dart: ">=1.22.0 <2.0.0"
+  dart: ">=1.23.0 <2.0.0"

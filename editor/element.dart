@@ -2,6 +2,9 @@
 // Use of this source code is governed by MIT license that can be found in the LICENSE file.
 part of wedit;
 
+uesc.HtmlUnescape htmlUnescape = new uesc.HtmlUnescape();
+convert.HtmlEscape htmlEscape = new convert.HtmlEscape();
+
 class Element {
   Page _page;
 
@@ -127,7 +130,7 @@ class Element {
       return;
     }
 
-    _domElement.innerHtml = _text.replaceAll("\n", "<br>");
+    _domElement.innerHtml = htmlEscape.convert(_text).replaceAll("\n", "<br>");
     _isEditing = true;
 
     // Ensure that no links will be triggered
@@ -161,29 +164,18 @@ class Element {
 
   void restoreDomAfterHtmlSave() {}
 
-  String _htmlToMd(String html) {
-    if (html.indexOf("<") == -1) {
-      return html;
+  String _htmlToMd(String raw) {
+
+    raw = raw.replaceAll("</p>", "\n")
+      .replaceAll("<br>", "\n")
+      .replaceAll("<p>", "");
+
+    while (raw.lastIndexOf("\n\n\n") != -1) {
+      raw = raw.replaceAll("\n\n\n", "\n\n");
     }
 
-    StringBuffer sb = new StringBuffer();
+    raw = htmlUnescape.convert(raw);
 
-    List<String> s1 = html.split(">");
-
-    for (int i = 0; i < s1.length; i++) {
-      List<String> s2 = s1[i].split("<");
-      if (i != 0) {
-        sb.write("\n");
-      }
-      sb.write(s2[0]);
-    }
-
-    String res = sb.toString();
-
-    while (res.lastIndexOf("\n\n\n") != -1) {
-      res = res.replaceAll("\n\n\n", "\n\n");
-    }
-
-    return res;
+    return raw;
   }
 }

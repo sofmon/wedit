@@ -264,6 +264,10 @@ list-style: circle;
 padding-left: 20px;
 }
 
+pre {
+    line-height: 1;
+}
+
 code {
     background-color: #eee;
 }

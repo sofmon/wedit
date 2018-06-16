@@ -234,7 +234,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 font-family: 'Raleway';
 font-style: normal;
 font-weight: 400;
-src: local('Raleway'), local('Raleway-Regular'), url(./fonts/Raleway-Regular-Original.otf) format('woff2');
+src: local('Raleway'), local('Raleway-Regular'), url(/fonts/Raleway-Regular-Original.otf) format('woff2');
 }
 
 body,
@@ -262,6 +262,10 @@ margin-bottom: 12px
 ul{
 list-style: circle;
 padding-left: 20px;
+}
+
+pre {
+    line-height: 1;
 }
 
 code {
