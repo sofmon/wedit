@@ -60,6 +60,10 @@ class Image {
 
   void _syncElement() {
     _originalBoxShadow = _domElement.style.boxShadow;
+
+    if(_src == null || _src == "") {
+      _src = _domElement.attributes["src"];
+    }
   }
 
   void _bindControls() {
@@ -239,7 +243,7 @@ class Image {
       }
     });
 
-    var url = html.window.location.href.replaceAll("/!/", "/!upload/") + name;
+    var url = html.window.location.href.replaceAll("/!/", "/!image/") + name + "?key=" + _key;
     _src = "./" + name;
     request.open("POST", url);
     request.send(data);
@@ -249,6 +253,8 @@ class Image {
     var image = _domElement as html.ImageElement;
     image.src = _src;
     print("upload complete");
+
+    _page.save(null, null);
   }
 
   void _processImageUploadError(html.HttpRequest request) {

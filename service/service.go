@@ -36,7 +36,7 @@ func (s *service) ListenAndServe() error {
 	http.HandleFunc("/!editor.js", s.editorHandler) // editor.go
 	http.HandleFunc("/!load/", s.loadHandler)       // load.go
 	http.HandleFunc("/!save/", s.saveHandler)       // save.go
-	http.HandleFunc("/!picture/", s.pictureHandler) // picture.go
+	http.HandleFunc("/!image/", s.imageHandler)     // image.go
 
 	for k := range s.cfg.ShellCommands {
 		passValue := k
@@ -75,7 +75,7 @@ const (
 	actionEditPagePathKey    = "!"
 	actionSavePagePathKey    = "!save"
 	actionLoadPagePathKey    = "!load"
-	actionUploadImagePathKey = "!upload"
+	actionUploadImagePathKey = "!image"
 )
 
 // getPathWithoutAction retrieves the path of the requested resource excluding the wedit parameters/action

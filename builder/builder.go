@@ -12,6 +12,7 @@ type Builder interface {
 	ReadPageTemplate(path string) (string, error)
 	ReadPageData(path string) (model.Page, error)
 	WritePage(path string, page model.Page) error
+	WriteImage(path string, key, name string, data []byte) error
 	RebuildAll() error
 }
 

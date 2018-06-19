@@ -9,6 +9,13 @@
       ]
     },
     {
+      "k": "col-left-features",
+      "c": [
+        "col-left-features",
+        "1529434990008"
+      ]
+    },
+    {
       "k": "col-right",
       "c": [
         "col-right",
@@ -19,6 +26,22 @@
     }
   ],
   "e": [
+    {
+      "k": "col-left-features-h",
+      "t": "Images"
+    },
+    {
+      "k": "col-left-features-h1529434990008",
+      "t": "Text editing"
+    },
+    {
+      "k": "col-left-features-p",
+      "t": "Supports `\u003cimg\u003e` and `\u003cpicutre\u003e` elements.\n```\n\u003cimg wedit=\"image-key-1\"\u003e\n```\n```\n\u003cpicture wedit=\"image-key-2\"\u003e\n  \u003csource srcset=\"...\" media=\"...\"\u003e\n  \u003cimg src=\"...\"\u003e\n\u003c/picture\u003e\n```\nImages uploaded for `\u003cpicture\u003e` elements are automatically cropped to the defined source media."
+    },
+    {
+      "k": "col-left-features-p1529434990008",
+      "t": "-- some paragraph --"
+    },
     {
       "k": "col-left-h",
       "t": "A static website edit tool"
@@ -61,7 +84,7 @@
     },
     {
       "k": "col-right-p1528236000412",
-      "t": "**Wedit** is currently maintained by:\n\n- Haralampi Staykov - initial author - [GitHub](https://github.com/sofmon/) - [LinkedIn](https://linkedin.com/in/haralampi/).\n"
+      "t": "**Wedit** is currently maintained by:\n\n- Haralampi Staykov - [About](https://haralampi.com) - [GitHub](https://github.com/sofmon/) - [LinkedIn](https://linkedin.com/in/haralampi/)\n"
     },
     {
       "k": "col-right-p1528306557248",
@@ -76,5 +99,14 @@
       "t": "WEDIT"
     }
   ],
-  "i": []
+  "i": [
+    {
+      "k": "col-right-img",
+      "s": "./haralampi.jpg"
+    },
+    {
+      "k": "col-right-img1529434990008",
+      "s": "/image.jpg"
+    }
+  ]
 }
