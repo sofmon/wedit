@@ -4,10 +4,13 @@
 package service
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/sofmon/wedit/model"
 )
 
 func (s *service) imageHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,20 +22,28 @@ func (s *service) imageHandler(w http.ResponseWriter, r *http.Request) {
 	pagePath := strings.Join(urlSplit[:len(urlSplit)-1], "/")
 
 	imageName := urlSplit[len(urlSplit)-1]
-	imageKey := r.URL.Query().Get("key")
+	imageKey := model.Key(r.URL.Query().Get("key"))
 
 	imageData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("unable to process image ('%s') data due to an error: %v", imageName, err)
+		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)
 		return
 	}
 
-	err = s.bld.WriteImage(pagePath, imageKey, imageName, imageData)
+	srcSet, err := s.bld.WriteImage(pagePath, imageKey, imageName, imageData)
 	if err != nil {
-		log.Printf("unable to process image ('%s') data due to an error: %v", imageName, err)
+		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)
 		return
 	}
 
+	resBody, err := json.Marshal(srcSet)
+	if err != nil {
+		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
+		http.Error(w, "unable to process image", http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(resBody)
 }

@@ -192,3 +192,24 @@ func (b *builder) getInclude(path string, parent *html.Node) (nodes []*html.Node
 
 	return openIncludeHTML(filePath, parent)
 }
+
+func (b *builder) findNodeByKey(n *html.Node, key model.Key) *html.Node {
+
+	for _, a := range n.Attr {
+		if a.Key == b.cfg.EditAttr {
+			k := model.Key(a.Val)
+			if k == key {
+				return n
+			}
+		}
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		cn := b.findNodeByKey(c, key)
+		if cn != nil {
+			return cn
+		}
+	}
+
+	return nil
+}

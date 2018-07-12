@@ -27,7 +27,7 @@ func processImage(k model.Key, n *html.Node, p *model.Page) {
 	}
 }
 
-func (b *builder) WriteImage(path string, key, name string, data []byte) (err error) {
+func (b *builder) WriteImage(path string, key model.Key, name string, data []byte) (srcset []string, err error) {
 
 	publicFolder := b.cfg.PublicFolder + path
 	os.MkdirAll(publicFolder, 0777)
@@ -40,7 +40,7 @@ func (b *builder) WriteImage(path string, key, name string, data []byte) (err er
 	err = ioutil.WriteFile(file, data, 0777)
 	if err != nil {
 		log.Printf("unable to save file %s; error: %v", file, err)
-		return err
+		return nil, err
 	}
 
 	// process public folder
@@ -50,8 +50,10 @@ func (b *builder) WriteImage(path string, key, name string, data []byte) (err er
 	err = ioutil.WriteFile(file, data, 0777)
 	if err != nil {
 		log.Printf("unable to save file %s; error: %v", file, err)
-		return err
+		return nil, err
 	}
+
+	srcset = []string{name}
 
 	return
 }

@@ -3,7 +3,7 @@
 part of wedit;
 
 class Image {
-  static const SUPPORTED_IMAGE_TAGS = const ["img"];
+  static const SUPPORTED_IMAGE_TAGS = const ["img","picture"];
 
   static const _DEFAULT_BUTTON_ADD_COLOR = "#0a0";
   static const _DEFAULT_BUTTON_REMOVE_COLOR = "#a00";
@@ -28,6 +28,8 @@ class Image {
 
   bool _isHighlighted;
 
+  bool _isPictureSet;
+  html.Element _pictureDomElement;
   html.Element _domElement;
   String _originalBoxShadow;
 
@@ -40,6 +42,13 @@ class Image {
   Image.fromMap(this._page, this._key, this._domElement, Map map) {
     _isHighlighted = false;
 
+    _isPictureSet = _domElement.tagName.toLowerCase() == "picture";
+
+    if(_isPictureSet) {
+      _pictureDomElement = _domElement;
+      _domElement = _pictureDomElement.querySelector("img");
+    }
+    
     if (map != null) {
       _src = map[IMAGE_SRC];
     }
@@ -192,7 +201,11 @@ class Image {
 
   void render() {
     var image = _domElement as html.ImageElement;
-    image.src = _src;
+    if(_isPictureSet){
+      //image.src = _src; // TODO: picture set
+    } else {
+      image.src = _src;
+    }
   }
 
   void _stopEvent(html.MouseEvent e) {
@@ -244,14 +257,17 @@ class Image {
     });
 
     var url = html.window.location.href.replaceAll("/!/", "/!image/") + name + "?key=" + _key;
-    _src = "./" + name;
     request.open("POST", url);
     request.send(data);
   }
 
   void _processImageUploadSuccess(html.HttpRequest request) {
     var image = _domElement as html.ImageElement;
-    image.src = _src;
+    if(_isPictureSet){
+      //image.src = _src; // TODO: picture set
+    } else {
+      image.src = _src;
+    }
     print("upload complete");
 
     _page.save(null, null);

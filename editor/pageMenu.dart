@@ -12,7 +12,6 @@ class PageMenu {
       "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
   static const _DEFAULT_MENU_HOVER_BOX_SHADOW =
       "0 0 2vw 0 rgba(0, 0, 0, 1), inset 0 0 2vw 0 rgba(255, 255, 255, 1)";
-  static const _DEFAULT_COMMAND_SAVE_TEXT = "save";
   static const _DEFAULT_COMMAND_SUCCESS_TEXT = "ok";
   static const _DEFAULT_COMMAND_FAILURE_TEXT = "ERROR";
 
@@ -21,13 +20,16 @@ class PageMenu {
   String _menuTextColor;
 
   html.Element _domElement;
-  html.Element _saveDomElement;
 
   Map<String, html.Element> _commandDomElements;
 
   bool _lockMenu;
 
   PageMenu(this._page, this._commands, this._menuTextColor) {
+    if(_commands.length <= 0) {
+      return;
+    }
+
     _bindControls();
   }
 
@@ -58,27 +60,11 @@ class PageMenu {
       ..onMouseEnter.listen(_mouseOver)
       ..onMouseLeave.listen(_mouseLeave);
 
-    _saveDomElement = new html.Element.div();
-    _saveDomElement.style
-      ..marginTop = _DEFAULT_MENU_TRIGGER_SIZE.toString() + "px"
-      ..marginLeft = (0.05 * _DEFAULT_MENU_WIDTH).toString() + "px"
-      ..width = (0.90 * _DEFAULT_MENU_WIDTH).toString() + "px"
-      ..height = _DEFAULT_MENU_BUTTON_HEIGHT.toString() + "px"
-      ..borderRadius = (_DEFAULT_MENU_BUTTON_HEIGHT / 2).toString() + "px"
-      ..fontSize = _DEFAULT_MENU_BUTTON_HEIGHT.toString() + "px"
-      ..textAlign = "center"
-      ..color = _menuTextColor
-      ..backgroundColor = "#666666";
-    _saveDomElement.text = _DEFAULT_COMMAND_SAVE_TEXT;
-    _saveDomElement.onClick.listen(_saveClick);
-    _domElement.children.add(_saveDomElement);
-
     html.document.body.children.add(_domElement);
 
     _commandDomElements = new Map<String, html.Element>();
     _commands.forEach((k, v) => _createCommandElement(k, v));
 
-    //html.document.onMouseMove.listen(_mouseMove);
     html.window.onKeyDown.listen(_windowKeyDown);
     html.window.onKeyUp.listen(_windowKeyUp);
   }
@@ -134,11 +120,6 @@ class PageMenu {
     hide();
   }
 
-  void _saveClick(html.MouseEvent event) {
-    _page.save(() => _saveDomElement.text = _DEFAULT_COMMAND_SUCCESS_TEXT,
-        () => _saveDomElement.text = _DEFAULT_COMMAND_FAILURE_TEXT);
-  }
-
   void _commandClick(html.MouseEvent event) {
     html.Element el = event.target;
     String cmd = el.text;
@@ -154,7 +135,6 @@ class PageMenu {
   void show() {
     _domElement.style.display = "block";
 
-    _saveDomElement.text = _DEFAULT_COMMAND_SAVE_TEXT;
     _commandDomElements.forEach((k, v) => v.text = k);
   }
 

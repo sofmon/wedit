@@ -40,7 +40,11 @@
           </picture>
           -->
           <div class="w3-container">
-            <img src="/image.jpg" class="w3-margin" style="border-radius: 50%; width:50%;" wedit="col-right-img">
+            <picture wedit="col-right-img">
+              <source media="(min-width: 640px)" srcset="/image.jpg">
+              <source media="(min-width: 320px)" srcset="/image.jpg">
+              <img src="/image.jpg" class="w3-margin" style="border-radius: 50%; width:50%;">
+            </picture>
           </div>
         </div>
       </div>
