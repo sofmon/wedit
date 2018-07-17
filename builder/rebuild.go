@@ -54,13 +54,13 @@ func (b *builder) RebuildAll() (err error) {
 
 	for _, relPath := range paths {
 
-		local, err := b.ReadPageData(relPath)
+		page, err := b.ReadPageData(relPath)
 		if err != nil {
 			log.Printf("%40s - not processed due %v\n", relPath, err)
 			continue
 		}
 
-		page, err := b.addRootData(local)
+		err = b.addRootData(&page)
 		if err != nil {
 			log.Printf("%40s - not processed due %v\n", relPath, err)
 			continue

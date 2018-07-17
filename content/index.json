@@ -56,7 +56,7 @@
     },
     {
       "k": "col-left-p1528307250533",
-      "t": "#### Text editing\nEdit through markdown using paragraphs, [links](http://wedit.io), headers, bullet points, `basic` **text** *decorations* and inline images.\n```\n\u003cdiv wedit=\"text-key-1\"\u003e...\u003c/div\u003e\n```\n#### Repeat sections\nReplicated same section multiple times with different content.\n```\n\u003cdiv class=\"carousel\"\u003e\n  \u003cdiv class=\"item\" wedit-repear=\"repeat-key-1\"\u003e\n    ...\n  \u003cdiv\u003e\n\u003c/div\u003e\n```\n#### Site-wide content\nMark content as available for the whole website, so changes are applied to all pages.\n```\n\u003cdiv class=\"footer\"\u003e\n  \u003cspan class=\"mantra\" wedit=\"!footer-mantra\"\u003e...\u003c/span\u003e\n\u003c/div\u003e\n```\n#### Images\nSupports `\u003cimg\u003e` and `\u003cpicutre\u003e` elements.\n```\n\u003cimg wedit=\"image-key-1\"\u003e\n```\n```\n\u003cpicture wedit=\"image-key-2\"\u003e\n  \u003csource srcset=\"...\" media=\"...\"\u003e\n  \u003cimg src=\"...\"\u003e\n\u003c/picture\u003e\n```\nImages uploaded for `\u003cpicture\u003e` elements are automatically cropped to the defined source media.\n#### Includes\nAppend entire HTML fragments from separate files to include similar sections in different pages.\n```\n\u003cdiv wedit-include=\"footer.html\"\u003e\u003c/div\u003e\n```\n#### New pages\nGenerating new pages using common parent template like `posts/post1`, `posts/post2`.\n#### Custom shell scripts\nConfigure custom shell scripts available for triggering during content edit like publish (git commit and push) or reset (git reset).\n\n---\n\nYou can find full documentation and instructions in the project's \n[GitHub repository](https://github.com/sofmon/wedit \"GitHub \nrepository\")."
+      "t": "#### Text editing\nEdit through markdown using paragraphs, [links](http://wedit.io), headers, bullet points, `basic` **text** *decorations*, inline images or even \u003cspan style=\"text-decoration:underline\"\u003eHTML\u003c/span\u003e.\n```\n\u003cdiv wedit=\"text-key-1\"\u003e...\u003c/div\u003e\n```\n#### Repeat sections\nReplicated same section multiple times with different content.\n```\n\u003cdiv class=\"carousel\"\u003e\n  \u003cdiv class=\"item\" wedit-repear=\"repeat-key-1\"\u003e\n    ...\n  \u003cdiv\u003e\n\u003c/div\u003e\n```\n#### Site-wide content\nMark content as available for the whole website, so changes are applied to all pages.\n```\n\u003cdiv class=\"footer\"\u003e\n  \u003cspan class=\"mantra\" wedit=\"!footer-mantra\"\u003e...\u003c/span\u003e\n\u003c/div\u003e\n```\n#### Images\nSupports `\u003cimg\u003e`  elements.\n```\n\u003cimg wedit=\"image-key-1\" src=\"...\" srcset=\"...\"\u003e\n```\nIf `srcset` is used with 'width' descriptor (like `srcset=\"image-s.jpg 320w, image-m.jpg 640w, image-l.jpg 1024w\"`), the new uploaded image will be automatically resized and different files will be supplied for each descriptor.\n#### Includes\nAppend entire HTML fragments from separate files to include similar sections in different pages.\n```\n\u003cdiv wedit-include=\"footer.html\"\u003e\u003c/div\u003e\n```\n#### New pages\nGenerating new pages using common parent template. For example `/posts/` template is used for pages `/posts/post1/` and `/posts/post2/`.\n\nJust enter he desire page path and `wedit` will fine the closest parent template and use it for the new page.\n#### Custom shell scripts\nConfigure custom shell scripts available for triggering during content edit like publish (git commit and push) or reset (git reset).\n\n---\n\nYou can find full documentation and instructions in the project's \n[GitHub repository](https://github.com/sofmon/wedit \"GitHub \nrepository\")."
     },
     {
       "k": "col-right-h",
@@ -73,6 +73,10 @@
     {
       "k": "col-right-h1528306557248",
       "t": "Get wedit\n"
+    },
+    {
+      "k": "col-right-img",
+      "t": "\n              \n              \n              \n            "
     },
     {
       "k": "col-right-p",
@@ -101,12 +105,25 @@
   ],
   "i": [
     {
+      "k": "",
+      "t": "svg",
+      "w": null,
+      "x": null
+    },
+    {
       "k": "col-right-img",
-      "s": "./haralampi.jpg"
+      "t": "jpg",
+      "w": [
+        640,
+        320
+      ],
+      "x": null
     },
     {
       "k": "col-right-img1529434990008",
-      "s": "/image.jpg"
+      "t": "",
+      "w": null,
+      "x": null
     }
   ]
 }

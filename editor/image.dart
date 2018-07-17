@@ -3,7 +3,7 @@
 part of wedit;
 
 class Image {
-  static const SUPPORTED_IMAGE_TAGS = const ["img","picture"];
+  static const SUPPORTED_IMAGE_TAGS = const ["img"];
 
   static const _DEFAULT_BUTTON_ADD_COLOR = "#0a0";
   static const _DEFAULT_BUTTON_REMOVE_COLOR = "#a00";
@@ -25,11 +25,14 @@ class Image {
   Page _page;
 
   String _key;
+  String _type;
+  List<int> _width;
+  List<double> _pixelDensity;
+
+  bool _hasContent;
 
   bool _isHighlighted;
 
-  bool _isPictureSet;
-  html.Element _pictureDomElement;
   html.Element _domElement;
   String _originalBoxShadow;
 
@@ -38,19 +41,18 @@ class Image {
   html.Element _removeImageDomElement;
 
   String _src;
+  String _srcset;
 
   Image.fromMap(this._page, this._key, this._domElement, Map map) {
     _isHighlighted = false;
-
-    _isPictureSet = _domElement.tagName.toLowerCase() == "picture";
-
-    if(_isPictureSet) {
-      _pictureDomElement = _domElement;
-      _domElement = _pictureDomElement.querySelector("img");
-    }
     
     if (map != null) {
-      _src = map[IMAGE_SRC];
+      _hasContent= true;
+      _type = map[IMAGE_TYPE];
+      _width = map[IMAGE_WIDTH];
+      _pixelDensity = map[IMAGE_PIXEL_DENSITY];
+    } else {
+      _hasContent = false;
     }
 
     _syncElement();
@@ -62,17 +64,15 @@ class Image {
     var map = new Map();
 
     map[IMAGE_KEY] = _key;
-    map[IMAGE_SRC] = _src;
+    map[IMAGE_TYPE] = _type;
+    map[IMAGE_WIDTH] = _width;
+    map[IMAGE_PIXEL_DENSITY] = _pixelDensity;
 
     return map;
   }
 
   void _syncElement() {
     _originalBoxShadow = _domElement.style.boxShadow;
-
-    if(_src == null || _src == "") {
-      _src = _domElement.attributes["src"];
-    }
   }
 
   void _bindControls() {
@@ -200,12 +200,20 @@ class Image {
   }
 
   void render() {
-    var image = _domElement as html.ImageElement;
-    if(_isPictureSet){
-      //image.src = _src; // TODO: picture set
-    } else {
-      image.src = _src;
+    if(!_hasContent) {
+      return;
     }
+
+    var image = _domElement as html.ImageElement;
+    image.src = "./" + _key + "/." + _type;
+    StringBuffer sb = new StringBuffer();
+    if(_width != null ) {
+      _width.forEach((i)=>sb.write("./" + _key + "-" + i.toString() + "w." + _type + " " + i.toString() + "w,"));
+    }
+    if(_pixelDensity != null ) {
+      _pixelDensity.forEach((f)=>sb.write("./" + _key + "-" + f.toStringAsFixed(1) + "x." + _type + " " + f.toStringAsFixed(1) + "x,"));
+    }
+    image.srcset = sb.toString();
   }
 
   void _stopEvent(html.MouseEvent e) {
@@ -262,12 +270,14 @@ class Image {
   }
 
   void _processImageUploadSuccess(html.HttpRequest request) {
-    var image = _domElement as html.ImageElement;
-    if(_isPictureSet){
-      //image.src = _src; // TODO: picture set
-    } else {
-      image.src = _src;
-    }
+    Map map = convert.JSON.decode(request.responseText);
+    
+    _type = map[IMAGE_TYPE];
+    _width = map[IMAGE_WIDTH];
+    _pixelDensity = map[IMAGE_PIXEL_DENSITY];
+    
+    render();
+
     print("upload complete");
 
     _page.save(null, null);

@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/nfnt/resize"
+  packages = ["."]
+  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
+
+[[projects]]
   name = "github.com/russross/blackfriday"
   packages = ["."]
   revision = "cadec560ec52d93835bf2f15bd794700d3a2473b"
@@ -20,11 +26,11 @@
     "html",
     "html/atom"
   ]
-  revision = "8d16fa6dc9a85c1cd3ed24ad08ff21cf94f10888"
+  revision = "d0887baf81f4598189d4e12a37c6da86f0bba4d0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d9520801ebfc51015d85cece44299e544825363a53d25c337a9c4f7dec8e74b3"
+  inputs-digest = "bf6b7148d50904a464d4ac8a973cb9758bf1b951824d6ec5359a473c1f7cef9e"
   solver-name = "gps-cdcl"
   solver-version = 1

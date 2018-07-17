@@ -33,7 +33,19 @@ func (b *builder) ReadPageData(path string) (page model.Page, error error) {
 		return
 	}
 
-	return b.addRootData(page)
+	err = b.addRootData(&page)
+	if err != nil {
+		log.Printf("Could not load root data. Error: %v\n", err)
+		return
+	}
+
+	err = b.updateImagesSrcset(&page, path)
+	if err != nil {
+		log.Printf("Could not update image data. Error: %v\n", err)
+		return
+	}
+
+	return
 }
 
 func (b *builder) clearPublic(path string) error {

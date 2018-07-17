@@ -26,7 +26,7 @@ class PageMenu {
   bool _lockMenu;
 
   PageMenu(this._page, this._commands, this._menuTextColor) {
-    if(_commands.length <= 0) {
+    if(_commands == null || _commands.length <= 0) {
       return;
     }
 

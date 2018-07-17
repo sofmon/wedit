@@ -25,4 +25,6 @@ const REPEAT_KEY = "k";
 const REPEAT_COPY_KEYS = "c";
 
 const IMAGE_KEY = "k";
-const IMAGE_SRC = "s";
+const IMAGE_TYPE = "t";
+const IMAGE_WIDTH = "w";
+const IMAGE_PIXEL_DENSITY = "p";

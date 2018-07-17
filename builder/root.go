@@ -145,9 +145,7 @@ func isSameImage(x, y model.Image) bool {
 		return false
 	}
 
-	if x.Src != y.Src {
-		return false
-	}
+	// TODO !!!
 
 	return true
 }
@@ -208,11 +206,11 @@ func (b *builder) splitRootData(page model.Page) (local model.Page, root model.P
 	return
 }
 
-func (b *builder) addRootData(page model.Page) (model.Page, error) {
+func (b *builder) addRootData(page *model.Page) error {
 
 	global, err := b.getRootData()
 	if err != nil {
-		return page, err
+		return err
 	}
 
 	if page.Elements == nil {
@@ -237,5 +235,5 @@ func (b *builder) addRootData(page model.Page) (model.Page, error) {
 		page.Repeats[k] = v
 	}
 
-	return page, nil
+	return nil
 }

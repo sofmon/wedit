@@ -31,14 +31,14 @@ func (s *service) imageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	srcSet, err := s.bld.WriteImage(pagePath, imageKey, imageName, imageData)
+	img, err := s.bld.WriteImage(pagePath, imageKey, imageName, imageData)
 	if err != nil {
 		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)
 		return
 	}
 
-	resBody, err := json.Marshal(srcSet)
+	resBody, err := json.Marshal(img)
 	if err != nil {
 		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)

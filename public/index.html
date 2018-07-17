@@ -34,7 +34,7 @@
           <div class="w3-container">
             <p class="left" wedit="col-left-p1528307250533"><h4>Text editing</h4>
 
-<p>Edit through markdown using paragraphs, <a href="http://wedit.io">links</a>, headers, bullet points, <code>basic</code> <strong>text</strong> <em>decorations</em> and inline images.</p>
+<p>Edit through markdown using paragraphs, <a href="http://wedit.io">links</a>, headers, bullet points, <code>basic</code> <strong>text</strong> <em>decorations</em>, inline images or even <span style="text-decoration:underline">HTML</span>.</p>
 
 <pre><code>&lt;div wedit=&#34;text-key-1&#34;&gt;...&lt;/div&gt;
 </code></pre>
@@ -61,18 +61,12 @@
 
 <h4>Images</h4>
 
-<p>Supports <code>&lt;img&gt;</code> and <code>&lt;picutre&gt;</code> elements.</p>
+<p>Supports <code>&lt;img&gt;</code>  elements.</p>
 
-<pre><code>&lt;img wedit=&#34;image-key-1&#34;&gt;
+<pre><code>&lt;img wedit=&#34;image-key-1&#34; src=&#34;...&#34; srcset=&#34;...&#34;&gt;
 </code></pre>
 
-<pre><code>&lt;picture wedit=&#34;image-key-2&#34;&gt;
-  &lt;source srcset=&#34;...&#34; media=&#34;...&#34;&gt;
-  &lt;img src=&#34;...&#34;&gt;
-&lt;/picture&gt;
-</code></pre>
-
-<p>Images uploaded for <code>&lt;picture&gt;</code> elements are automatically cropped to the defined source media.</p>
+<p>If <code>srcset</code> is used with ‘width’ descriptor (like <code>srcset=&#34;image-s.jpg 320w, image-m.jpg 640w, image-l.jpg 1024w&#34;</code>), the new uploaded image will be automatically resized and different files will be supplied for each descriptor.</p>
 
 <h4>Includes</h4>
 
@@ -83,7 +77,9 @@
 
 <h4>New pages</h4>
 
-<p>Generating new pages using common parent template like <code>posts/post1</code>, <code>posts/post2</code>.</p>
+<p>Generating new pages using common parent template. For example <code>/posts/</code> template is used for pages <code>/posts/post1/</code> and <code>/posts/post2/</code>.</p>
+
+<p>Just enter he desire page path and <code>wedit</code> will fine the closest parent template and use it for the new page.</p>
 
 <h4>Custom shell scripts</h4>
 
@@ -174,11 +170,7 @@ repository">GitHub repository</a>.</p>
           </picture>
           -->
           <div class="w3-container">
-            <picture wedit="col-right-img">
-              <source media="(min-width: 640px)" srcset="/image.jpg"/>
-              <source media="(min-width: 320px)" srcset="/image.jpg"/>
-              <img src="/image.jpg" class="w3-margin" style="border-radius: 50%; width:50%;"/>
-            </picture>
+              <img src="col-right-img-320w.jpg" srcset="col-right-img-640w.jpg 640wcol-right-img-320w.jpg 320w" class="w3-margin" style="border-radius: 50%; width:50%;" wedit="col-right-img"/>
           </div>
         </div>
       </div>

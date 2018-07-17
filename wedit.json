@@ -18,24 +18,6 @@
         "port": 5000,
         "openBrowser": true,
         "menuTextColor": "#ffffff",
-        "shellCommands": {
-            "reset": {
-                "color": "#99d250",
-                "script": [
-                    "git reset --hard origin/develop",
-                    "git pull"
-                ]
-            }
-            ,
-            "publish": {
-                "color": "#d40d22",
-                "script": [
-                    "git add content",
-                    "git add public",
-                    "git commit -m 'content update by wedit'",
-                    "git push"
-                ]
-            }
-        }
+        "shellCommands": {}
     }
 }

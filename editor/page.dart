@@ -38,9 +38,12 @@ class Page {
     _repeatAttribute = settings[PAGE_SETTINGS_REPEATATTR];
 
     _commands = new Map<String, String>();
-    settings[PAGE_SETTINGS_COMMANDS].forEach((c) =>
-        _commands[c[PAGE_SETTINGS_COMMANDS_NAME]] =
-            c[PAGE_SETTINGS_COMMANDS_COLOR]);
+    List shellCommands = settings[PAGE_SETTINGS_COMMANDS];
+    if (shellCommands != null) {
+      settings[PAGE_SETTINGS_COMMANDS].forEach((c) =>
+          _commands[c[PAGE_SETTINGS_COMMANDS_NAME]] =
+              c[PAGE_SETTINGS_COMMANDS_COLOR]);
+    }
 
     _title = map[PAGE_TITLE];
 
