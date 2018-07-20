@@ -40,17 +40,18 @@ class Image {
   html.Element _addImageDomElement;
   html.Element _removeImageDomElement;
 
-  String _src;
-  String _srcset;
+  String _templateSrc;
+  String _templateSrcset;
 
   Image.fromMap(this._page, this._key, this._domElement, Map map) {
     _isHighlighted = false;
     
     if (map != null) {
       _hasContent= true;
-      _type = map[IMAGE_TYPE];
       _width = map[IMAGE_WIDTH];
       _pixelDensity = map[IMAGE_PIXEL_DENSITY];
+      _type = map[IMAGE_TYPE];
+      _hasContent = (_type != "" && _type.isNotEmpty);
     } else {
       _hasContent = false;
     }
@@ -73,6 +74,10 @@ class Image {
 
   void _syncElement() {
     _originalBoxShadow = _domElement.style.boxShadow;
+    
+     var image = _domElement as html.ImageElement;
+    _templateSrc = image.src;
+    _templateSrcset = image.srcset;
   }
 
   void _bindControls() {
@@ -200,18 +205,24 @@ class Image {
   }
 
   void render() {
+    
+    var image = _domElement as html.ImageElement;
+
     if(!_hasContent) {
+      image.src = _templateSrc;
+      image.srcset = _templateSrcset;
       return;
     }
 
-    var image = _domElement as html.ImageElement;
-    image.src = "./" + _key + "/." + _type;
+    var suffix = "?" + new DateTime.now().millisecondsSinceEpoch.toString();
+
+    image.src = "./" + _key + "." + _type + suffix;
     StringBuffer sb = new StringBuffer();
     if(_width != null ) {
-      _width.forEach((i)=>sb.write("./" + _key + "-" + i.toString() + "w." + _type + " " + i.toString() + "w,"));
+      _width.forEach((i)=>sb.write("./" + _key + "-" + i.toString() + "w." + _type + suffix +" " + i.toString() + "w,"));
     }
     if(_pixelDensity != null ) {
-      _pixelDensity.forEach((f)=>sb.write("./" + _key + "-" + f.toStringAsFixed(1) + "x." + _type + " " + f.toStringAsFixed(1) + "x,"));
+      _pixelDensity.forEach((f)=>sb.write("./" + _key + "-" + f.toStringAsFixed(1) + "x." + _type + suffix + " " + f.toStringAsFixed(1) + "x,"));
     }
     image.srcset = sb.toString();
   }
@@ -233,6 +244,14 @@ class Image {
   }
 
   void _removeImage(html.MouseEvent e) {
+
+    _type = "";
+    _hasContent = false;
+
+    render();
+
+  _page.save(null, null);
+
     _stopEvent(e);
   }
 
@@ -275,6 +294,7 @@ class Image {
     _type = map[IMAGE_TYPE];
     _width = map[IMAGE_WIDTH];
     _pixelDensity = map[IMAGE_PIXEL_DENSITY];
+    _hasContent = true;
     
     render();
 

@@ -28,6 +28,10 @@ func processImage(k model.Key, n *html.Node, p *model.Page) {
 		return
 	}
 
+	if !img.IsSet() {
+		return
+	}
+
 	for i, a := range n.Attr {
 		if strings.ToLower(a.Key) == "src" {
 			n.Attr[i].Val = img.FileNameMin()
@@ -43,13 +47,11 @@ func (b *builder) processNodeForSrcset(page *model.Page, n *html.Node) error {
 	if n.Data == "img" {
 
 		var key model.Key
-		var src, srcset string
+		var _, srcset string
 		for _, a := range n.Attr {
 			switch a.Key {
 			case b.cfg.EditAttr:
 				key = model.Key(a.Val)
-			case "src":
-				src = a.Val
 			case "srcset":
 				srcset = a.Val
 			}
@@ -58,8 +60,6 @@ func (b *builder) processNodeForSrcset(page *model.Page, n *html.Node) error {
 		imgType := ""
 		if img, found := page.Images[key]; found {
 			imgType = img.Type
-		} else {
-			imgType = strings.ToLower(strings.TrimLeft(path.Ext(src), "."))
 		}
 
 		page.Images[key] = model.NewImage(key, imgType, srcset)

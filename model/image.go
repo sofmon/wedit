@@ -18,6 +18,11 @@ type Image struct {
 	PixelDencity []float64 `json:"x"`
 }
 
+// IsSet through content editing or is default value
+func (img Image) IsSet() bool {
+	return img.Type != ""
+}
+
 // FileName for the image source without descriptors
 func (img Image) FileName() string {
 	return fmt.Sprintf("%s.%s", img.Key, img.Type)
@@ -65,11 +70,11 @@ func (img Image) Srcset() string {
 	buf := bytes.Buffer{}
 
 	for _, w := range img.Width {
-		buf.WriteString(fmt.Sprintf("%s %dw", img.FileNameW(w), w))
+		buf.WriteString(fmt.Sprintf("%s %dw,", img.FileNameW(w), w))
 	}
 
 	for _, x := range img.PixelDencity {
-		buf.WriteString(fmt.Sprintf("%s %.2fx", img.FileNameX(x), x))
+		buf.WriteString(fmt.Sprintf("%s %.2fx,", img.FileNameX(x), x))
 	}
 
 	return buf.String()
