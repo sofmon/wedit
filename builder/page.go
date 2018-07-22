@@ -16,21 +16,20 @@ func (b *builder) ReadPageData(path string) (page model.Page, error error) {
 
 	file := b.cfg.ContentFolder + path + b.cfg.PageJSONFile
 
+	page = model.NewEmptyPage()
+
 	data, err := ioutil.ReadFile(file)
-	if err != nil {
-		if os.IsNotExist(err) {
-			page = model.Page{}
-			err = nil // it is an empty data
-			return
-		}
+	if err != nil && !os.IsNotExist(err) {
 		log.Printf("Could not load page data file '%v'. Error: %v\n", file, err)
 		return
 	}
 
-	err = json.Unmarshal(data, &page)
-	if err != nil {
-		log.Printf("Could not load page data file '%v'. Error: %v\n", file, err)
-		return
+	if err == nil {
+		err = json.Unmarshal(data, &page)
+		if err != nil {
+			log.Printf("Could not load page data file '%v'. Error: %v\n", file, err)
+			return
+		}
 	}
 
 	err = b.addRootData(&page)
