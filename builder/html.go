@@ -119,9 +119,9 @@ func (b *builder) renderProcessNode(n *html.Node, page *model.Page) {
 	}
 }
 
-func (b *builder) prepareIncludes(path string) (outHTML []byte, err error) {
+func (b *builder) prepareIncludes(path string, pageFile string) (outHTML []byte, err error) {
 
-	templateFilePath := b.findTemplateFile(path)
+	templateFilePath := b.findTemplateFile(path, pageFile)
 
 	doc, err := openTemlateHTML(templateFilePath)
 	if err != nil {

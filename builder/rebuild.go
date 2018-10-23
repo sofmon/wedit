@@ -24,7 +24,7 @@ func (b *builder) RebuildAll() (err error) {
 				return nil
 			}
 
-			if info.Name() != b.cfg.TemplateHTMLFile {
+			if !b.cfg.Contains(b.cfg.PageFiles, info.Name()) {
 				return nil
 			}
 
@@ -54,22 +54,25 @@ func (b *builder) RebuildAll() (err error) {
 
 	for _, relPath := range paths {
 
-		page, err := b.ReadPageData(relPath)
-		if err != nil {
-			log.Printf("%40s - not processed due %v\n", relPath, err)
-			continue
-		}
+		for _, pageFile := range b.cfg.PageFiles {
 
-		err = b.addRootData(&page)
-		if err != nil {
-			log.Printf("%40s - not processed due %v\n", relPath, err)
-			continue
-		}
+			page, err := b.ReadPageData(relPath, pageFile)
+			if err != nil {
+				log.Printf("%40s - not processed due %v\n", relPath, err)
+				continue
+			}
 
-		err = b.WritePage(relPath, page)
-		if err != nil {
-			log.Printf("%40s - not processed due %v\n", relPath, err)
-			continue
+			err = b.addRootData(&page)
+			if err != nil {
+				log.Printf("%40s - not processed due %v\n", relPath, err)
+				continue
+			}
+
+			err = b.WritePage(relPath, page, pageFile)
+			if err != nil {
+				log.Printf("%40s - not processed due %v\n", relPath, err)
+				continue
+			}
 		}
 	}
 

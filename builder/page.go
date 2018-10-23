@@ -12,22 +12,23 @@ import (
 	"github.com/sofmon/wedit/model"
 )
 
-func (b *builder) ReadPageData(path string) (page model.Page, error error) {
+func (b *builder) ReadPageData(path string, pageFile string) (page model.Page, error error) {
 
-	file := b.cfg.ContentFolder + path + b.cfg.PageJSONFile
+	jsonFile := b.cfg.ContentFolder + path + pageFile + ".json"
+	log.Printf("load page data file '%v'.\n", jsonFile)
 
 	page = model.NewEmptyPage()
 
-	data, err := ioutil.ReadFile(file)
+	data, err := ioutil.ReadFile(jsonFile)
 	if err != nil && !os.IsNotExist(err) {
-		log.Printf("Could not load page data file '%v'. Error: %v\n", file, err)
+		log.Printf("Could not load page data file '%v'. Error: %v\n", jsonFile, err)
 		return
 	}
 
 	if err == nil {
 		err = json.Unmarshal(data, &page)
 		if err != nil {
-			log.Printf("Could not load page data file '%v'. Error: %v\n", file, err)
+			log.Printf("Could not load page data file '%v'. Error: %v\n", jsonFile, err)
 			return
 		}
 	}
@@ -38,7 +39,7 @@ func (b *builder) ReadPageData(path string) (page model.Page, error error) {
 		return
 	}
 
-	err = b.updateImagesSrcset(&page, path)
+	err = b.updateImagesSrcset(&page, path, pageFile)
 	if err != nil {
 		log.Printf("Could not update image data. Error: %v\n", err)
 		return
@@ -57,9 +58,9 @@ func (b *builder) clearPublic(path string) error {
 	return copyDir(templateFolder, publicFolder)
 }
 
-func (b *builder) WritePage(path string, page model.Page) error {
+func (b *builder) WritePage(path string, page model.Page, pageFile string) error {
 
-	log.Printf("updating page: %s", path)
+	log.Printf("updating page: %s", path + pageFile)
 
 	err := b.clearPublic(path)
 	if err != nil {
@@ -72,28 +73,28 @@ func (b *builder) WritePage(path string, page model.Page) error {
 	contentFolder := b.cfg.ContentFolder + path
 	os.MkdirAll(contentFolder, 0777)
 
-	file := contentFolder + b.cfg.PageJSONFile
+	jsonFile := contentFolder + pageFile + ".json"
 
 	localData, rootData := b.splitRootData(page)
 
 	data, err := json.MarshalIndent(localData, "", "  ")
 	if err != nil {
-		log.Printf("unable to save page data at '%v'; error: %v", file, err)
+		log.Printf("unable to save page data at '%v'; error: %v", jsonFile, err)
 		return err
 	}
 
-	err = ioutil.WriteFile(file, data, 0777)
+	err = ioutil.WriteFile(jsonFile, data, 0777)
 	if err != nil {
-		log.Printf("unable to save page data at '%v'; error: %v", file, err)
+		log.Printf("unable to save page data at '%v'; error: %v", jsonFile, err)
 		return err
 	}
 
-	indexFile := publicFolder + b.cfg.PageHTMLFile
-	templateFile := b.findTemplateFile(path)
+	htmlFile := publicFolder + pageFile + ".html"
+	templateFile := b.findTemplateFile(path, pageFile)
 
-	err = b.renderHTML(indexFile, templateFile, page)
+	err = b.renderHTML(htmlFile, templateFile, page)
 	if err != nil {
-		log.Printf("unable to save page HTML at '%v'; error: %v", file, err)
+		log.Printf("unable to save page HTML at '%v'; error: %v", jsonFile, err)
 		return err
 	}
 

@@ -25,13 +25,13 @@ func (b *builder) findTemplatePath(path string) string {
 	return templateFolder
 }
 
-func (b *builder) findTemplateFile(path string) string {
-	return b.findTemplatePath(path) + b.cfg.TemplateHTMLFile
+func (b *builder) findTemplateFile(path string, pageFile string) string {
+	return b.findTemplatePath(path) + pageFile + ".html"
 }
 
-func (b *builder) ReadPageTemplate(path string) (string, error) {
+func (b *builder) ReadPageTemplate(path string, pageFile string) (string, error) {
 
-	data, err := b.prepareIncludes(path)
+	data, err := b.prepareIncludes(path, pageFile)
 	if err != nil {
 		log.Printf("could not read page template for path '%v'. Error: %v\n", path, err)
 		return "", err

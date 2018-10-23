@@ -31,7 +31,7 @@ func (s *service) imageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	img, err := s.bld.WriteImage(pagePath, imageKey, imageName, imageData)
+	img, err := s.bld.WriteImage(pagePath, imageKey, imageName, imageData, "index")
 	if err != nil {
 		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)

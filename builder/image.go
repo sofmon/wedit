@@ -75,9 +75,9 @@ func (b *builder) processNodeForSrcset(page *model.Page, n *html.Node) error {
 	return nil
 }
 
-func (b *builder) updateImagesSrcset(page *model.Page, path string) error {
+func (b *builder) updateImagesSrcset(page *model.Page, path string, pageFile string) error {
 
-	templateFile := b.findTemplateFile(path)
+	templateFile := b.findTemplateFile(path, pageFile)
 
 	doc, err := openTemlateHTML(templateFile)
 	if err != nil {
@@ -97,7 +97,7 @@ func (b *builder) updateImagesSrcset(page *model.Page, path string) error {
 	return nil
 }
 
-func (b *builder) WriteImage(pagePath string, key model.Key, name string, data []byte) (img model.Image, err error) {
+func (b *builder) WriteImage(pagePath string, key model.Key, name string, data []byte, pageFile string) (img model.Image, err error) {
 
 	publicFolder := b.cfg.PublicFolder + pagePath
 	os.MkdirAll(publicFolder, 0777)
@@ -116,7 +116,7 @@ func (b *builder) WriteImage(pagePath string, key model.Key, name string, data [
 		return
 	}
 
-	page, err := b.ReadPageData(pagePath)
+	page, err := b.ReadPageData(pagePath, pageFile)
 	if err != nil {
 		log.Printf("unable to read page data for path %s; error: %v", pagePath, err)
 		return

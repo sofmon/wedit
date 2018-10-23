@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"path/filepath"
+	"strings"
 
 	"github.com/sofmon/wedit/model"
 )
@@ -15,7 +17,14 @@ import (
 func (s *service) saveHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := getPathWithoutAction(r)
-
+	pageFile := "index"
+	builderConfig := s.bld.GetConfig()
+	if filepath.Ext(path) != "" {
+		pageFile = strings.TrimSuffix(filepath.Base(path), filepath.Ext(filepath.Base(path)))
+	  if !builderConfig.Contains(builderConfig.PageFiles, pageFile) {
+			pageFile = "index"
+		}
+	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("unable to read save body for path '%v'; error: %v", path, err)
@@ -31,7 +40,13 @@ func (s *service) saveHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	oldPage, err := s.bld.ReadPageData(path)
+	dir := filepath.Dir(path)
+	if dir == "." {
+		dir = ""
+	} else {
+		dir += "/"
+	}
+	oldPage, err := s.bld.ReadPageData(dir, pageFile)
 	if err != nil {
 		log.Printf("unable to read old page data path '%v'; error: %v", path, err)
 		http.Error(w, "unable to read old page data ", http.StatusInternalServerError)
@@ -56,7 +71,7 @@ func (s *service) saveHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = s.bld.WritePage(path, page)
+	err = s.bld.WritePage(dir, page, pageFile)
 	if err != nil {
 		log.Printf("unable to save page for path '%v'; error: %v", path, err)
 		http.Error(w, "unable to save page", http.StatusInternalServerError)

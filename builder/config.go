@@ -8,13 +8,20 @@ type Config struct {
 	TemplateFolder   string `json:"templateFolder"`
 	ContentFolder    string `json:"contentFolder"`
 	PublicFolder     string `json:"publicFolder"`
-	TemplateHTMLFile string `json:"templateHtmlFile"`
-	PageHTMLFile     string `json:"pageHtmlFile"`
-	PageJSONFile     string `json:"pageJsonFile"`
+	PageFiles				 []string `json:"pageFiles"`
 	RootJSONFile     string `json:"rootJsonFile"`
 	RootKeyPrefix    string `json:"rootKeyPrefix"`
 	EditAttr         string `json:"editAttribute"`
 	RepeatAttr       string `json:"repeatAttribute"`
 	IncludeAttr      string `json:"includeAttribute"`
 	KeepWeditAttrs   bool   `json:"keepAttributes"`
+}
+
+func (c *Config) Contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }

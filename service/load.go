@@ -7,15 +7,30 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-
+	"path/filepath"
 	"github.com/sofmon/wedit/model"
+	"strings"
 )
 
 func (s *service) loadHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := getPathWithoutAction(r)
+	pageFile := "index"
+	builderConfig := s.bld.GetConfig()
+	if filepath.Ext(path) != "" {
+		pageFile = strings.TrimSuffix(filepath.Base(path), filepath.Ext(filepath.Base(path)))
+	  if !builderConfig.Contains(builderConfig.PageFiles, pageFile) {
+			pageFile = "index"
+		}
+	}
 
-	page, err := s.bld.ReadPageData(path)
+	dir := filepath.Dir(path)
+	if dir == "." {
+		dir = ""
+	} else {
+		dir += "/"
+	}
+	page, err := s.bld.ReadPageData(dir, pageFile)
 	if err != nil {
 		log.Printf("unable to read page data path '%v'; error: %v", path, err)
 		http.Error(w, "unable to read page data", http.StatusInternalServerError)

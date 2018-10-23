@@ -9,11 +9,12 @@ import (
 
 // Builder builds the wedit public folder
 type Builder interface {
-	ReadPageTemplate(path string) (string, error)
-	ReadPageData(path string) (model.Page, error)
-	WritePage(path string, page model.Page) error
-	WriteImage(path string, key model.Key, name string, data []byte) (img model.Image, err error)
+	ReadPageTemplate(path string, pageFile string) (string, error)
+	ReadPageData(path string, pageFile string) (model.Page, error)
+	WritePage(path string, page model.Page, pageFile string) error
+	WriteImage(path string, key model.Key, name string, data []byte, pageFile string) (img model.Image, err error)
 	RebuildAll() error
+	GetConfig() Config
 }
 
 type builder struct {
@@ -23,4 +24,8 @@ type builder struct {
 // NewBuilder creates new wedit Builder
 func NewBuilder(cfg Config) Builder {
 	return &builder{cfg}
+}
+
+func (b *builder) GetConfig() Config {
+	return b.cfg
 }

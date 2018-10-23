@@ -20,20 +20,26 @@ const editorScriptTag = `<script async="" src="/!editor.js"></script>`
 func (s *service) pageHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := getPathWithoutAction(r)
-
+  builderConfig := s.bld.GetConfig()
+	pageFile := "index"
+	isPageFile := false
 	if filepath.Ext(path) != "" {
-		r.URL.RawPath = strings.Replace(r.URL.RawPath, "/!/", "/", 1)
-		r.URL.Path = strings.Replace(r.URL.Path, "/!/", "/", 1)
-		s.staticHandler.ServeHTTP(w, r)
-		return
+		pageFile = strings.TrimSuffix(filepath.Base(path), filepath.Ext(filepath.Base(path)))
+		isPageFile = true
+		if !builderConfig.Contains(builderConfig.PageFiles, pageFile) {
+			r.URL.RawPath = strings.Replace(r.URL.RawPath, "/!/", "/", 1)
+			r.URL.Path = strings.Replace(r.URL.Path, "/!/", "/", 1)
+			s.staticHandler.ServeHTTP(w, r)
+			return
+		}
 	}
 
-	if !strings.HasSuffix(r.URL.RawPath, "/") {
+	if !strings.HasSuffix(r.URL.RawPath, "/") && !isPageFile {
 		http.Redirect(w, r, r.URL.RawPath+"/", http.StatusPermanentRedirect)
 		return
 	}
 
-	templateRaw, err := s.bld.ReadPageTemplate(path)
+	templateRaw, err := s.bld.ReadPageTemplate(path, pageFile)
 	if err != nil {
 		log.Printf("unable to serve template on path '%v'. Error: %v", path, err)
 		http.NotFound(w, r)
