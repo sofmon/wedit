@@ -24,11 +24,14 @@ func (b *builder) RebuildAll() (err error) {
 				return nil
 			}
 
-			if !b.cfg.Contains(b.cfg.PageFiles, info.Name()) {
+
+
+			if !b.cfg.Contains(b.cfg.PageFiles, strings.TrimSuffix(info.Name(), filepath.Ext(info.Name()))) {
 				return nil
 			}
 
 			folderPath := filepath.Dir(path)
+
 
 			relPath, err := filepath.Rel(b.cfg.TemplateFolder, folderPath)
 			if err != nil {
