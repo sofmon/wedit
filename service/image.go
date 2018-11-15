@@ -10,10 +10,11 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/sofmon/wedit/builder"
 	"github.com/sofmon/wedit/model"
 )
 
-func (s *service) imageHandler(w http.ResponseWriter, r *http.Request) {
+func imageHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := getPathWithoutAction(r)
 
@@ -31,7 +32,7 @@ func (s *service) imageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	img, err := s.bld.WriteImage(pagePath, imageKey, imageName, imageData)
+	img, err := builder.WriteImage(pagePath, imageKey, imageName, imageData)
 	if err != nil {
 		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)

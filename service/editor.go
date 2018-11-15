@@ -13,7 +13,7 @@ const (
 	pageDataTemplate = `{"h":"","s":"","p":"","t":"","e":[],"r":[],"s":{"e":"","r":""}}`
 )
 
-func (s *service) editorHandler(w http.ResponseWriter, r *http.Request) {
+func editorHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
 	w.Write([]byte(editor.EditorJSCode))

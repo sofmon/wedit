@@ -9,10 +9,11 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/sofmon/wedit/builder"
 	"github.com/sofmon/wedit/model"
 )
 
-func (s *service) saveHandler(w http.ResponseWriter, r *http.Request) {
+func saveHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := getPathWithoutAction(r)
 
@@ -31,7 +32,7 @@ func (s *service) saveHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	oldPage, err := s.bld.ReadPageData(path)
+	oldPage, err := builder.ReadPageData(path)
 	if err != nil {
 		log.Printf("unable to read old page data path '%v'; error: %v", path, err)
 		http.Error(w, "unable to read old page data ", http.StatusInternalServerError)
@@ -56,7 +57,7 @@ func (s *service) saveHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	err = s.bld.WritePage(path, page)
+	err = builder.WritePage(path, page)
 	if err != nil {
 		log.Printf("unable to save page for path '%v'; error: %v", path, err)
 		http.Error(w, "unable to save page", http.StatusInternalServerError)

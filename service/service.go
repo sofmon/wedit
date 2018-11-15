@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/sofmon/wedit/builder"
 )
 
 // Service processing wedit HTTP requests
@@ -17,38 +15,32 @@ type Service interface {
 	ListenAndServe() error
 }
 
-type service struct {
-	cfg           Config
-	pub           string
-	bld           builder.Builder
+var (
 	staticHandler http.Handler
-}
-
-// NewService for processing wedit HTTP requests
-func NewService(cfg Config, pub string, bld builder.Builder) Service {
-	return &service{cfg, pub, bld, http.FileServer(http.Dir(pub))}
-}
+)
 
 // ListenAndServe blocks the current go routine and start serving the wedit HTTP request
-func (s *service) ListenAndServe() error {
+func ListenAndServe() error {
 
-	http.HandleFunc("/!/", s.pageHandler)           // page.go
-	http.HandleFunc("/!editor.js", s.editorHandler) // editor.go
-	http.HandleFunc("/!load/", s.loadHandler)       // load.go
-	http.HandleFunc("/!save/", s.saveHandler)       // save.go
-	http.HandleFunc("/!image/", s.imageHandler)     // image.go
+	http.HandleFunc("/!/", pageHandler)           // page.go
+	http.HandleFunc("/!editor.js", editorHandler) // editor.go
+	http.HandleFunc("/!load/", loadHandler)       // load.go
+	http.HandleFunc("/!save/", saveHandler)       // save.go
+	http.HandleFunc("/!image/", imageHandler)     // image.go
 
-	for k := range s.cfg.ShellCommands {
+	for k := range cfg.ShellCommands {
 		passValue := k
 		http.HandleFunc("/!"+k+"/", func(w http.ResponseWriter, r *http.Request) {
-			s.shellCommandHandler(w, r, passValue) // shell.go
+			shellCommandHandler(w, r, passValue) // shell.go
 		},
 		)
 	}
 
-	http.Handle("/", s.staticHandler)
+	staticHandler = http.FileServer(http.Dir(cfg.PublicFolder))
 
-	endPoint := fmt.Sprintf("%s:%d", s.cfg.Host, s.cfg.Port)
+	http.Handle("/", staticHandler)
+
+	endPoint := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
 	return http.ListenAndServe(endPoint, nil)
 }
 

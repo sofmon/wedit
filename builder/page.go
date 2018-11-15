@@ -12,9 +12,9 @@ import (
 	"github.com/sofmon/wedit/model"
 )
 
-func (b *builder) ReadPageData(path string) (page model.Page, error error) {
+func ReadPageData(path string) (page model.Page, error error) {
 
-	file := b.cfg.ContentFolder + path + b.cfg.PageJSONFile
+	file := cfg.ContentFolder + path + cfg.PageJSONFile
 
 	page = model.NewEmptyPage()
 
@@ -32,13 +32,13 @@ func (b *builder) ReadPageData(path string) (page model.Page, error error) {
 		}
 	}
 
-	err = b.addRootData(&page)
+	err = addRootData(&page)
 	if err != nil {
 		log.Printf("Could not load root data. Error: %v\n", err)
 		return
 	}
 
-	err = b.updateImagesSrcset(&page, path)
+	err = updateImagesSrcset(&page, path)
 	if err != nil {
 		log.Printf("Could not update image data. Error: %v\n", err)
 		return
@@ -47,34 +47,34 @@ func (b *builder) ReadPageData(path string) (page model.Page, error error) {
 	return
 }
 
-func (b *builder) clearPublic(path string) error {
+func clearPublic(path string) error {
 
-	publicFolder := b.cfg.PublicFolder + path
+	publicFolder := cfg.PublicFolder + path
 	os.MkdirAll(publicFolder, 0777)
 
-	templateFolder := b.findTemplatePath(path)
+	templateFolder := findTemplatePath(path)
 
 	return copyDir(templateFolder, publicFolder)
 }
 
-func (b *builder) WritePage(path string, page model.Page) error {
+func WritePage(path string, page model.Page) error {
 
 	log.Printf("updating page: %s", path)
 
-	err := b.clearPublic(path)
+	err := clearPublic(path)
 	if err != nil {
 		return err
 	}
 
-	publicFolder := b.cfg.PublicFolder + path
+	publicFolder := cfg.PublicFolder + path
 	os.MkdirAll(publicFolder, 0777)
 
-	contentFolder := b.cfg.ContentFolder + path
+	contentFolder := cfg.ContentFolder + path
 	os.MkdirAll(contentFolder, 0777)
 
-	file := contentFolder + b.cfg.PageJSONFile
+	file := contentFolder + cfg.PageJSONFile
 
-	localData, rootData := b.splitRootData(page)
+	localData, rootData := splitRootData(page)
 
 	data, err := json.MarshalIndent(localData, "", "  ")
 	if err != nil {
@@ -88,23 +88,23 @@ func (b *builder) WritePage(path string, page model.Page) error {
 		return err
 	}
 
-	indexFile := publicFolder + b.cfg.PageHTMLFile
-	templateFile := b.findTemplateFile(path)
+	indexFile := publicFolder + cfg.PageHTMLFile
+	templateFile := findTemplateFile(path)
 
-	err = b.renderHTML(indexFile, templateFile, page)
+	err = renderHTML(indexFile, templateFile, page)
 	if err != nil {
 		log.Printf("unable to save page HTML at '%v'; error: %v", file, err)
 		return err
 	}
 
-	wasUpdated, err := b.updateRootData(rootData)
+	wasUpdated, err := updateRootData(rootData)
 	if err != nil {
 		return err
 	}
 
 	if wasUpdated {
 		log.Println("regenerating the whole public folder as root data was updated")
-		err = b.RebuildAll()
+		err = RebuildAll()
 		if err != nil {
 			return err
 		}

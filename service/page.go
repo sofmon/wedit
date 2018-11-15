@@ -12,19 +12,20 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/sofmon/wedit/builder"
 	"golang.org/x/net/html"
 )
 
 const editorScriptTag = `<script async="" src="/!editor.js"></script>`
 
-func (s *service) pageHandler(w http.ResponseWriter, r *http.Request) {
+func pageHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := getPathWithoutAction(r)
 
 	if filepath.Ext(path) != "" {
 		r.URL.RawPath = strings.Replace(r.URL.RawPath, "/!/", "/", 1)
 		r.URL.Path = strings.Replace(r.URL.Path, "/!/", "/", 1)
-		s.staticHandler.ServeHTTP(w, r)
+		staticHandler.ServeHTTP(w, r)
 		return
 	}
 
@@ -33,7 +34,7 @@ func (s *service) pageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templateRaw, err := s.bld.ReadPageTemplate(path)
+	templateRaw, err := builder.ReadPageTemplate(path)
 	if err != nil {
 		log.Printf("unable to serve template on path '%v'. Error: %v", path, err)
 		http.NotFound(w, r)

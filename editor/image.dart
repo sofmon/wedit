@@ -289,7 +289,7 @@ class Image {
   }
 
   void _processImageUploadSuccess(html.HttpRequest request) {
-    Map map = convert.JSON.decode(request.responseText);
+    Map map = convert.json.decode(request.responseText);
     
     _type = map[IMAGE_TYPE];
     _width = map[IMAGE_WIDTH];

@@ -8,14 +8,15 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/sofmon/wedit/builder"
 	"github.com/sofmon/wedit/model"
 )
 
-func (s *service) loadHandler(w http.ResponseWriter, r *http.Request) {
+func loadHandler(w http.ResponseWriter, r *http.Request) {
 
 	path := getPathWithoutAction(r)
 
-	page, err := s.bld.ReadPageData(path)
+	page, err := builder.ReadPageData(path)
 	if err != nil {
 		log.Printf("unable to read page data path '%v'; error: %v", path, err)
 		http.Error(w, "unable to read page data", http.StatusInternalServerError)
@@ -25,13 +26,13 @@ func (s *service) loadHandler(w http.ResponseWriter, r *http.Request) {
 	pageWithSettings := model.PageWithSettings{
 		Page: page,
 		Settings: model.Settings{
-			EditAttribute:   s.cfg.EditAttr,
-			RepeatAttribute: s.cfg.RepeatAttr,
-			MenuTextColor:   s.cfg.MenuTextColor,
+			EditAttribute:   cfg.EditAttr,
+			RepeatAttribute: cfg.RepeatAttr,
+			MenuTextColor:   cfg.MenuTextColor,
 		},
 	}
 
-	for k, v := range s.cfg.ShellCommands {
+	for k, v := range cfg.ShellCommands {
 		pageWithSettings.Settings.Commands = append(
 			pageWithSettings.Settings.Commands,
 			model.Command{

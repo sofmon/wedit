@@ -42,7 +42,7 @@ func processImage(k model.Key, n *html.Node, p *model.Page) {
 	}
 }
 
-func (b *builder) processNodeForSrcset(page *model.Page, n *html.Node) error {
+func processNodeForSrcset(page *model.Page, n *html.Node) error {
 
 	if n.Data == "img" {
 
@@ -50,7 +50,7 @@ func (b *builder) processNodeForSrcset(page *model.Page, n *html.Node) error {
 		var _, srcset string
 		for _, a := range n.Attr {
 			switch a.Key {
-			case b.cfg.EditAttr:
+			case cfg.EditAttr:
 				key = model.Key(a.Val)
 			case "srcset":
 				srcset = a.Val
@@ -66,7 +66,7 @@ func (b *builder) processNodeForSrcset(page *model.Page, n *html.Node) error {
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		err := b.processNodeForSrcset(page, c)
+		err := processNodeForSrcset(page, c)
 		if err != nil {
 			return err
 		}
@@ -75,21 +75,21 @@ func (b *builder) processNodeForSrcset(page *model.Page, n *html.Node) error {
 	return nil
 }
 
-func (b *builder) updateImagesSrcset(page *model.Page, path string) error {
+func updateImagesSrcset(page *model.Page, path string) error {
 
-	templateFile := b.findTemplateFile(path)
+	templateFile := findTemplateFile(path)
 
 	doc, err := openTemlateHTML(templateFile)
 	if err != nil {
 		return err
 	}
 
-	err = b.includesProcessNode(doc)
+	err = includesProcessNode(doc)
 	if err != nil {
 		return err
 	}
 
-	err = b.processNodeForSrcset(page, doc)
+	err = processNodeForSrcset(page, doc)
 	if err != nil {
 		return err
 	}
@@ -97,12 +97,12 @@ func (b *builder) updateImagesSrcset(page *model.Page, path string) error {
 	return nil
 }
 
-func (b *builder) WriteImage(pagePath string, key model.Key, name string, data []byte) (img model.Image, err error) {
+func WriteImage(pagePath string, key model.Key, name string, data []byte) (img model.Image, err error) {
 
-	publicFolder := b.cfg.PublicFolder + pagePath
+	publicFolder := cfg.PublicFolder + pagePath
 	os.MkdirAll(publicFolder, 0777)
 
-	contentFolder := b.cfg.ContentFolder + pagePath
+	contentFolder := cfg.ContentFolder + pagePath
 	os.MkdirAll(contentFolder, 0777)
 
 	ext := path.Ext(name)
@@ -116,7 +116,7 @@ func (b *builder) WriteImage(pagePath string, key model.Key, name string, data [
 		return
 	}
 
-	page, err := b.ReadPageData(pagePath)
+	page, err := ReadPageData(pagePath)
 	if err != nil {
 		log.Printf("unable to read page data for path %s; error: %v", pagePath, err)
 		return
@@ -130,7 +130,7 @@ func (b *builder) WriteImage(pagePath string, key model.Key, name string, data [
 
 	img.Type = imageType
 
-	err = b.resizeImage(publicFolder, img, data)
+	err = resizeImage(publicFolder, img, data)
 	if err != nil {
 		log.Printf("unable to resize files; error: %v", err)
 		return
@@ -139,7 +139,7 @@ func (b *builder) WriteImage(pagePath string, key model.Key, name string, data [
 	return
 }
 
-func (b *builder) resizeImage(publicFolder string, img model.Image, data []byte) (err error) {
+func resizeImage(publicFolder string, img model.Image, data []byte) (err error) {
 
 	var imgData image.Image
 	switch img.Type {

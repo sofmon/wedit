@@ -1,23 +1,20 @@
 {
-    "builder": {
-        "templateFolder": "./template",
-        "contentFolder": "./content",
-        "publicFolder": "./public",
-        "templateHtmlFile": "index.html",
-        "pageHtmlFile": "index.html",
-        "pageJsonFile": "index.json",
-        "rootJsonFile": "root.json",
-        "rootKeyPrefix": "!",
-        "editAttribute": "wedit",
-        "repeatAttribute": "wedit-repeat",
-        "includeAttribute": "wedit-include",
-        "keepAttributes": true
-    },
-    "service": {
-        "host": "localhost",
-        "port": 5000,
-        "openBrowser": true,
-        "menuTextColor": "#ffffff",
-        "shellCommands": {}
-    }
+    "templateFolder": "wedit.io/template",
+    "contentFolder": "wedit.io/content",
+    "publicFolder": "wedit.io/public",
+    "templateHtmlFile": "index.html",
+    "pageHtmlFile": "index.html",
+    "pageJsonFile": "index.json",
+    "rootJsonFile": "root.json",
+    "rootKeyPrefix": "!",
+    "editAttribute": "wedit",
+    "repeatAttribute": "wedit-repeat",
+    "includeAttribute": "wedit-include",
+    "keepAttributes": true,
+    "cookie": "wedit",
+    "host": "localhost",
+    "port": 5000,
+    "openBrowser": true,
+    "menuTextColor": "#ffffff",
+    "shellCommands": {}
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/sofmon/wedit/model"
 )
 
-func (b *builder) processRepeat(k model.Key, n *html.Node, p *model.Page) {
+func processRepeat(k model.Key, n *html.Node, p *model.Page) {
 
 	repeat, found := p.Repeats[k]
 	if !found {
@@ -26,17 +26,17 @@ func (b *builder) processRepeat(k model.Key, n *html.Node, p *model.Page) {
 			continue
 		}
 
-		cn := b.cloneNode(n)
+		cn := cloneNode(n)
 
 		for i, a := range cn.Attr {
-			if strings.ToLower(a.Key) == b.cfg.RepeatAttr {
+			if strings.ToLower(a.Key) == cfg.RepeatAttr {
 				cn.Attr = append(cn.Attr[:i], cn.Attr[i+1:]...)
 				break
 			}
 		}
 
-		b.updateVarValues(cn, k)
-		b.renderProcessNode(cn, p)
+		updateVarValues(cn, k)
+		renderProcessNode(cn, p)
 
 		if before {
 			n.Parent.InsertBefore(cn, n)
@@ -51,7 +51,7 @@ func (b *builder) processRepeat(k model.Key, n *html.Node, p *model.Page) {
 	}
 }
 
-func (b *builder) cloneNode(n *html.Node) *html.Node {
+func cloneNode(n *html.Node) *html.Node {
 
 	var buf bytes.Buffer
 	w := bufio.NewWriter(&buf)
@@ -78,16 +78,16 @@ func (b *builder) cloneNode(n *html.Node) *html.Node {
 	return cn[0]
 }
 
-func (b *builder) updateVarValues(n *html.Node, k model.Key) {
+func updateVarValues(n *html.Node, k model.Key) {
 
 	for i, a := range n.Attr {
-		if strings.ToLower(a.Key) == b.cfg.EditAttr {
+		if strings.ToLower(a.Key) == cfg.EditAttr {
 			n.Attr[i].Val = a.Val + string(k)
 			break
 		}
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		b.updateVarValues(c, k)
+		updateVarValues(c, k)
 	}
 }

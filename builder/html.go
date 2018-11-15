@@ -69,19 +69,19 @@ func saveTargetHTML(targetFilePath string, doc *html.Node) (err error) {
 	return
 }
 
-func (b *builder) renderHTML(targetFilePath, templateFilePath string, page model.Page) error {
+func renderHTML(targetFilePath, templateFilePath string, page model.Page) error {
 
 	doc, err := openTemlateHTML(templateFilePath)
 	if err != nil {
 		return err
 	}
 
-	err = b.includesProcessNode(doc)
+	err = includesProcessNode(doc)
 	if err != nil {
 		return err
 	}
 
-	b.renderProcessNode(doc, &page)
+	renderProcessNode(doc, &page)
 
 	err = saveTargetHTML(targetFilePath, doc)
 	if err != nil {
@@ -91,44 +91,44 @@ func (b *builder) renderHTML(targetFilePath, templateFilePath string, page model
 	return nil
 }
 
-func (b *builder) renderProcessNode(n *html.Node, page *model.Page) {
+func renderProcessNode(n *html.Node, page *model.Page) {
 	for i, a := range n.Attr {
-		if a.Key == b.cfg.EditAttr {
+		if a.Key == cfg.EditAttr {
 			k := model.Key(a.Val)
 			if strings.ToLower(string(n.Data)) == "img" {
 				processImage(k, n, page)
 			} else {
 				processElement(k, n, page)
 			}
-			if !b.cfg.KeepWeditAttrs {
+			if !cfg.KeepWeditAttrs {
 				n.Attr = append(n.Attr[:i], n.Attr[i+1:]...)
 			}
 		}
 
-		if a.Key == b.cfg.RepeatAttr {
+		if a.Key == cfg.RepeatAttr {
 			k := model.Key(a.Val)
-			b.processRepeat(k, n, page)
-			if !b.cfg.KeepWeditAttrs {
+			processRepeat(k, n, page)
+			if !cfg.KeepWeditAttrs {
 				n.Attr = append(n.Attr[:i], n.Attr[i+1:]...)
 			}
 		}
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		b.renderProcessNode(c, page)
+		renderProcessNode(c, page)
 	}
 }
 
-func (b *builder) prepareIncludes(path string) (outHTML []byte, err error) {
+func prepareIncludes(path string) (outHTML []byte, err error) {
 
-	templateFilePath := b.findTemplateFile(path)
+	templateFilePath := findTemplateFile(path)
 
 	doc, err := openTemlateHTML(templateFilePath)
 	if err != nil {
 		return
 	}
 
-	err = b.includesProcessNode(doc)
+	err = includesProcessNode(doc)
 	if err != nil {
 		return
 	}
@@ -153,19 +153,19 @@ func (b *builder) prepareIncludes(path string) (outHTML []byte, err error) {
 	return
 }
 
-func (b *builder) includesProcessNode(n *html.Node) error {
+func includesProcessNode(n *html.Node) error {
 	for i, a := range n.Attr {
-		if a.Key == b.cfg.IncludeAttr {
+		if a.Key == cfg.IncludeAttr {
 
 			for c := n.FirstChild; c != nil; c = c.NextSibling {
 				n.RemoveChild(c)
 			}
 
-			if !b.cfg.KeepWeditAttrs {
+			if !cfg.KeepWeditAttrs {
 				n.Attr = append(n.Attr[:i], n.Attr[i+1:]...)
 			}
 
-			ics, err := b.getInclude(a.Val, n)
+			ics, err := getInclude(a.Val, n)
 			if err != nil {
 				return fmt.Errorf("unable to include '%v' doe to an error: %v", a.Val, err)
 			}
@@ -177,7 +177,7 @@ func (b *builder) includesProcessNode(n *html.Node) error {
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		err := b.includesProcessNode(c)
+		err := includesProcessNode(c)
 		if err != nil {
 			return err
 		}
@@ -186,17 +186,17 @@ func (b *builder) includesProcessNode(n *html.Node) error {
 	return nil
 }
 
-func (b *builder) getInclude(path string, parent *html.Node) (nodes []*html.Node, err error) {
+func getInclude(path string, parent *html.Node) (nodes []*html.Node, err error) {
 
-	filePath := b.cfg.TemplateFolder + path
+	filePath := cfg.TemplateFolder + path
 
 	return openIncludeHTML(filePath, parent)
 }
 
-func (b *builder) findNodeByKey(n *html.Node, key model.Key) *html.Node {
+func findNodeByKey(n *html.Node, key model.Key) *html.Node {
 
 	for _, a := range n.Attr {
-		if a.Key == b.cfg.EditAttr {
+		if a.Key == cfg.EditAttr {
 			k := model.Key(a.Val)
 			if k == key {
 				return n
@@ -205,7 +205,7 @@ func (b *builder) findNodeByKey(n *html.Node, key model.Key) *html.Node {
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		cn := b.findNodeByKey(c, key)
+		cn := findNodeByKey(c, key)
 		if cn != nil {
 			return cn
 		}

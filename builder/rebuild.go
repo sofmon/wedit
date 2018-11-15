@@ -8,12 +8,12 @@ import (
 	"strings"
 )
 
-func (b *builder) RebuildAll() (err error) {
+func RebuildAll() (err error) {
 
 	var paths []string
 
 	err = filepath.Walk(
-		b.cfg.TemplateFolder,
+		cfg.TemplateFolder,
 		func(path string, info os.FileInfo, theErr error) error {
 
 			if theErr != nil {
@@ -24,13 +24,13 @@ func (b *builder) RebuildAll() (err error) {
 				return nil
 			}
 
-			if info.Name() != b.cfg.TemplateHTMLFile {
+			if info.Name() != cfg.TemplateHTMLFile {
 				return nil
 			}
 
 			folderPath := filepath.Dir(path)
 
-			relPath, err := filepath.Rel(b.cfg.TemplateFolder, folderPath)
+			relPath, err := filepath.Rel(cfg.TemplateFolder, folderPath)
 			if err != nil {
 				log.Printf("%40s - not processed due %v\n", path, err)
 				return nil
@@ -54,19 +54,19 @@ func (b *builder) RebuildAll() (err error) {
 
 	for _, relPath := range paths {
 
-		page, err := b.ReadPageData(relPath)
+		page, err := ReadPageData(relPath)
 		if err != nil {
 			log.Printf("%40s - not processed due %v\n", relPath, err)
 			continue
 		}
 
-		err = b.addRootData(&page)
+		err = addRootData(&page)
 		if err != nil {
 			log.Printf("%40s - not processed due %v\n", relPath, err)
 			continue
 		}
 
-		err = b.WritePage(relPath, page)
+		err = WritePage(relPath, page)
 		if err != nil {
 			log.Printf("%40s - not processed due %v\n", relPath, err)
 			continue

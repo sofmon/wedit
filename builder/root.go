@@ -19,7 +19,7 @@ var (
 	rootDataLock sync.Mutex
 )
 
-func (b *builder) getRootData() (page model.Page, err error) {
+func getRootData() (page model.Page, err error) {
 
 	rootDataLock.Lock()
 	defer rootDataLock.Unlock()
@@ -29,7 +29,7 @@ func (b *builder) getRootData() (page model.Page, err error) {
 		return
 	}
 
-	file := b.cfg.ContentFolder + b.cfg.RootJSONFile
+	file := cfg.ContentFolder + cfg.RootJSONFile
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -62,7 +62,7 @@ func (b *builder) getRootData() (page model.Page, err error) {
 	return
 }
 
-func (b *builder) clearRootData() {
+func clearRootData() {
 
 	rootDataLock.Lock()
 	defer rootDataLock.Unlock()
@@ -70,11 +70,11 @@ func (b *builder) clearRootData() {
 	rootData = nil
 }
 
-func (b *builder) updateRootData(page model.Page) (wasUpdated bool, err error) {
+func updateRootData(page model.Page) (wasUpdated bool, err error) {
 
 	wasUpdated = false
 
-	newRootData, err := b.getRootData()
+	newRootData, err := getRootData()
 	if err != nil {
 		return
 	}
@@ -109,7 +109,7 @@ func (b *builder) updateRootData(page model.Page) (wasUpdated bool, err error) {
 
 	rootData = &newRootData
 
-	file := b.cfg.ContentFolder + b.cfg.RootJSONFile
+	file := cfg.ContentFolder + cfg.RootJSONFile
 
 	data, err := json.MarshalIndent(newRootData, "", "  ")
 	if err != nil {
@@ -168,7 +168,7 @@ func isSameRepeat(x, y model.Repeat) bool {
 	return true
 }
 
-func (b *builder) splitRootData(page model.Page) (local model.Page, root model.Page) {
+func splitRootData(page model.Page) (local model.Page, root model.Page) {
 
 	local.Title = page.Title
 	local.Repeats = make(map[model.Key]model.Repeat)
@@ -180,7 +180,7 @@ func (b *builder) splitRootData(page model.Page) (local model.Page, root model.P
 	root.Images = make(map[model.Key]model.Image)
 
 	for k, v := range page.Elements {
-		if strings.HasPrefix(string(k), b.cfg.RootKeyPrefix) {
+		if strings.HasPrefix(string(k), cfg.RootKeyPrefix) {
 			root.Elements[k] = v
 		} else {
 			local.Elements[k] = v
@@ -188,7 +188,7 @@ func (b *builder) splitRootData(page model.Page) (local model.Page, root model.P
 	}
 
 	for k, v := range page.Images {
-		if strings.HasPrefix(string(k), b.cfg.RootKeyPrefix) {
+		if strings.HasPrefix(string(k), cfg.RootKeyPrefix) {
 			root.Images[k] = v
 		} else {
 			local.Images[k] = v
@@ -196,7 +196,7 @@ func (b *builder) splitRootData(page model.Page) (local model.Page, root model.P
 	}
 
 	for k, v := range page.Repeats {
-		if strings.HasPrefix(string(k), b.cfg.RootKeyPrefix) {
+		if strings.HasPrefix(string(k), cfg.RootKeyPrefix) {
 			root.Repeats[k] = v
 		} else {
 			local.Repeats[k] = v
@@ -206,9 +206,9 @@ func (b *builder) splitRootData(page model.Page) (local model.Page, root model.P
 	return
 }
 
-func (b *builder) addRootData(page *model.Page) error {
+func addRootData(page *model.Page) error {
 
-	global, err := b.getRootData()
+	global, err := getRootData()
 	if err != nil {
 		return err
 	}

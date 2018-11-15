@@ -13,9 +13,9 @@ import (
 	"unicode"
 )
 
-func (s *service) shellCommandHandler(w http.ResponseWriter, r *http.Request, c string) {
+func shellCommandHandler(w http.ResponseWriter, r *http.Request, c string) {
 	fmt.Printf("executing shell command: %s\n", c)
-	shCmd, ok := s.cfg.ShellCommands[c]
+	shCmd, ok := cfg.ShellCommands[c]
 	if !ok {
 		log.Printf("could not execute unknown shell command %v\n", c)
 		http.Error(w, "could not execute shell command", http.StatusInternalServerError)

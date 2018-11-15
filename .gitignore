@@ -5,6 +5,7 @@
 
 # Dart compiled files
 /editor/.pub/
+/editor/.dart_tool
 /editor/.packages
 /editor/editor.js
 /editor/editor.js.deps

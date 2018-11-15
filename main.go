@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/sofmon/wedit/builder"
-	"github.com/sofmon/wedit/config"
 	"github.com/sofmon/wedit/service"
 )
 
@@ -85,23 +84,28 @@ func initialize() {
 
 func edit() {
 
-	cfg, err := config.LoadConfig()
+	err := LoadConfig()
+	if err != nil {
+		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+	}
+	err = builder.LoadConfig()
+	if err != nil {
+		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+	}
+	err = service.LoadConfig()
 	if err != nil {
 		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
 	}
 
-	bld := builder.NewBuilder(cfg.Builder)
-	svc := service.NewService(cfg.Service, cfg.Builder.PublicFolder, bld)
-
 	done := make(chan error)
 
 	go func() {
-		done <- svc.ListenAndServe()
+		done <- service.ListenAndServe()
 	}()
 
-	if cfg.Service.OpenBrowser {
+	if cfg.OpenBrowser {
 		time.Sleep(1 * time.Second) // wait 1s for web server to start
-		openBrowser(fmt.Sprintf("http://%s:%d/!/", cfg.Service.Host, cfg.Service.Port))
+		openBrowser(fmt.Sprintf("http://%s:%d/!/", cfg.Host, cfg.Port))
 	}
 
 	err = <-done
@@ -112,14 +116,12 @@ func edit() {
 
 func build() {
 
-	cfg, err := config.LoadConfig()
+	err := builder.LoadConfig()
 	if err != nil {
 		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
 	}
 
-	bld := builder.NewBuilder(cfg.Builder)
-
-	err = bld.RebuildAll()
+	err = builder.RebuildAll()
 	if err != nil {
 		log.Fatalf("main: error in building public folder doe to an error: %v\n", err)
 	}

@@ -216,7 +216,7 @@ class Page {
   void save(Function onSuccess, Function onFailure) {
     Map pageData = toMap();
 
-    String jsonData = convert.JSON.encode(pageData);
+    String jsonData = convert.json.encode(pageData);
 
     html.HttpRequest request =
         new html.HttpRequest(); // create a new XHR./wedit
@@ -247,7 +247,7 @@ class Page {
   void command(String cmd, Function onSuccess, Function onFailure) {
     Map pageData = toMap();
 
-    String jsonData = convert.JSON.encode(pageData);
+    String jsonData = convert.json.encode(pageData);
 
     html.HttpRequest request =
         new html.HttpRequest(); // create a new XHR./wedit

@@ -54,6 +54,6 @@ String getLoadUrl(String url) {
 }
 
 void onDataLoaded(String responseText) {
-  Map map = convert.JSON.decode(responseText);
+  Map map = convert.json.decode(responseText);
   new Page.fromMap(map);
 }

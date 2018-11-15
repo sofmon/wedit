@@ -9,10 +9,10 @@ import (
 	"strings"
 )
 
-func (b *builder) findTemplatePath(path string) string {
+func findTemplatePath(path string) string {
 	subFolders := strings.Split(strings.Trim(path, "/"), "/")
-	folderPathToCheck := b.cfg.TemplateFolder
-	templateFolder := b.cfg.TemplateFolder
+	folderPathToCheck := cfg.TemplateFolder
+	templateFolder := cfg.TemplateFolder
 	for i := 0; i < len(subFolders); i++ {
 		folderPathToCheck += subFolders[i] + "/"
 		stat, err := os.Stat(folderPathToCheck)
@@ -25,13 +25,13 @@ func (b *builder) findTemplatePath(path string) string {
 	return templateFolder
 }
 
-func (b *builder) findTemplateFile(path string) string {
-	return b.findTemplatePath(path) + b.cfg.TemplateHTMLFile
+func findTemplateFile(path string) string {
+	return findTemplatePath(path) + cfg.TemplateHTMLFile
 }
 
-func (b *builder) ReadPageTemplate(path string) (string, error) {
+func ReadPageTemplate(path string) (string, error) {
 
-	data, err := b.prepareIncludes(path)
+	data, err := prepareIncludes(path)
 	if err != nil {
 		log.Printf("could not read page template for path '%v'. Error: %v\n", path, err)
 		return "", err
