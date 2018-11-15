@@ -4,7 +4,6 @@ library wedit;
 
 import 'dart:html' as html;
 import 'dart:convert' as convert;
-import 'dart:async' as async;
 import 'dart:svg' as svg;
 import 'package:markdown/markdown.dart' as md;
 import 'package:html_unescape/html_unescape.dart' as uesc;

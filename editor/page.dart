@@ -30,9 +30,10 @@ class Page {
 
   Page.fromMap(Map map) {
     _host = map[PAGE_HOST];
-    _site = map[PAGE_SITE];
+    //_site = map[PAGE_SITE];
     _path = map[PAGE_PATH];
 
+    
     var settings = map[PAGE_SETTINGS];
     _editAttribute = settings[PAGE_SETTINGS_EDITATTR];
     _repeatAttribute = settings[PAGE_SETTINGS_REPEATATTR];
@@ -67,13 +68,14 @@ class Page {
 
     _pageMenu =
         new PageMenu(this, _commands, settings[PAGE_SETTINGS_MENUTEXTCOLOR]);
+        
   }
 
   Map toMap() {
     Map map = new Map();
 
     map[PAGE_HOST] = _host;
-    map[PAGE_SITE] = _site;
+    //map[PAGE_SITE] = _site;
     map[PAGE_PATH] = _path;
 
     map[PAGE_TITLE] = _title;
@@ -136,7 +138,7 @@ class Page {
   void _syncElements() {
     html.document.title = _title;
 
-    List<html.Element> repeatedDomElements = new List<html.Element>();
+    //List<html.Element> repeatedDomElements = new List<html.Element>();
 
     html.ElementList<html.Element> domElements = html.querySelectorAll(
         "[" + _editAttribute + "],[" + _repeatAttribute + "]");

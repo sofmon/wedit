@@ -24,7 +24,10 @@ class Repeat {
     _shadows[_key] = new RepeatShadow.fromRepeat(this, _key, _domElement);
 
     if (map != null) {
-      _keyOrder = map[REPEAT_COPY_KEYS];
+      print(map);
+      print(map[REPEAT_COPY_KEYS]);
+      _keyOrder = map[REPEAT_COPY_KEYS].cast<String>();
+      print(_keyOrder);
       _renderShadows(_keyOrder);
     } else {
       _keyOrder = new List<String>();

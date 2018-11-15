@@ -22,8 +22,8 @@ var cfg = struct {
 	Host          string                  `json:"host"`
 	Port          int                     `json:"port"`
 	OpenBrowser   bool                    `json:"openBrowser"`
-	EditAttr      string                  `json:"editAttr"`
-	RepeatAttr    string                  `json:"repeatAttr"`
+	EditAttr      string                  `json:"editAttribute"`
+	RepeatAttr    string                  `json:"repeatAttribute"`
 	MenuTextColor string                  `json:"menuTextColor"`
 	ShellCommands map[string]ShellCommand `json:"shellCommands"`
 }{}
