@@ -2,9 +2,6 @@
     "templateFolder": "wedit.io/template",
     "contentFolder": "wedit.io/content",
     "publicFolder": "wedit.io/public",
-    "templateHtmlFile": "index.html",
-    "pageHtmlFile": "index.html",
-    "pageJsonFile": "index.json",
     "rootJsonFile": "root.json",
     "rootKeyPrefix": "!",
     "editAttribute": "wedit",
@@ -12,9 +9,9 @@
     "includeAttribute": "wedit-include",
     "keepAttributes": true,
     "cookie": "wedit",
+    "defaultPage":"index.html",
+    "allowedPageExt": [".html"],
     "host": "localhost",
     "port": 5000,
-    "openBrowser": true,
-    "menuTextColor": "#ffffff",
-    "shellCommands": {}
+    "openBrowser": true
 }

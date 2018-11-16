@@ -6,6 +6,7 @@ package builder
 import (
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -26,7 +27,8 @@ func findTemplatePath(path string) string {
 }
 
 func findTemplateFile(path string) string {
-	return findTemplatePath(path) + cfg.TemplateHTMLFile
+	dir, file := filepath.Split(path)
+	return filepath.Join(findTemplatePath(dir), file)
 }
 
 func ReadPageTemplate(path string) (string, error) {

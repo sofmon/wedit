@@ -6,8 +6,6 @@ package service
 import (
 	"fmt"
 	"net/http"
-	"net/url"
-	"strings"
 )
 
 // Service processing wedit HTTP requests
@@ -22,139 +20,42 @@ var (
 // ListenAndServe blocks the current go routine and start serving the wedit HTTP request
 func ListenAndServe() error {
 
-	http.HandleFunc("/!/", pageHandler)           // page.go
-	http.HandleFunc("/!editor.js", editorHandler) // editor.go
-	http.HandleFunc("/!load/", loadHandler)       // load.go
-	http.HandleFunc("/!save/", saveHandler)       // save.go
-	http.HandleFunc("/!image/", imageHandler)     // image.go
-
-	for k := range cfg.ShellCommands {
-		passValue := k
-		http.HandleFunc("/!"+k+"/", func(w http.ResponseWriter, r *http.Request) {
-			shellCommandHandler(w, r, passValue) // shell.go
-		},
-		)
-	}
-
 	staticHandler = http.FileServer(http.Dir(cfg.PublicFolder))
 
-	http.Handle("/", staticHandler)
+	/*
+		By default ActionPAth os '~', so:
+		GET  ~.js			- editor js
+		GET  ~?p=/some/url	- load page data
+		PUT	 ~?p=/some/url	- save page data
+		POST ~?p=/some/url	- upload asset (image)
+		GET	 /				- Serve page or asset
+	*/
+
+	http.HandleFunc(
+		"/~.js",
+		editorHandler, // editor.go
+	)
+
+	http.HandleFunc(
+		"/~",
+		func(w http.ResponseWriter, r *http.Request) {
+			switch r.Method {
+			case http.MethodGet:
+				loadHandler(w, r) // load.go
+				return
+			case http.MethodPut:
+				saveHandler(w, r) // save.go
+				return
+			case http.MethodPost:
+				imageHandler(w, r) // image.go
+				return
+			}
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		},
+	)
+
+	http.HandleFunc("/", pageHandler) // page.go
 
 	endPoint := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
 	return http.ListenAndServe(endPoint, nil)
-}
-
-// Action to be performed by the current request
-type Action int
-
-const (
-	// ActionGetPage is used to retrieve page HTML
-	ActionGetPage Action = iota
-	// ActionServeResource is used when HTML or static resource is requested
-	ActionServeResource
-	// ActionJsRequest is used when the editor JS file is requested
-	ActionJsRequest
-	// ActionSavePage is used when page is being saved by the editor
-	ActionSavePage
-	// ActionLoadPage is used when page is being loaded by the editor
-	ActionLoadPage
-	// ActionUploadImage is used when image is uploaded by the editor
-	ActionUploadImage
-)
-
-const (
-	actionJsRequestPathKey   = "!editor.js"
-	actionEditPagePathKey    = "!"
-	actionSavePagePathKey    = "!save"
-	actionLoadPagePathKey    = "!load"
-	actionUploadImagePathKey = "!image"
-)
-
-// getPathWithoutAction retrieves the path of the requested resource excluding the wedit parameters/action
-func getPathWithoutAction(r *http.Request) string {
-
-	a := getAction(r)
-
-	switch a {
-
-	case ActionJsRequest:
-		ref, err := url.Parse(r.Referer())
-		if err != nil {
-			return "/" // TODO: evaluate
-		}
-		return strings.Replace(ref.Path, "/"+actionEditPagePathKey+"/", "", 1)
-
-	case ActionServeResource:
-		return strings.Replace(r.URL.Path, "/"+actionEditPagePathKey+"/", "", 1)
-
-	case ActionSavePage:
-		return strings.Replace(r.URL.Path, "/"+actionSavePagePathKey+"/", "", 1)
-
-	case ActionLoadPage:
-		return strings.Replace(r.URL.Path, "/"+actionLoadPagePathKey+"/", "", 1)
-
-	case ActionUploadImage:
-		return strings.Replace(r.URL.Path, "/"+actionUploadImagePathKey+"/", "", 1)
-	}
-
-	return r.URL.Path
-}
-
-// getURLForAction retrieves the URL for a specific action
-func getURLForAction(r *http.Request, a Action) url.URL {
-
-	switch a {
-
-	case ActionJsRequest:
-		return url.URL{
-			Host:   r.Host,
-			Scheme: r.URL.Scheme,
-			Path:   actionJsRequestPathKey}
-
-	case ActionSavePage:
-		return url.URL{
-			Host:   r.Host,
-			Scheme: r.URL.Scheme,
-			Path:   actionSavePagePathKey}
-
-	case ActionLoadPage:
-		return url.URL{
-			Host:   r.Host,
-			Scheme: r.URL.Scheme,
-			Path:   actionLoadPagePathKey}
-
-	case ActionUploadImage:
-		return url.URL{
-			Host:   r.Host,
-			Scheme: r.URL.Scheme,
-			Path:   actionUploadImagePathKey}
-	}
-
-	return url.URL{
-		Host:   r.Host,
-		Scheme: r.URL.Scheme,
-		Path:   "/"}
-}
-
-// getAction extracts request action
-func getAction(r *http.Request) (a Action) {
-
-	pathSplit := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
-
-	if len(pathSplit) < 0 {
-		return ActionGetPage
-	}
-
-	switch strings.ToLower(pathSplit[0]) {
-	case actionJsRequestPathKey:
-		return ActionJsRequest
-	case actionSavePagePathKey:
-		return ActionSavePage
-	case actionLoadPagePathKey:
-		return ActionLoadPage
-	case actionUploadImagePathKey:
-		return ActionUploadImage
-	}
-
-	return ActionServeResource
 }

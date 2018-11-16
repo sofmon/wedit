@@ -15,7 +15,9 @@ import (
 
 func saveHandler(w http.ResponseWriter, r *http.Request) {
 
-	path := getPathWithoutAction(r)
+	path := r.URL.Query().Get("p")
+
+	_, path = verifyPath(path)
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

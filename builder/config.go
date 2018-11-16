@@ -12,18 +12,16 @@ import (
 
 // Config for the wedit (file) explorer
 var cfg = struct {
-	TemplateFolder   string `json:"templateFolder"`
-	ContentFolder    string `json:"contentFolder"`
-	PublicFolder     string `json:"publicFolder"`
-	TemplateHTMLFile string `json:"templateHtmlFile"`
-	PageHTMLFile     string `json:"pageHtmlFile"`
-	PageJSONFile     string `json:"pageJsonFile"`
-	RootJSONFile     string `json:"rootJsonFile"`
-	RootKeyPrefix    string `json:"rootKeyPrefix"`
-	EditAttr         string `json:"editAttribute"`
-	RepeatAttr       string `json:"repeatAttribute"`
-	IncludeAttr      string `json:"includeAttribute"`
-	KeepWeditAttrs   bool   `json:"keepAttributes"`
+	TemplateFolder string   `json:"templateFolder"`
+	ContentFolder  string   `json:"contentFolder"`
+	PublicFolder   string   `json:"publicFolder"`
+	RootJSONFile   string   `json:"rootJsonFile"`
+	RootKeyPrefix  string   `json:"rootKeyPrefix"`
+	EditAttr       string   `json:"editAttribute"`
+	RepeatAttr     string   `json:"repeatAttribute"`
+	IncludeAttr    string   `json:"includeAttribute"`
+	KeepWeditAttrs bool     `json:"keepAttributes"`
+	AllowedPageExt []string `json:"allowedPageExt"`
 }{}
 
 // LoadConfig form wedit.json file

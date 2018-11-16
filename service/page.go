@@ -4,44 +4,28 @@
 package service
 
 import (
-	"bufio"
-	"bytes"
-	"fmt"
 	"log"
 	"net/http"
 	"path/filepath"
 	"strings"
 
 	"github.com/sofmon/wedit/builder"
-	"golang.org/x/net/html"
 )
 
-const editorScriptTag = `<script async="" src="/!editor.js"></script>`
+const editorScriptTag = `<script async="" src="/~.js"></script>`
 
 func pageHandler(w http.ResponseWriter, r *http.Request) {
 
-	path := getPathWithoutAction(r)
+	path := r.URL.Path
 
-	if filepath.Ext(path) != "" {
-		r.URL.RawPath = strings.Replace(r.URL.RawPath, "/!/", "/", 1)
-		r.URL.Path = strings.Replace(r.URL.Path, "/!/", "/", 1)
+	isHTML, path := verifyPath(path)
+
+	if !isHTML {
 		staticHandler.ServeHTTP(w, r)
 		return
 	}
 
-	if !strings.HasSuffix(r.URL.RawPath, "/") {
-		http.Redirect(w, r, r.URL.RawPath+"/", http.StatusPermanentRedirect)
-		return
-	}
-
-	templateRaw, err := builder.ReadPageTemplate(path)
-	if err != nil {
-		log.Printf("unable to serve template on path '%v'. Error: %v", path, err)
-		http.NotFound(w, r)
-		return
-	}
-
-	templateHTML, err := processEditLinks(templateRaw)
+	templateHTML, err := builder.ReadPageTemplate(path)
 	if err != nil {
 		log.Printf("unable to serve template on path '%v'. Error: %v", path, err)
 		http.NotFound(w, r)
@@ -54,43 +38,18 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(templateWithEditor))
 }
 
-func processEditLinks(inHTML string) (outHTML string, err error) {
+func verifyPath(path string) (isHTML bool, exactPath string) {
 
-	doc, err := html.Parse(bytes.NewReader([]byte(inHTML)))
-
-	processEditLinksNode(doc)
-
-	var targetBuff bytes.Buffer
-	w := bufio.NewWriter(&targetBuff)
-
-	err = html.Render(w, doc)
-	if err != nil {
-		err = fmt.Errorf("unable to render HTML due to error: %v", err)
-		return
+	if strings.HasSuffix(path, "/") {
+		return true, path + cfg.DefaultPage
 	}
 
-	err = w.Flush()
-	if err != nil {
-		err = fmt.Errorf("unable to render HTML due to error: %v", err)
-		return
-	}
-
-	outHTML = string(targetBuff.Bytes())
-
-	return
-}
-
-func processEditLinksNode(n *html.Node) {
-
-	if n.Data == "a" {
-		for i, a := range n.Attr {
-			if a.Key == "href" &&
-				strings.HasPrefix(a.Val, "/") {
-				n.Attr[i].Val = "/!" + a.Val
-			}
+	ext := filepath.Ext(path)
+	for _, e := range cfg.AllowedPageExt {
+		if e == ext {
+			return true, path
 		}
 	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		processEditLinksNode(c)
-	}
+
+	return false, path
 }

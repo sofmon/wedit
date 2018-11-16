@@ -283,7 +283,8 @@ class Image {
       }
     });
 
-    var url = html.window.location.href.replaceAll("/!/", "/!image/") + name + "?key=" + _key;
+    var url = html.window.location.protocol + "//" + html.window.location.host + "/~?k=" + _key + "&n=" + name + "&p=" + html.window.location.pathname;
+    //var url = html.window.location.href.replaceAll("/!/", "/!image/") + name + "?key=" + _key;
     request.open("POST", url);
     request.send(data);
   }

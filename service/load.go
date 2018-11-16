@@ -14,7 +14,9 @@ import (
 
 func loadHandler(w http.ResponseWriter, r *http.Request) {
 
-	path := getPathWithoutAction(r)
+	path := r.URL.Query().Get("p")
+
+	_, path = verifyPath(path)
 
 	page, err := builder.ReadPageData(path)
 	if err != nil {
@@ -28,18 +30,7 @@ func loadHandler(w http.ResponseWriter, r *http.Request) {
 		Settings: model.Settings{
 			EditAttribute:   cfg.EditAttr,
 			RepeatAttribute: cfg.RepeatAttr,
-			MenuTextColor:   cfg.MenuTextColor,
 		},
-	}
-
-	for k, v := range cfg.ShellCommands {
-		pageWithSettings.Settings.Commands = append(
-			pageWithSettings.Settings.Commands,
-			model.Command{
-				Name:  k,
-				Color: v.Color,
-			},
-		)
 	}
 
 	data, err := json.Marshal(pageWithSettings)

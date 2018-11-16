@@ -105,7 +105,7 @@ func edit() {
 
 	if cfg.OpenBrowser {
 		time.Sleep(1 * time.Second) // wait 1s for web server to start
-		openBrowser(fmt.Sprintf("http://%s:%d/!/", cfg.Host, cfg.Port))
+		openBrowser(fmt.Sprintf("http://%s:%d/", cfg.Host, cfg.Port))
 	}
 
 	err = <-done

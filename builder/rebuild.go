@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+func isHTML(name string) bool {
+	ext := filepath.Ext(name)
+	for _, e := range cfg.AllowedPageExt {
+		if ext == e {
+			return true
+		}
+	}
+	return false
+}
+
 func RebuildAll() (err error) {
 
 	var paths []string
@@ -24,7 +34,7 @@ func RebuildAll() (err error) {
 				return nil
 			}
 
-			if info.Name() != cfg.TemplateHTMLFile {
+			if !isHTML(info.Name()) {
 				return nil
 			}
 

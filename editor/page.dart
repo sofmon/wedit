@@ -240,9 +240,9 @@ class Page {
       }
     });
 
-    var url = html.window.location.href.replaceAll("/!/", "/!save/");
+    var url = html.window.location.protocol + "//" + html.window.location.host + "/~?p=" + html.window.location.pathname;
 
-    request.open("POST", url, async: false);
+    request.open("PUT", url, async: false);
     request.send(jsonData);
   }
 

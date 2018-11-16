@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
+	"path/filepath"
 
 	"github.com/sofmon/wedit/builder"
 	"github.com/sofmon/wedit/model"
@@ -16,14 +16,12 @@ import (
 
 func imageHandler(w http.ResponseWriter, r *http.Request) {
 
-	path := getPathWithoutAction(r)
+	path := r.URL.Query().Get("p")
 
-	urlSplit := strings.Split(strings.Trim(path, "/"), "/")
+	path = filepath.Dir(path)
 
-	pagePath := strings.Join(urlSplit[:len(urlSplit)-1], "/")
-
-	imageName := urlSplit[len(urlSplit)-1]
-	imageKey := model.Key(r.URL.Query().Get("key"))
+	imageName := r.URL.Query().Get("n")
+	imageKey := model.Key(r.URL.Query().Get("k"))
 
 	imageData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -32,7 +30,7 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	img, err := builder.WriteImage(pagePath, imageKey, imageName, imageData)
+	img, err := builder.WriteImage(path, imageKey, imageName, imageData)
 	if err != nil {
 		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)
