@@ -9,16 +9,9 @@ import (
 	"io/ioutil"
 )
 
-// ShellCommand available to the user
-type ShellCommand struct {
-	Color  string   `json:"color"`
-	Script []string `json:"script"`
-}
-
 // Config for the wedit http service
 var cfg = struct {
 	PublicFolder   string   `json:"publicFolder"`
-	Cookie         string   `json:"cookie"`
 	Host           string   `json:"host"`
 	Port           int      `json:"port"`
 	OpenBrowser    bool     `json:"openBrowser"`
@@ -29,9 +22,7 @@ var cfg = struct {
 }{}
 
 // LoadConfig form wedit.json file
-func LoadConfig() error {
-
-	file := "wedit.json"
+func LoadConfig(file string) error {
 
 	data, err := ioutil.ReadFile(file)
 	if err != nil {

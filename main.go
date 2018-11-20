@@ -17,11 +17,7 @@ import (
 	"github.com/sofmon/wedit/service"
 )
 
-// Version is initialized in compilation time by go build.
-var Version string
-
-// Name is initialized in compilation time by go build.
-var Name string
+const version = "1"
 
 func init() {
 	log.SetFlags(0)
@@ -64,13 +60,13 @@ func main() {
 		build()
 
 	case actionVersion:
-		log.Printf("wedit version %s\n", Version)
+		log.Printf("★ wedit version: %s\n", version)
 
 	case actionHelp:
 		printHelp()
 
 	default:
-		log.Printf("unknown action '%s'\n", action)
+		log.Printf("✘ unknown action '%s' ... printing 'help' text\n", action)
 		printHelp()
 		os.Exit(1)
 	}
@@ -79,22 +75,22 @@ func main() {
 }
 
 func initialize() {
-	log.Fatalln("TODO: init action not implemented")
+	log.Fatalln("✘ TODO: init action not implemented")
 }
 
 func edit() {
 
 	err := LoadConfig()
 	if err != nil {
-		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+		log.Fatalf("✘ unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
 	}
-	err = builder.LoadConfig()
+	err = builder.LoadConfig("wedit.json")
 	if err != nil {
-		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+		log.Fatalf("✘ unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
 	}
-	err = service.LoadConfig()
+	err = service.LoadConfig("wedit.json")
 	if err != nil {
-		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+		log.Fatalf("✘ unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
 	}
 
 	done := make(chan error)
@@ -108,22 +104,24 @@ func edit() {
 		openBrowser(fmt.Sprintf("http://%s:%d/", cfg.Host, cfg.Port))
 	}
 
+	log.Printf("✔ running local http server on http://%s:%d/\n", cfg.Host, cfg.Port)
+
 	err = <-done
 	if err != nil {
-		log.Fatalf("main: error in serving wedit http requests doe to an error: %v\n", err)
+		log.Fatalf("✘ error in serving wedit http requests doe to an error: %v\n", err)
 	}
 }
 
 func build() {
 
-	err := builder.LoadConfig()
+	err := builder.LoadConfig("wedit.json")
 	if err != nil {
-		log.Fatalf("main: unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+		log.Fatalf("✘ unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
 	}
 
 	err = builder.RebuildAll()
 	if err != nil {
-		log.Fatalf("main: error in building public folder doe to an error: %v\n", err)
+		log.Fatalf("✘ error in building public folder doe to an error: %v\n", err)
 	}
 }
 
@@ -147,23 +145,21 @@ func openBrowser(url string) {
 	if cmd != nil {
 		err := cmd.Start()
 		if err != nil {
-			log.Fatalf("main: unable to start browser due to an error: %v\n", err)
+			log.Fatalf("✘ unable to start browser due to an error: %v\n", err)
 		}
 	}
 }
 
 func printHelp() {
 	log.Print(
-		`
-		Web edit tool from wedit.io
-
-		Usage: wedit [action]
-		actions:
-		help    - Prints this message
-		version - Prints wedit version
-		init    - Prepare the current folder as a wedit project
-		edit    - Edit website using web browser (default action)
-		build   - (Re)Generate the static website, for example after template change
-		`,
+		"\n┊ web edit tool from https://wedit.io/\n┊\n" +
+			"┊ usage: wedit [action]\n┊\n" +
+			"┊ actions:\n" +
+			"┊   edit    - edit current website using the default web browser (default action)\n" +
+			"┊   init    - prepare the current folder as a wedit project\n" +
+			"┊   build   - [re]generate the static website, for example after template change\n" +
+			"┊   version - prints wedit version\n" +
+			"┊   coffee  - support wedit maintainers by donating through PayPal\n" +
+			"┊   help    - prints this message\n\n",
 	)
 }

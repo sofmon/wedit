@@ -1,7 +1,7 @@
 {
-    "templateFolder": "wedit.io/template",
-    "contentFolder": "wedit.io/content",
-    "publicFolder": "wedit.io/public",
+    "templateFolder": "tmp/template",
+    "contentFolder": "tmp/content",
+    "publicFolder": "tmp/public",
     "variationFolderName": "-",
     "rootJsonFile": "root.json",
     "rootKeyPrefix": "!",

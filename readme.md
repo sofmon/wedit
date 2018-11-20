@@ -1,172 +1,160 @@
 # Web edit tool ([wedit.io](https://wedit.io))
 
-`wedit` is a static website edit tool using web browser as WYSIWYG editor.
+`wedit` uses static HTML website as template and allows the content to be changed through WYSIWYG editing using the web browser.
+
+All changes are immediate and align with the intended website design.
 
 # How it works
 
 `wedit` works by:
 
-- Opening self served HTTP server on the localhost serving the `template` folder with `wedit` editor script
+- Opening self served HTTP server on the localhost serving a `template` folder.
+- Starting the OS default browser and point it to the local server in edit mode.
+- Allowing to edit the website in the browser by using `CTRL` key to highlight and edit any element marked with `wedit` attributes.
+- Generates resulting static HTML files in the `public` folder.
 
-- Starting the os default browser and point it to the local server in edit mode (under the `/!/` root path)
+# Usage
 
-- Allowing to edit the website in the browser by using `CTRL` key to highlight and edit any element marked with `wedit` attributes
-
-- Generating result static HTML files in the `public` folder
-
-# How to use the wedit command
-
-## 1. Create a new folder
+## 1. Initialize
 
 To start fresh, create a new folder on your machine.
 
-## 2. Initialize
-
-Navigate to the new folder rand run:
-``` s
+Navigate to the new folder and run:
+``` sh
 $ wedit init
 ```
 
 This will generate the wedit folder structure:
 
-- `template` - folder containing static HTML template
-- `content` - folder containing entered content
-- `public` - folder containing the result static website
-- `wedit.json` - wedit configuration file
+- `template` - folder containing static HTML template.
+- `content` - folder containing entered content.
+- `public` - folder containing the resulting static website.
+- `wedit.json` - wedit configuration file.
 
-## 2. Provide static template
+## 2. Static template
 
 Copy a static HTML website to the `template` folder.
 
-## 3. Update the HTML template
+## 3. Prepare template
 
-`wedit` required every servable web folder to have `index.html` file.
+Every editable HTML element within template html file can have one of the attributes:
+- `wedit="{unique-key}"` - marks HTML element as editable.
+- `wedit-repeat="{unique-key}"` - marks HTML element as repeatable.
+- `wedit-include="{path}"` - includes target HTML template file as child element (useful for headers and footers).
 
-### Mark element as editable
+You can't use `wedit`, `wedit-repeat` or `wedit-include` on the same HTML element.
 
-Every editable element within template `index.html` file can have one of the attributes:
-- `wedit="{unique-key}"` - marks HTML element as editable
-- `wedit-repeat="{unique-key}"` - marks HTML element as repeatable
-- `wedit-include="{path}"` - includes target HTML template file as child element (useful for headers and footers)
+If `{unique-key}` start with prefix `!`, its value will persist throughout all pages with same key (useful for headers and footers)
 
-You can not use `wedit`, `wedit-repeat` or `wedit-include` on the same HTML element.
+### Text editing
 
-If `{unique-key}` start with prefix `!`, its value will be the same side wide (useful for headers and footers)
+Edit through markdown using paragraphs, [links](http://wedit.io), headers, bullet points, `basic` **text** *decorations*, inline images or even <span style="text-decoration:underline">HTML</span>.
 
-
-### URL mapping
-
-To remove ambiguous URLs, `wedit` expects all path to ends with `/`.
-
-Home page path: `http(s)://{domain}/`
-
-Sub pages path: `http(s)://{domain}/{level 1}/[{level 2}/[{level 3}/[...]]]`
-
-`wedit` uses HTML template closest to the requested path.
-
-Example of `wedit` template folder structure and URL mapping:
-
-- `template`
-  - {static files}
-  - `index.html` - maps to `http(s)://{domain}/{anything}/`
-  - {folder A}
-    - {static files}
-    - `index.html` - maps to `http(s)://{domain}/{folder A}/{anything}/`
-    - {folder A.A}
-      - {static files}
-      - `index.html` - maps to `http(s)://{domain}/{folder A}/{folder A.A}/{anything}/`
-      - ...
-    - ...
-  - {folder B}
-    - {static files}
-    - `index.html` - maps to `http(s)://{domain}/{folder B}/{anything}/`
-    - ...
-  - ...
-
-### Prepare for editing
-
-Wedit serves all public assets from the `public` folder. To prepare for editing run:
-
-``` s
-$ wedit build
+```
+<div wedit="text-key-1">...</div>
 ```
 
-The `build` command can also regenerate the whole website if the `template` changes
+### Repeat sections
 
-## 3. Edit website through the browser
+Replicated same section multiple times with different content.
+
+```
+<div class="carousel">
+<div class="item" wedit-repear="repeat-key-1">
+...
+<div>
+</div>
+```
+
+### Site-wide content
+
+Mark content as available for the whole website, so changes are applied to all pages.
+
+```
+<div class="footer">
+<span class="mantra" wedit="!footer-mantra">...</span>
+</div>
+```
+
+### Images
+
+Supports `<img>` elements.
+
+```
+<img wedit="image-key-1" src="..." srcset="...">
+```
+
+If `srcset` is used with 'width' descriptor (like `srcset="image-s.jpg 320w, image-m.jpg 640w, image-l.jpg 1024w"`), the new uploaded image will be automatically resized and different files will be supplied for each descriptor.
+
+### Includes
+
+Append entire HTML fragments from separate files to include similar sections in different pages.
+
+```
+<div wedit-include="footer.html"></div>
+```
+
+###  Variations
+
+`wedit` follows the `template` folder structure for the static website. The one exception is the `variation` folder, which will be mapped to any string while `wedit` is in edit mode. By default the variation folder name is a single hyphen (`‐`).
+
+As an example, the file in `template` folder `blogs/-/index.html` will be used as for URLs like `/blogs/some-article/index.html` and `/blogs/some-other-article/index.html`.
+
+To create new variations, while in `wedit` edit more, navigate to the desire URL and `wedit` will create the variation in the `public` folder.
+
+## 4. Start editing
 
 Run `wedit` tool within the project folder:
 
-``` s
+``` sh
 $ wedit
 ```
 
 `wedit` opens the default browser with the template site in WYSIWYG edit mode.
 
-Once the page is loaded at `http://{localhost}:{port}/!/...` you can press `CTRL` key to start edit.
+Once the page is loaded at `http://{localhost}:{port}/` you can press `CTRL` key to start editing.
 
-As long as you are in edit mode (under the `/!/` root path), you can generate new pages just by navigating to the desired URL.
+Entered content is saved in the `content` folder and the resulting static website is saved in the `public` folder.
 
-Once done go to the menu (`CTRL` + hover on top of the page) and press `save` to save the page.
-
-The result is saved in the `public` folder.
-
-## 4. Deploy result to hosting service
+## 5. Deployment
 
 The resulting `public` folder is a static generated website that can be deployed to any hosting service/server.
 
-# Wedit config file
+# Config file
 
-Default `wedit.json` file with two example `shellCommands`:
+Default `wedit.json` file:
 ``` JSON
 {
-    "builder": {
-        "templateFolder": "./template",
-        "contentFolder": "./content",
-        "publicFolder": "./public",
-        "templateHtmlFile": "index.html",
-        "pageHtmlFile": "index.html",
-        "pageJsonFile": "index.json",
-        "rootJsonFile": "root.json",
-        "rootKeyPrefix": "!",
-        "editAttribute": "wedit",
-        "repeatAttribute": "wedit-repeat",
-        "includeAttribute": "wedit-include",
-        "keepAttributes": false
-    },
-    "service": {
-        "host": "localhost",
-        "port": 5000,
-        "openBrowser": true,
-        "menuTextColor": "#ffffff",
-        "shellCommands": {
-            "reset": {
-                "color": "#99d250",
-                "script": [
-                    "git reset --hard origin/master",
-                    "git pull"
-                ]
-            }
-            ,
-            "publish": {
-                "color": "#d40d22",
-                "script": [
-                    "git add content",
-                    "git add public",
-                    "git commit -m 'content update by wedit'",
-                    "git push"
-                ]
-            }
-        }
-    }
+    "templateFolder": "template",
+    "contentFolder": "content",
+    "publicFolder": "public",
+    "variationFolderName": "-",
+    "rootJsonFile": "root.json",
+    "rootKeyPrefix": "!",
+    "editAttribute": "wedit",
+    "repeatAttribute": "wedit-repeat",
+    "includeAttribute": "wedit-include",
+    "keepAttributes": false,
+    "defaultPage":"index.html",
+    "allowedPageExt": [".html"],
+    "host": "localhost",
+    "port": 5000,
+    "openBrowser": true
 }
 ```
 
-The example `shellCommands` shows how `wedit` can be used as content editing tool connected to `git`
+# Get wedit
 
-# How to build
+Requires [Go](https://golang.org/) to be installed.
+
+``` sh
+$ go get github.com/sofmon/wedit
+```
+
+# Build
 
 The build requires setup for [Go](https://golang.org/) and [Dart](https://www.dartlang.org/) environments.
 
-- On Linux or MAC run **./build.sh**
-- On Windows run **./build.ps1**
+``` sh
+$ ./build.sh # or build.ps1 for windows
+```

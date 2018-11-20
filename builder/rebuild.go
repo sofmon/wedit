@@ -42,7 +42,7 @@ func RebuildAll() (err error) {
 
 			relPath, err := filepath.Rel(cfg.TemplateFolder, folderPath)
 			if err != nil {
-				log.Printf("%40s - not processed due %v\n", path, err)
+				log.Printf("✘ %s %v\n", path, err)
 				return nil
 			}
 
@@ -66,19 +66,19 @@ func RebuildAll() (err error) {
 
 		page, err := ReadPageData(relPath)
 		if err != nil {
-			log.Printf("%40s - not processed due %v\n", relPath, err)
+			log.Printf("✘ %s %v\n", relPath, err)
 			continue
 		}
 
 		err = addRootData(&page)
 		if err != nil {
-			log.Printf("%40s - not processed due %v\n", relPath, err)
+			log.Printf("✘ %s %v\n", relPath, err)
 			continue
 		}
 
 		err = WritePage(relPath, page)
 		if err != nil {
-			log.Printf("%40s - not processed due %v\n", relPath, err)
+			log.Printf("✘ %s %v\n", relPath, err)
 			continue
 		}
 	}

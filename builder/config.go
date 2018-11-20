@@ -12,22 +12,21 @@ import (
 
 // Config for the wedit (file) explorer
 var cfg = struct {
-	TemplateFolder string   `json:"templateFolder"`
-	ContentFolder  string   `json:"contentFolder"`
-	PublicFolder   string   `json:"publicFolder"`
-	RootJSONFile   string   `json:"rootJsonFile"`
-	RootKeyPrefix  string   `json:"rootKeyPrefix"`
-	EditAttr       string   `json:"editAttribute"`
-	RepeatAttr     string   `json:"repeatAttribute"`
-	IncludeAttr    string   `json:"includeAttribute"`
-	KeepWeditAttrs bool     `json:"keepAttributes"`
-	AllowedPageExt []string `json:"allowedPageExt"`
+	TemplateFolder      string   `json:"templateFolder"`
+	ContentFolder       string   `json:"contentFolder"`
+	PublicFolder        string   `json:"publicFolder"`
+	VariationFolderName string   `json:"variationFolderName"`
+	RootJSONFile        string   `json:"rootJsonFile"`
+	RootKeyPrefix       string   `json:"rootKeyPrefix"`
+	EditAttr            string   `json:"editAttribute"`
+	RepeatAttr          string   `json:"repeatAttribute"`
+	IncludeAttr         string   `json:"includeAttribute"`
+	KeepWeditAttrs      bool     `json:"keepAttributes"`
+	AllowedPageExt      []string `json:"allowedPageExt"`
 }{}
 
 // LoadConfig form wedit.json file
-func LoadConfig() error {
-
-	file := "wedit.json"
+func LoadConfig(file string) error {
 
 	data, err := ioutil.ReadFile(file)
 	if err != nil {

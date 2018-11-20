@@ -20,7 +20,7 @@ func loadHandler(w http.ResponseWriter, r *http.Request) {
 
 	page, err := builder.ReadPageData(path)
 	if err != nil {
-		log.Printf("unable to read page data path '%v'; error: %v", path, err)
+		log.Printf("✘ unable to read page data path '%v'; error: %v", path, err)
 		http.Error(w, "unable to read page data", http.StatusInternalServerError)
 		return
 	}
@@ -35,7 +35,7 @@ func loadHandler(w http.ResponseWriter, r *http.Request) {
 
 	data, err := json.Marshal(pageWithSettings)
 	if err != nil {
-		log.Printf("unable to read page data path '%v'; error: %v", path, err)
+		log.Printf("✘ unable to read page data path '%v'; error: %v", path, err)
 		http.Error(w, "unable to read page data", http.StatusInternalServerError)
 		return
 	}

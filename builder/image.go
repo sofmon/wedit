@@ -112,27 +112,27 @@ func WriteImage(pagePath string, key model.Key, name string, data []byte) (img m
 
 	err = ioutil.WriteFile(file, data, 0777)
 	if err != nil {
-		log.Printf("unable to save file %s; error: %v", file, err)
+		log.Printf("✘ unable to save file %s; error: %v", file, err)
 		return
 	}
 
 	page, err := ReadPageData(pagePath)
 	if err != nil {
-		log.Printf("unable to read page data for path %s; error: %v", pagePath, err)
+		log.Printf("✘ unable to read page data for path %s; error: %v", pagePath, err)
 		return
 	}
 
 	found := false
 	img, found = page.Images[key]
 	if !found {
-		log.Printf("unable to find image with key '%s' in template for path %s", key, pagePath)
+		log.Printf("✘ unable to find image with key '%s' in template for path %s", key, pagePath)
 	}
 
 	img.Type = imageType
 
 	err = resizeImage(publicFolder, img, data)
 	if err != nil {
-		log.Printf("unable to resize files; error: %v", err)
+		log.Printf("✘ unable to resize files; error: %v", err)
 		return
 	}
 

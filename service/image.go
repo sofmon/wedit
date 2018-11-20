@@ -25,21 +25,21 @@ func imageHandler(w http.ResponseWriter, r *http.Request) {
 
 	imageData, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
+		log.Printf("✘ unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)
 		return
 	}
 
 	img, err := builder.WriteImage(path, imageKey, imageName, imageData)
 	if err != nil {
-		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
+		log.Printf("✘ unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)
 		return
 	}
 
 	resBody, err := json.Marshal(img)
 	if err != nil {
-		log.Printf("unable to process image ('%s') data; error: %v", imageName, err)
+		log.Printf("✘ unable to process image ('%s') data; error: %v", imageName, err)
 		http.Error(w, "unable to process image", http.StatusInternalServerError)
 		return
 	}

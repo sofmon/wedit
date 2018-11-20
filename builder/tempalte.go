@@ -35,7 +35,7 @@ func ReadPageTemplate(path string) (string, error) {
 
 	data, err := prepareIncludes(path)
 	if err != nil {
-		log.Printf("could not read page template for path '%v'. Error: %v\n", path, err)
+		log.Printf("✘ could not read page template for path '%v'. Error: %v\n", path, err)
 		return "", err
 	}
 

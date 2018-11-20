@@ -27,7 +27,7 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 
 	templateHTML, err := builder.ReadPageTemplate(path)
 	if err != nil {
-		log.Printf("unable to serve template on path '%v'. Error: %v", path, err)
+		log.Printf("✘ unable to serve template on path '%v'. Error: %v", path, err)
 		http.NotFound(w, r)
 		return
 	}

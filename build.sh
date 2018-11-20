@@ -8,4 +8,4 @@ echo "const EditorJSCode = \`" >> ./editor/editor.go
 sed 's/`/`+"`"+`/g' ./editor/editor.js >> ./editor/editor.go # fix bug in golang with long strings
 echo "\`" >> ./editor/editor.go
 echo "=== Start building go applicaiton === "
-go build -o wedit
+go build -o wedit .

@@ -37,13 +37,13 @@ func getRootData() (page model.Page, err error) {
 			err = nil // it is an empty data
 			return
 		}
-		log.Printf("Could not load root data file '%v'. Error: %v\n", file, err)
+		log.Printf("✘ unable to load root data file '%v'. Error: %v\n", file, err)
 		return
 	}
 
 	err = json.Unmarshal(data, &page)
 	if err != nil {
-		log.Printf("Could not load root data file '%v'. Error: %v\n", file, err)
+		log.Printf("✘ unable to load root data file '%v'. Error: %v\n", file, err)
 		return
 	}
 
@@ -113,13 +113,13 @@ func updateRootData(page model.Page) (wasUpdated bool, err error) {
 
 	data, err := json.MarshalIndent(newRootData, "", "  ")
 	if err != nil {
-		log.Printf("unable to save root data at '%v'; error: %v", file, err)
+		log.Printf("✘ unable to save root data at '%v'; error: %v", file, err)
 		return false, err
 	}
 
 	err = ioutil.WriteFile(file, data, 0777)
 	if err != nil {
-		log.Printf("unable to save root data at '%v'; error: %v", file, err)
+		log.Printf("✘ unable to save root data at '%v'; error: %v", file, err)
 		return false, err
 	}
 

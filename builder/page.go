@@ -24,27 +24,27 @@ func ReadPageData(path string) (page model.Page, error error) {
 
 	data, err := ioutil.ReadFile(contentFile)
 	if err != nil && !os.IsNotExist(err) {
-		log.Printf("Could not load page data file '%v'. Error: %v\n", contentFile, err)
+		log.Printf("✘ unable to load page data file '%v'. Error: %v\n", contentFile, err)
 		return
 	}
 
 	if err == nil {
 		err = json.Unmarshal(data, &page)
 		if err != nil {
-			log.Printf("Could not load page data file '%v'. Error: %v\n", contentFile, err)
+			log.Printf("✘ unable to load page data file '%v'. Error: %v\n", contentFile, err)
 			return
 		}
 	}
 
 	err = addRootData(&page)
 	if err != nil {
-		log.Printf("Could not load root data. Error: %v\n", err)
+		log.Printf("✘ unable to load root data. Error: %v\n", err)
 		return
 	}
 
 	err = updateImagesSrcset(&page, path)
 	if err != nil {
-		log.Printf("Could not update image data. Error: %v\n", err)
+		log.Printf("✘ unable to update image data. Error: %v\n", err)
 		return
 	}
 
@@ -63,7 +63,7 @@ func clearPublicDir(dir string) error {
 
 func WritePage(path string, page model.Page) error {
 
-	log.Printf("updating page: %s", path)
+	log.Printf("✎ %s", path)
 
 	dir, file := filepath.Split(path)
 
@@ -84,13 +84,13 @@ func WritePage(path string, page model.Page) error {
 
 	data, err := json.MarshalIndent(localData, "", "  ")
 	if err != nil {
-		log.Printf("unable to save page data at '%v'; error: %v", contentFile, err)
+		log.Printf("✘ unable to save page data at '%v'; error: %v", contentFile, err)
 		return err
 	}
 
 	err = ioutil.WriteFile(contentFile, data, 0777)
 	if err != nil {
-		log.Printf("unable to save page data at '%v'; error: %v", contentFile, err)
+		log.Printf("✘ unable to save page data at '%v'; error: %v", contentFile, err)
 		return err
 	}
 
@@ -99,7 +99,7 @@ func WritePage(path string, page model.Page) error {
 
 	err = renderHTML(htmlFile, templateFile, page)
 	if err != nil {
-		log.Printf("unable to save page HTML at '%v'; error: %v", htmlFile, err)
+		log.Printf("✘ unable to save page HTML at '%v'; error: %v", htmlFile, err)
 		return err
 	}
 
