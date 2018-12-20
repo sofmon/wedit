@@ -9,4 +9,5 @@ type Settings struct {
 	RepeatAttribute string    `json:"r"`
 	MenuTextColor   string    `json:"m"`
 	Commands        []Command `json:"c"`
+	DarkMode        bool      `json:"d"`
 }

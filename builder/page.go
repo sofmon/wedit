@@ -56,7 +56,10 @@ func clearPublicDir(dir string) error {
 	publicFolder := filepath.Join(cfg.PublicFolder, dir)
 	os.MkdirAll(publicFolder, 0777)
 
-	templateFolder := findTemplatePath(dir)
+	templateFolder, err := findTemplatePath(dir)
+	if err != nil {
+		return err
+	}
 
 	return copyDir(templateFolder, publicFolder)
 }
@@ -95,7 +98,11 @@ func WritePage(path string, page model.Page) error {
 	}
 
 	htmlFile := filepath.Join(publicFolder, file)
-	templateFile := findTemplateFile(path)
+	templateFile, err := findTemplateFile(path)
+	if err != nil {
+		log.Printf("✘ unable to save page HTML at '%v'; error: %v", htmlFile, err)
+		return err
+	}
 
 	err = renderHTML(htmlFile, templateFile, page)
 	if err != nil {

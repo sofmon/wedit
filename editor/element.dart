@@ -23,9 +23,9 @@ class Element {
 
   html.Element _domElement;
 
-  static const _DEFAULT_MARK_BOX_SHADOW =
+  String _DEFAULT_MARK_BOX_SHADOW =
       "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  static const _DEFAULT_EDIT_BOX_SHADOW =
+  String _DEFAULT_EDIT_BOX_SHADOW =
       "0 0 2vw 0 rgba(0, 0, 0, 1), inset 0 0 2vw 0 rgba(255, 255, 255, 1)";
 
   static const _DEFAULT_EDIT_CURSOR = "pointer";
@@ -55,6 +55,11 @@ class Element {
     }
 
     _wasEmpty = _domElement.text == "";
+
+    if(_page.darkMode) {
+      _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(255, 255, 255, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
+      _DEFAULT_EDIT_BOX_SHADOW = "0 0 2vw 0 rgba(255, 255, 255, 1), inset 0 0 2vw 0 rgba(0, 0, 0, 1)";
+    }
   }
 
   Map toMap() {
@@ -168,7 +173,9 @@ class Element {
 
     raw = raw.replaceAll("</p>", "\n")
       .replaceAll("<br>", "\n")
-      .replaceAll("<p>", "");
+      .replaceAll("<p>", "")
+      .replaceAll("</div>", "\n")
+      .replaceAll("<div>", "");
 
     while (raw.lastIndexOf("\n\n\n") != -1) {
       raw = raw.replaceAll("\n\n\n", "\n\n");

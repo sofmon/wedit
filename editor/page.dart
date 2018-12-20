@@ -24,6 +24,8 @@ class Page {
   String get editAttribute => _editAttribute;
   String _repeatAttribute;
   String get repeatAttribute => _repeatAttribute;
+  bool _darkMode;
+  bool get darkMode => _darkMode;
 
   PageMenu _pageMenu;
   Map<String, String> _commands;
@@ -37,6 +39,7 @@ class Page {
     var settings = map[PAGE_SETTINGS];
     _editAttribute = settings[PAGE_SETTINGS_EDITATTR];
     _repeatAttribute = settings[PAGE_SETTINGS_REPEATATTR];
+    _darkMode = settings[PAGE_SETTINGS_DARK_MODE];
 
     _commands = new Map<String, String>();
     List shellCommands = settings[PAGE_SETTINGS_COMMANDS];
@@ -68,7 +71,8 @@ class Page {
 
     _pageMenu =
         new PageMenu(this, _commands, settings[PAGE_SETTINGS_MENUTEXTCOLOR]);
-        
+
+    html.window.postMessage("wedit.loaded", "*"); 
   }
 
   Map toMap() {
@@ -244,6 +248,8 @@ class Page {
 
     request.open("PUT", url, async: false);
     request.send(jsonData);
+
+    html.window.postMessage("wedit.saved", "*");
   }
 
   void command(String cmd, Function onSuccess, Function onFailure) {

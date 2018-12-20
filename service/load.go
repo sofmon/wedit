@@ -30,6 +30,7 @@ func loadHandler(w http.ResponseWriter, r *http.Request) {
 		Settings: model.Settings{
 			EditAttribute:   cfg.EditAttr,
 			RepeatAttribute: cfg.RepeatAttr,
+			DarkMode:        cfg.DarkMode,
 		},
 	}
 

@@ -13,5 +13,6 @@
     "allowedPageExt": [".html"],
     "host": "localhost",
     "port": 5000,
-    "openBrowser": true
+    "openBrowser": true,
+    "darkMode":true
 }

@@ -19,6 +19,14 @@ class RepeatShadow {
     _canBeDeleted = _key != _repeat.key;
 
     _bindControls();
+
+    if(_repeat._page.darkMode) {
+      _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(255, 255, 255, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
+      _DEFAULT_MARK_BOX_SHADOW_ADD = "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
+      _DEFAULT_MARK_BOX_SHADOW_REMOVE = "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
+      _DEFAULT_MARK_BOX_SHADOW_MOVE_UP = "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
+      _DEFAULT_MARK_BOX_SHADOW_MOVE_DOWN = "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
+    }
   }
 
   html.Element _addDomElement;
@@ -36,15 +44,15 @@ class RepeatShadow {
   static const _DEFAULT_BUTTON_COLOR_MOVE_DOWN = "#00f";
   static const _DEFAULT_BUTTON_OPACITY = ".3";
 
-  static const _DEFAULT_MARK_BOX_SHADOW =
+  String _DEFAULT_MARK_BOX_SHADOW =
       "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  static const _DEFAULT_MARK_BOX_SHADOW_ADD =
+  String _DEFAULT_MARK_BOX_SHADOW_ADD =
       "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  static const _DEFAULT_MARK_BOX_SHADOW_REMOVE =
+  String _DEFAULT_MARK_BOX_SHADOW_REMOVE =
       "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  static const _DEFAULT_MARK_BOX_SHADOW_MOVE_UP =
+  String _DEFAULT_MARK_BOX_SHADOW_MOVE_UP =
       "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  static const _DEFAULT_MARK_BOX_SHADOW_MOVE_DOWN =
+  String _DEFAULT_MARK_BOX_SHADOW_MOVE_DOWN =
       "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
 
   static const SVG_UP =
@@ -254,6 +262,8 @@ class RepeatShadow {
     e.stopPropagation();
     e.stopImmediatePropagation();
     e.preventDefault();
+
+    _repeat._page.save(null, null);
   }
 
   void _removeCopy(html.MouseEvent e) {
@@ -272,6 +282,8 @@ class RepeatShadow {
     e.stopPropagation();
     e.stopImmediatePropagation();
     e.preventDefault();
+
+    _repeat._page.save(null, null);
   }
 
   void _moveUp(html.MouseEvent e) {
@@ -281,6 +293,8 @@ class RepeatShadow {
     e.stopPropagation();
     e.stopImmediatePropagation();
     e.preventDefault();
+
+    _repeat._page.save(null, null);
   }
 
   void _moveDown(html.MouseEvent e) {
@@ -290,6 +304,8 @@ class RepeatShadow {
     e.stopPropagation();
     e.stopImmediatePropagation();
     e.preventDefault();
+
+    _repeat._page.save(null, null);
   }
 
   void prepareDomForHtmlSave() {

@@ -77,7 +77,10 @@ func processNodeForSrcset(page *model.Page, n *html.Node) error {
 
 func updateImagesSrcset(page *model.Page, path string) error {
 
-	templateFile := findTemplateFile(path)
+	templateFile, err := findTemplateFile(path)
+	if err != nil {
+		return err
+	}
 
 	doc, err := openTemlateHTML(templateFile)
 	if err != nil {

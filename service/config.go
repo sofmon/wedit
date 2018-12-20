@@ -19,6 +19,7 @@ var cfg = struct {
 	RepeatAttr     string   `json:"repeatAttribute"`
 	DefaultPage    string   `json:"defaultPage"`
 	AllowedPageExt []string `json:"allowedPageExt"`
+	DarkMode       bool     `json:"darkMode"`
 }{}
 
 // LoadConfig form wedit.json file

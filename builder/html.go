@@ -121,7 +121,10 @@ func renderProcessNode(n *html.Node, page *model.Page) {
 
 func prepareIncludes(path string) (outHTML []byte, err error) {
 
-	templateFilePath := findTemplateFile(path)
+	templateFilePath, err := findTemplateFile(path)
+	if err != nil {
+		return
+	}
 
 	doc, err := openTemlateHTML(templateFilePath)
 	if err != nil {

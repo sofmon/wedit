@@ -1,0 +1,51 @@
+{
+  "t": "",
+  "r": [
+    {
+      "k": "col-left",
+      "c": [
+        "col-left"
+      ]
+    },
+    {
+      "k": "col-right",
+      "c": [
+        "col-right"
+      ]
+    }
+  ],
+  "e": [
+    {
+      "k": "col-left-h",
+      "t": "a-- some header --"
+    },
+    {
+      "k": "col-left-p",
+      "t": "-- some paragraph --"
+    },
+    {
+      "k": "col-right-h",
+      "t": "-- some header --"
+    },
+    {
+      "k": "col-right-p",
+      "t": "-- some paragraph --"
+    },
+    {
+      "k": "first-header",
+      "t": "WEBSITE EDIT TOOL"
+    },
+    {
+      "k": "second-header",
+      "t": "WEDIT"
+    }
+  ],
+  "i": [
+    {
+      "k": "",
+      "t": "",
+      "w": null,
+      "x": null
+    }
+  ]
+}
