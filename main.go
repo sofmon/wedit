@@ -4,7 +4,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -34,6 +36,15 @@ const (
 	actionEdit    Action = "edit"
 	actionBuild   Action = "build"
 )
+
+const initPage = `<html>
+<head>
+<title>wedit init page</title>
+</head>
+<body>
+	<div wedit="main">This is editable text</div>
+</body>
+</html>`
 
 func determineAction() Action {
 
@@ -75,7 +86,90 @@ func main() {
 }
 
 func initialize() {
-	log.Fatalln("✘ TODO: init action not implemented")
+
+	_, err := os.Stat("wedit.json")
+	if err == nil {
+		log.Fatalf("✘ file 'wedit.json' already exists")
+	}
+	if !os.IsNotExist(err) {
+		log.Fatalf("✘ unable to verify 'wedit.json' file due to an error: %v\n", err)
+	}
+
+	cfg := struct {
+		TemplateFolder      string   `json:"templateFolder"`
+		ContentFolder       string   `json:"contentFolder"`
+		PublicFolder        string   `json:"publicFolder"`
+		VariationFolderName string   `json:"variationFolderName"`
+		RootJSONFile        string   `json:"rootJsonFile"`
+		RootKeyPrefix       string   `json:"rootKeyPrefix"`
+		EditAttr            string   `json:"editAttribute"`
+		RepeatAttr          string   `json:"repeatAttribute"`
+		IncludeAttr         string   `json:"includeAttribute"`
+		KeepWeditAttrs      bool     `json:"keepAttributes"`
+		DefaultPage         string   `json:"defaultPage"`
+		AllowedPageExt      []string `json:"allowedPageExt"`
+		Host                string   `json:"host"`
+		Port                int      `json:"port"`
+		OpenBrowser         bool     `json:"openBrowser"`
+		DarkMode            bool     `json:"darkMode"`
+	}{
+		TemplateFolder:      "template",
+		ContentFolder:       "content",
+		PublicFolder:        "public",
+		VariationFolderName: "-",
+		RootJSONFile:        "root.json",
+		RootKeyPrefix:       "!",
+		EditAttr:            "wedit",
+		RepeatAttr:          "wedit-repeat",
+		IncludeAttr:         "wedit-include",
+		KeepWeditAttrs:      false,
+		DefaultPage:         "index.html",
+		AllowedPageExt:      []string{".html"},
+		Host:                "localhost",
+		Port:                5000,
+		OpenBrowser:         true,
+		DarkMode:            false,
+	}
+
+	if _, err := os.Stat(cfg.TemplateFolder); os.IsNotExist(err) {
+		err = os.MkdirAll(cfg.TemplateFolder, 0755)
+		if err != nil {
+			log.Fatalf("✘ unable to create template folder '%s' due to an error: %v\n", cfg.TemplateFolder, err)
+		}
+	}
+
+	if _, err := os.Stat(cfg.ContentFolder); os.IsNotExist(err) {
+		err = os.MkdirAll(cfg.ContentFolder, 0755)
+		if err != nil {
+			log.Fatalf("✘ unable to create content folder '%s' due to an error: %v\n", cfg.ContentFolder, err)
+		}
+	}
+
+	if _, err := os.Stat(cfg.PublicFolder); os.IsNotExist(err) {
+		err = os.MkdirAll(cfg.PublicFolder, 0755)
+		if err != nil {
+			log.Fatalf("✘ unable to create public folder '%s' due to an error: %v\n", cfg.PublicFolder, err)
+		}
+	}
+
+	cfgBytes, err := json.Marshal(cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	err = ioutil.WriteFile("wedit.json", cfgBytes, 0777)
+	if err != nil {
+		log.Fatalf("✘ unable to save 'wedit.json' file due to an error: %v\n", err)
+	}
+
+	if _, err := os.Stat(cfg.TemplateFolder + "/" + cfg.DefaultPage); os.IsNotExist(err) {
+		err = ioutil.WriteFile(cfg.TemplateFolder+"/"+cfg.DefaultPage, []byte(initPage), 0777)
+		if err != nil {
+			log.Fatalf("✘ unable to save 'index.html' file due to an error: %v\n", err)
+		}
+	}
+
+	log.Println("✔ folder ready, run 'wedit' to start editing")
 }
 
 func edit() {
