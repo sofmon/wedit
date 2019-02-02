@@ -100,6 +100,7 @@ func updateImagesSrcset(page *model.Page, path string) error {
 	return nil
 }
 
+// WriteImage to the content and public folder
 func WriteImage(pagePath string, key model.Key, name string, data []byte) (img model.Image, err error) {
 
 	publicFolder := cfg.PublicFolder + pagePath

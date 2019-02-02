@@ -53,6 +53,9 @@ func RebuildAll() (err error) {
 			if !strings.HasSuffix(relPath, "/") {
 				relPath += "/"
 			}
+			if !strings.HasPrefix(relPath, "/") {
+				relPath = "/" + relPath
+			}
 
 			paths = append(paths, relPath)
 
@@ -64,10 +67,7 @@ func RebuildAll() (err error) {
 
 	for _, relPath := range paths {
 
-		switch {
-		case relPath == "", relPath == "/":
-			relPath = cfg.DefaultPage
-		case strings.HasSuffix(relPath, "/"):
+		if strings.HasSuffix(relPath, "/") {
 			relPath += cfg.DefaultPage
 		}
 

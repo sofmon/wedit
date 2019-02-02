@@ -13,9 +13,10 @@ import (
 	"github.com/sofmon/wedit/model"
 )
 
+// ReadPageData based on relative path
 func ReadPageData(path string) (page model.Page, error error) {
 
-	dir, file := filepath.Split(path) //cfg.ContentFolder + path + cfg.PageJSONFile
+	dir, file := filepath.Split(path)
 
 	contentFolder := filepath.Join(cfg.ContentFolder, dir)
 	contentFile := filepath.Join(contentFolder, file+".json")
@@ -64,6 +65,7 @@ func clearPublicDir(dir string) error {
 	return copyDir(templateFolder, publicFolder)
 }
 
+// WritePage to the content and public folder
 func WritePage(path string, page model.Page) error {
 
 	log.Printf("✎ %s", path)
