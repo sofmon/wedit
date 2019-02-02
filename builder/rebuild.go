@@ -23,7 +23,7 @@ func RebuildAll() (err error) {
 	var paths []string
 
 	err = filepath.Walk(
-		cfg.TemplateFolder,
+		cfg.ContentFolder,
 		func(path string, info os.FileInfo, theErr error) error {
 
 			if theErr != nil {
@@ -34,13 +34,13 @@ func RebuildAll() (err error) {
 				return nil
 			}
 
-			if !isHTML(info.Name()) {
+			if !isHTML(strings.TrimSuffix(info.Name(), ".json")) {
 				return nil
 			}
 
 			folderPath := filepath.Dir(path)
 
-			relPath, err := filepath.Rel(cfg.TemplateFolder, folderPath)
+			relPath, err := filepath.Rel(cfg.ContentFolder, folderPath)
 			if err != nil {
 				log.Printf("✘ %s %v\n", path, err)
 				return nil
@@ -63,6 +63,13 @@ func RebuildAll() (err error) {
 	sort.Strings(paths)
 
 	for _, relPath := range paths {
+
+		switch {
+		case relPath == "", relPath == "/":
+			relPath = cfg.DefaultPage
+		case strings.HasSuffix(relPath, "/"):
+			relPath += cfg.DefaultPage
+		}
 
 		page, err := ReadPageData(relPath)
 		if err != nil {

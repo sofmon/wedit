@@ -22,6 +22,7 @@ var cfg = struct {
 	RepeatAttr          string   `json:"repeatAttribute"`
 	IncludeAttr         string   `json:"includeAttribute"`
 	KeepWeditAttrs      bool     `json:"keepAttributes"`
+	DefaultPage         string   `json:"defaultPage"`
 	AllowedPageExt      []string `json:"allowedPageExt"`
 }{}
 
