@@ -45,7 +45,7 @@ func ReadPageData(path string) (page model.Page, error error) {
 
 	err = updateImagesSrcset(&page, path)
 	if err != nil {
-		log.Printf("✘ unable to update image data. Error: %v\n", err)
+		log.Printf("✘ unable to load image data. Error: %v\n", err)
 		return
 	}
 

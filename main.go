@@ -35,6 +35,7 @@ const (
 	actionInit    Action = "init"
 	actionEdit    Action = "edit"
 	actionBuild   Action = "build"
+	actionClean   Action = "clean"
 )
 
 const initPage = `<html>
@@ -69,6 +70,9 @@ func main() {
 
 	case actionBuild:
 		build()
+
+	case actionClean:
+		clean()
 
 	case actionVersion:
 		log.Printf("★ wedit version: %s\n", version)
@@ -219,6 +223,19 @@ func build() {
 	}
 }
 
+func clean() {
+
+	err := builder.LoadConfig("wedit.json")
+	if err != nil {
+		log.Fatalf("✘ unable to read config file. Did you forget `wedit init`? Error: %v\n", err)
+	}
+
+	err = builder.CleanUp()
+	if err != nil {
+		log.Fatalf("✘ error in cleaning public and content folders doe to an error: %v\n", err)
+	}
+}
+
 func openBrowser(url string) {
 	var cmd *exec.Cmd
 
@@ -252,6 +269,7 @@ func printHelp() {
 			"┊   edit    - edit current website using the default web browser (default action)\n" +
 			"┊   init    - prepare the current folder as a wedit project\n" +
 			"┊   build   - [re]generate the static website, for example after template change\n" +
+			"┊   clean   - clean up content and public folder from items not matching template folder\n" +
 			"┊   version - prints wedit version\n" +
 			"┊   coffee  - support wedit maintainers by donating through PayPal\n" +
 			"┊   help    - prints this message\n\n",
