@@ -19,8 +19,7 @@ part 'pageMenu.dart';
 bool isDemo = false;
 
 void main() {
-  isDemo = html.window.document.documentElement.attributes["wedit-demo"] == "true";
-
+  isDemo = html.document.body.attributes["wedit-demo"] == "true";
   if(isDemo) {
     var url = "./wedit.json";
     html.HttpRequest.getString(url).then(onDataLoaded);
