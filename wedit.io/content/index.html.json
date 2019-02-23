@@ -489,7 +489,7 @@
     },
     {
       "k": "variations-p",
-      "t": "Wedit follows the template folder structure for the static website. The one exception is the variation folder, which will be mapped to any string while wedit is in edit mode. By default the variation folder name is a single hyphen (‐).\n\nAs an example, the file in template folder\n\n- `blogs/-/index.html`\n\nwill be used for URLs like\n\n- `/blogs/some-article/index.html`\n- `/blogs/other-article/index.html`\n\nAnother example is the common challenge of localization where\n\n- `services/-/index.html`\n\nwill be used for URLs like\n\n- `/services/en/index.html`\n- `/services/de/index.html`\n\nTo create new variations, while in wedit edit more, navigate to the desire URL and wedit will create the variation in the public folder."
+      "t": "Wedit follows the template folder structure for the static website. The one exception is the variation folder, which will be mapped to any string while wedit is in edit mode. By default the variation folder name is a single hyphen (‐).\n\nAs an example, the file in template folder\n\n- `blogs/-/index.html`\n\nwill be used for URLs like\n\n- `/blogs/some-article/index.html`\n- `/blogs/other-article/index.html`\n\nAnother example is the common challenge of localization where\n\n- `services/-/index.html`\n\nwill be used for URLs like\n\n- `/services/en/index.html`\n- `/services/de/index.html`\n\nTo create new variations, while in wedit edit mode, navigate to the desire URL and wedit will create the variation in the public folder."
     }
   ],
   "i": [
