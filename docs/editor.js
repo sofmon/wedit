@@ -1,3 +1,4 @@
+
 (function(){var supportsDirectProtoAccess=function(){var z=function(){}
 z.prototype={p:{}}
 var y=new z()

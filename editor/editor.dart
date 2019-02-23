@@ -19,7 +19,13 @@ part 'pageMenu.dart';
 
 void main() {
   var url = html.window.location.protocol + "//" + html.window.location.host + "/~?p=" + html.window.location.pathname;
-  html.HttpRequest.getString(url).then(onDataLoaded);
+  html.HttpRequest
+    .getString(url)
+    .then(onDataLoaded)
+    .catchError((){
+      var demoUrl = html.window.location.protocol + "//" + html.window.location.host + "/editor.json";
+      html.HttpRequest.getString(demoUrl).then(onDataLoaded);
+    });
 }
 
 void onDataLoaded(String responseText) {
