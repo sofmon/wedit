@@ -1,48 +1,229 @@
-<!DOCTYPE html>
-<html>
-<title>WEDIT</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/w3plus.css">
+<!DOCTYPE html><html><head>
+  <title>WEDIT</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script defer="" src="/main.dart.js"></script>
+  <link rel="stylesheet" href="/main.css"/>
+  <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet"/>
+</head>
 
 <body>
-  <div class="w3-content" style="max-width:1500px">
-    <header class="w3-panel w3-center w3-opacity" style="padding:128px 16px">
-      <h1 class="w3-xlarge" wedit="first-header">WEBSITE EDIT TOOL</h1>
-      <h1 wedit="second-header">WEDIT</h1>
-    </header>
-    <div class="w3-row-padding w3-grayscale" style="margin-bottom:128px">
-      <div class="w3-twothird">
-        <div class="w3-card-4 w3-margin w3-white" wedit-repeat="col-left">
-          <div class="w3-container">
-            <h3 wedit="col-left-h">-- some header --</h3>
-          </div>
-          <div class="w3-container">
-            <p class="left" wedit="col-left-p">-- some paragraph --</p>
-          </div>
+  <header>
+    <p wedit="chapeau">static website editing tool
+</p>
+    <h1 wedit="header">WEDIT
+</h1>
+  </header>
+  <div class="container">
+    <div class="center">
+      <div class="content">
+        <h2 wedit="about-h">what is it?
+</h2>
+        <div wedit="about-p"><p>Wedit is command line tool designed to help website content management.</p>
+
+<p>Wedit uses static HTML website as template and enables the content to be changed through WYSIWYG editing using the web browser. All changes are immediate and align with the intended website design.</p>
+
+<p>To see wedit in action, press and hold the <code>CTRL</code> key!</p>
+</div>
+      </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="center">
+      <div class="content">
+        <h2 wedit="action-h">wedit in action
+</h2>
+        <div wedit="action-p">See how wedit is used for the <a href="https://www.peaks.nl">Peaks</a> website.
+</div>
+        <p>
+          <img style="width:100%;border-radius:20px;" src="action.gif"/>
+        </p>
+      </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="half">
+      <div class="content">
+        <div>
+          <h2 wedit="text-h">text editing
+</h2>
+          <div wedit="text-p"><p>Any HTML element within the template marked with <code>wedit=&#34;...&#34;</code> attribute is editable using markdown.</p>
+
+<p>The markdown supports paragraphs <a href="https://wedit.io">links</a>, headers, bullet points, basic <em>text</em> <em>decorations</em>, inline images or even free form HTML.</p>
+
+<p>Once edit is done, all changes are automatically reflected to the static website.</p>
+</div>
+          
+          
         </div>
       </div>
-      <div class="w3-third">
-        <div class="w3-card-4 w3-margin w3-white" wedit-repeat="col-right">
-          <div class="w3-container">
-            <h3 wedit="col-right-h">-- some header --</h3>
+    </div>
+    <div class="half">
+      <div class="content">
+        <div>
+          <h2 wedit="repeat-h">repeat sections
+</h2>
+          <div wedit="repeat-p"><p>Any HTML element can be marked with <code>wedit-repeat=&#34;...&#34;</code> attribute to make it repeatable.</p>
+
+<p>This is useful technique to add dynamic number of:</p>
+</div>
+          <ul>
+            <li wedit-repeat="repeat-r" style="margin:20px">
+              <div wedit="repeat-r-p">paragraphs
+</div>
+            </li><li style="margin:20px">
+              <div wedit="repeat-r-p1550873460790">list items
+</div>
+            </li><li style="margin:20px">
+              <div wedit="repeat-r-p1550873484912">carousels items
+</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="center">
+      <div class="content">
+        <div>
+          <h2 wedit="images-h">images support
+</h2>
+          <div style="text-align:center">
+            <img srcset="img.jpg" style="width:30%;border-radius: 50%" wedit="images-i"/>
           </div>
-          <div class="w3-container">
-            <p class="right" wedit="col-right-p">-- some paragraph --</p>
-          </div>
+          <div wedit="images-p"><p>Wedit supports the <code>img</code> HTML elements. Similar with ant other text
+element <code>img</code> elements are made editable with the <code>wedit=&#34;...&#34;</code>
+attribute.</p>
+
+<p>If srcset is used with ‘width’ descriptor (like <code>srcset=&#34;image-s.jpg 
+320w, image-m.jpg 640w, image-l.jpg 1024w&#34;</code>), the new uploaded image
+will be automatically resized and different files will be supplied for
+each descriptor.</p>
+</div>
+        </div>
+      </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="half">
+      <div class="content">
+        <div>
+          <h2 wedit="variations-h">page variations
+</h2>
+          <div wedit="variations-p"><p>Wedit follows the template folder structure for the static website. The one exception is the variation folder, which will be mapped to any string while wedit is in edit mode. By default the variation folder name is a single hyphen (‐).</p>
+
+<p>As an example, the file in template folder
+- <code>blogs/-/index.html</code></p>
+
+<p>will be used for URLs like
+- <code>/blogs/some-article/index.html</code>
+- <code>/blogs/other-article/index.html</code></p>
+
+<p>Another example is the common challenge of localization where
+- <code>services/-/index.html</code></p>
+
+<p>will be used for URLs like
+- <code>/services/en/index.html</code>
+- <code>/services/de/index.html</code></p>
+
+<p>To create new variations, while in wedit edit more, navigate to the desire URL and wedit will create the variation in the public folder.</p>
+</div>
+        </div>
+      </div>
+    </div>
+    <div class="half">
+      <div class="content">
+        <div>
+          <h2 wedit="includes-h">root content &amp; snippet includes
+</h2>
+          <div wedit="includes-p"><p>Wedit has the concept of a root key. Any key with prefix <code>!</code> used in an attribute like <code>wedit=&#34;!...&#34;</code> is considered a root key.</p>
+
+<p>A root key instructs wedit that associated content must be the same for all pages.</p>
+
+<p>When changes are made to the content, wedit will regenerate all pages containing this root key.</p>
+
+<p>Next to the root key, wedit can help including content form other HTML files.</p>
+
+<p>With the <code>wedit-include=&#34;...&#34;</code> attribute, you can append entire HTML fragments from separate files. Those HTML fragments can include root and non-root keys.</p>
+
+<p>Those two techniques are useful for headers footers and other common elements within the website.</p>
+</div>
+        </div>
+      </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="center">
+      <div class="content">
+        <div>
+          <h2 wedit="flow-h">development flow
+</h2>
+          <div wedit="flow-p"><p>Every tool has a purpose, and wedit is not different.</p>
+
+<p>Wedit does not try to replace any existing web development tools or frameworks.</p>
+
+<p>Wedit does not have its own publishing workflow. As wedit works with
+static websites, the publishing and approval flows are left to file
+version control systems like GIT.</p>
+
+<p>Wedit toggles only the problem of localizing and maintaining content of the static website once the web development is completed.</p>
+</div>
+        </div>
+      </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="third">
+      <div class="content">
+        <div>
+          <h2 wedit="license-h">license
+</h2>
+          <div wedit="license-p"><p>The wedit tool is free and open source, under an MIT license.</p>
+
+<p>Source code and documentation can be found on the <a href="https://github.com/sofmon/wedit" title="title">GitHub repository</a>.</p>
+</div>
+        </div>
+      </div>
+    </div>
+    <div class="third">
+      <div class="content">
+        <div>
+          <h2 wedit="get-h">get wedit
+</h2>
+          <div wedit="get-p"><h3>Go get</h3>
+
+<p>Requires <a href="https://golang.org">Go</a> environment.</p>
+
+<p><code>$ go get github.com/sofmon/wedit</code></p>
+
+<hr/>
+
+<h3>Build from source</h3>
+
+<p>Requires <a href="https://golang.org">Go</a> and <a href="https://dartlang.org">Dart</a> environments.</p>
+
+<p><code>$ git clone github.com/sofmon/wedit</code></p>
+
+<p><code>$ ./build.sh</code> for Linux/MacOS</p>
+
+<p><code>$ ./build.ps1</code> for Windows</p>
+</div>
+        </div>
+      </div>
+    </div>
+    <div class="third">
+      <div class="content">
+        <div>
+          <h2 wedit="maintainers-h">maintainers
+</h2>
+          <div wedit="maintainers-p"><p>Wedit is currently maintained by:</p>
+
+<p>Haralampi Staykov <a href="https://haralampi.com">About</a>|<a href="https://github.com/sofmon/">GitHub</a>|<a href="https://linkedin.com/in/haralampi/">LinkedIn</a></p>
+</div>
         </div>
       </div>
     </div>
   </div>
-  <footer class="w3-container w3-padding-64 w3-center w3-large">
-    <div class="w3-large w3-section">
-      <a href="https://www.sofmon.com/">
-        <img alt="sofmon.com" src="/sofmon.svg" width="200px" />
-        </svg>
-      </a>
-    </div>
+  <footer>
+    <a href="https://www.sofmon.com/">
+      <img alt="sofmon.com" src="/sofmon.svg" width="200px"/>
+    </a>
   </footer>
-  <script async="" src="./!editor.js"></script>
-</body>
 
-</html>
+
+</body></html>
