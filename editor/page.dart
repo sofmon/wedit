@@ -220,6 +220,11 @@ class Page {
   }
 
   void save(Function onSuccess, Function onFailure) {
+
+    if(isDemo) {
+      return;
+    }
+
     Map pageData = toMap();
 
     String jsonData = convert.json.encode(pageData);

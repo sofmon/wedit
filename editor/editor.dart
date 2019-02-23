@@ -8,7 +8,6 @@ import 'dart:svg' as svg;
 import 'package:markdown/markdown.dart' as md;
 import 'package:html_unescape/html_unescape.dart' as uesc;
 
-
 part 'dataMap.dart';
 part 'element.dart';
 part 'image.dart';
@@ -17,15 +16,18 @@ part 'repeatShadow.dart';
 part 'page.dart';
 part 'pageMenu.dart';
 
+bool isDemo = false;
+
 void main() {
-  var url = html.window.location.protocol + "//" + html.window.location.host + "/~?p=" + html.window.location.pathname;
-  html.HttpRequest
-    .getString(url)
-    .then(onDataLoaded)
-    .catchError((){
-      var demoUrl = html.window.location.protocol + "//" + html.window.location.host + "/editor.json";
-      html.HttpRequest.getString(demoUrl).then(onDataLoaded);
-    });
+  isDemo = html.window.document.documentElement.attributes["wedit-demo"] == "true";
+
+  if(isDemo) {
+    var url = "./wedit.json";
+    html.HttpRequest.getString(url).then(onDataLoaded);
+  } else {
+    var url = html.window.location.protocol + "//" + html.window.location.host + "/~?p=" + html.window.location.pathname;
+    html.HttpRequest.getString(url).then(onDataLoaded);
+  }
 }
 
 void onDataLoaded(String responseText) {
