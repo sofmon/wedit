@@ -222,6 +222,7 @@ class Page {
   void save(Function onSuccess, Function onFailure) {
 
     if(isDemo) {
+      html.window.postMessage("wedit.saved", "*");
       return;
     }
 
