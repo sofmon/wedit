@@ -122,6 +122,11 @@ func copyDir(src string, dst string) (err error) {
 				continue
 			}
 
+			// Skip editable HTML files
+			if isHTML(entry.Name()) {
+				continue
+			}
+
 			err = copyFile(srcPath, dstPath)
 			if err != nil {
 				return
