@@ -85,7 +85,7 @@ func copyFile(src, dst string) (err error) {
 // CopyDir recursively copies a directory tree, attempting to preserve permissions.
 // Source directory must exist, destination directory must *not* exist.
 // Symlinks are ignored and skipped.
-func copyDir(src string, dst string) (err error) {
+func copyDir(src string, dst string, skipHTML bool) (err error) {
 	src = filepath.Clean(src)
 	dst = filepath.Clean(dst)
 
@@ -112,7 +112,7 @@ func copyDir(src string, dst string) (err error) {
 		dstPath := filepath.Join(dst, entry.Name())
 
 		if entry.IsDir() {
-			err = copyDir(srcPath, dstPath)
+			err = copyDir(srcPath, dstPath, skipHTML)
 			if err != nil {
 				return
 			}
@@ -122,8 +122,7 @@ func copyDir(src string, dst string) (err error) {
 				continue
 			}
 
-			// Skip editable HTML files
-			if isHTML(entry.Name()) {
+			if skipHTML && isHTML(entry.Name()) {
 				continue
 			}
 

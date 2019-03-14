@@ -22,7 +22,7 @@ func RebuildAll() (err error) {
 
 	var paths []string
 
-	err = copyDir(cfg.TemplateFolder, cfg.PublicFolder)
+	err = copyDir(cfg.TemplateFolder, cfg.PublicFolder, false)
 	if err != nil {
 		log.Printf("✘ unable to rebuild public folder due to an error %v\n", err)
 		return

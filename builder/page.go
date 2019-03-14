@@ -62,7 +62,7 @@ func clearPublicDir(dir string) error {
 		return err
 	}
 
-	return copyDir(templateFolder, publicFolder)
+	return copyDir(templateFolder, publicFolder, true)
 }
 
 // WritePage to the content and public folder
