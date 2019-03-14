@@ -22,6 +22,12 @@ func RebuildAll() (err error) {
 
 	var paths []string
 
+	err = copyDir(cfg.TemplateFolder, cfg.PublicFolder)
+	if err != nil {
+		log.Printf("✘ unable to rebuild public folder due to an error %v\n", err)
+		return
+	}
+
 	err = filepath.Walk(
 		cfg.ContentFolder,
 		func(path string, info os.FileInfo, theErr error) error {
@@ -62,6 +68,10 @@ func RebuildAll() (err error) {
 			return nil
 		},
 	)
+	if err != nil {
+		log.Printf("✘ unable to collect content due to an error: %v\n", err)
+		return
+	}
 
 	sort.Strings(paths)
 
