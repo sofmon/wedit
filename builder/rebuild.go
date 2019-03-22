@@ -3,6 +3,7 @@ package builder
 import (
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -75,6 +76,12 @@ func RebuildAll() (err error) {
 
 	sort.Strings(paths)
 
+	sm, err := loadSitemap()
+	if err != nil {
+		log.Printf("✘ unable to load sitemap due to an error: %v\n", err)
+		return
+	}
+
 	for _, relPath := range paths {
 
 		if strings.HasSuffix(relPath, "/") {
@@ -98,6 +105,14 @@ func RebuildAll() (err error) {
 			log.Printf("✘ %s %v\n", relPath, err)
 			continue
 		}
+
+		sm.Ensure(path.Join(cfg.SitemapHost, relPath))
+	}
+
+	err = sm.save()
+	if err != nil {
+		log.Printf("✘ unable to save sitemap due to an error: %v\n", err)
+		return
 	}
 
 	return

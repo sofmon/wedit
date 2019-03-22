@@ -24,6 +24,7 @@ var cfg = struct {
 	KeepWeditAttrs      bool     `json:"keepAttributes"`
 	DefaultPage         string   `json:"defaultPage"`
 	AllowedPageExt      []string `json:"allowedPageExt"`
+	SitemapHost         string   `json:"sitemapHost"`
 }{}
 
 // LoadConfig form wedit.json file

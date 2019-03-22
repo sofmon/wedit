@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/sofmon/wedit/model"
@@ -66,11 +67,11 @@ func clearPublicDir(dir string) error {
 }
 
 // WritePage to the content and public folder
-func WritePage(path string, page model.Page) error {
+func WritePage(relPath string, page model.Page) error {
 
-	log.Printf("✎ %s", path)
+	log.Printf("✎ %s", relPath)
 
-	dir, file := filepath.Split(path)
+	dir, file := filepath.Split(relPath)
 
 	err := clearPublicDir(dir)
 	if err != nil {
@@ -100,7 +101,7 @@ func WritePage(path string, page model.Page) error {
 	}
 
 	htmlFile := filepath.Join(publicFolder, file)
-	templateFile, err := findTemplateFile(path)
+	templateFile, err := findTemplateFile(relPath)
 	if err != nil {
 		log.Printf("✘ unable to save page HTML at '%v'; error: %v", htmlFile, err)
 		return err
@@ -123,6 +124,13 @@ func WritePage(path string, page model.Page) error {
 		if err != nil {
 			return err
 		}
+	} else {
+		sm, err := loadSitemap()
+		if err != nil {
+			log.Printf("✘ unable to load sitemap due to an error: %v", err)
+			return err
+		}
+		sm.Update(path.Join(cfg.SitemapHost, relPath))
 	}
 
 	return nil

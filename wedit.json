@@ -14,5 +14,6 @@
     "host": "localhost",
     "port": 5000,
     "openBrowser": true,
-    "darkMode":true
+    "darkMode":true,
+    "sitemapHost": "https://wedit.io"
 }
