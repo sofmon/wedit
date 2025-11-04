@@ -25,32 +25,32 @@ class Image {
   Page _page;
 
   String _key;
-  String _type;
-  List<int> _width;
-  List<double> _pixelDensity;
+  String _type = '';
+  List<int>? _width;
+  List<double>? _pixelDensity;
 
-  bool _hasContent;
+  bool _hasContent = false;
 
-  bool _isHighlighted;
+  bool _isHighlighted = false;
 
-  html.Element _domElement;
-  String _originalBoxShadow;
+  final web.HTMLElement _domElement;
+  String _originalBoxShadow = '';
 
-  html.InputElement _fileUploadDomElement;
-  html.Element _addImageDomElement;
-  html.Element _removeImageDomElement;
+  web.HTMLInputElement? _fileUploadDomElement;
+  web.HTMLElement? _addImageDomElement;
+  web.HTMLElement? _removeImageDomElement;
 
-  String _templateSrc;
-  String _templateSrcset;
+  String _templateSrc = '';
+  String _templateSrcset = '';
 
-  Image.fromMap(this._page, this._key, this._domElement, Map map) {
+  Image.fromMap(this._page, this._key, this._domElement, Map<dynamic, dynamic>? map) {
     _isHighlighted = false;
-    
+
     if (map != null) {
-      _hasContent= true;
-      _width = map[IMAGE_WIDTH];
-      _pixelDensity = map[IMAGE_PIXEL_DENSITY];
-      _type = map[IMAGE_TYPE];
+      _hasContent = true;
+      _width = (map[IMAGE_WIDTH] as List?)?.cast<int>();
+      _pixelDensity = (map[IMAGE_PIXEL_DENSITY] as List?)?.cast<double>();
+      _type = (map[IMAGE_TYPE] as String?) ?? '';
       _hasContent = (_type != "" && _type.isNotEmpty);
     } else {
       _hasContent = false;
@@ -61,8 +61,8 @@ class Image {
     _bindControls();
   }
 
-  Map toMap() {
-    var map = new Map();
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
 
     map[IMAGE_KEY] = _key;
     map[IMAGE_TYPE] = _type;
@@ -74,25 +74,26 @@ class Image {
 
   void _syncElement() {
     _originalBoxShadow = _domElement.style.boxShadow;
-    
-     var image = _domElement as html.ImageElement;
+
+    final image = _domElement as web.HTMLImageElement;
     _templateSrc = image.src;
     _templateSrcset = image.srcset;
   }
 
   void _bindControls() {
-    _fileUploadDomElement = new html.InputElement(type: "file");
-    _fileUploadDomElement.style
+    _fileUploadDomElement = web.document.createElement('input') as web.HTMLInputElement;
+    _fileUploadDomElement!.type = 'file';
+    _fileUploadDomElement!.style
       ..position = "absolute"
       ..width = "1px"
       ..height = "1px"
       ..overflow = "hidden"
       ..opacity = "0";
-    _fileUploadDomElement.onChange.listen(_uploadFile);
-    html.document.body.children.add(_fileUploadDomElement);
+    _fileUploadDomElement!.addEventListener('change', _uploadFile.toJS);
+    web.document.body?.appendChild(_fileUploadDomElement!);
 
-    _addImageDomElement = new html.Element.div();
-    _addImageDomElement.style
+    _addImageDomElement = web.document.createElement('div') as web.HTMLElement;
+    _addImageDomElement!.style
       ..display = "none"
       ..position = "absolute"
       ..backgroundColor = _DEFAULT_BUTTON_ADD_COLOR
@@ -101,16 +102,15 @@ class Image {
       ..borderRadius = _DEFAULT_BUTTON_SIZE.toString() + "px"
       ..opacity = _DEFAULT_BUTTON_OPACITY
       ..cursor = "pointer";
-    _addImageDomElement
-      ..children.add(new svg.SvgElement.svg(SVG_UPLOAD))
-      ..onMouseOver.listen((m) => _markForAdd())
-      ..onMouseLeave.listen((m) => _clearMark())
-      ..onMouseDown.listen(_addImage)
-      ..onContextMenu.listen(_stopEvent);
-    html.document.body.children.add(_addImageDomElement);
+    _addImageDomElement!.innerHTML = SVG_UPLOAD.toJS;
+    _addImageDomElement!.addEventListener('mouseover', ((web.Event e) => _markForAdd()).toJS);
+    _addImageDomElement!.addEventListener('mouseleave', ((web.Event e) => _clearMark()).toJS);
+    _addImageDomElement!.addEventListener('mousedown', _addImage.toJS);
+    _addImageDomElement!.addEventListener('contextmenu', _stopEvent.toJS);
+    web.document.body?.appendChild(_addImageDomElement!);
 
-    _removeImageDomElement = new html.Element.div();
-    _removeImageDomElement.style
+    _removeImageDomElement = web.document.createElement('div') as web.HTMLElement;
+    _removeImageDomElement!.style
       ..display = "none"
       ..position = "absolute"
       ..backgroundColor = _DEFAULT_BUTTON_REMOVE_COLOR
@@ -119,13 +119,12 @@ class Image {
       ..borderRadius = _DEFAULT_BUTTON_SIZE.toString() + "px"
       ..opacity = _DEFAULT_BUTTON_OPACITY
       ..cursor = "pointer";
-    _removeImageDomElement
-      ..children.add(new svg.SvgElement.svg(SVG_REVERT))
-      ..onMouseOver.listen((m) => _markForRemove())
-      ..onMouseLeave.listen((m) => _clearMark())
-      ..onClick.listen(_removeImage)
-      ..onContextMenu.listen(_removeImage);
-    html.document.body.children.add(_removeImageDomElement);
+    _removeImageDomElement!.innerHTML = SVG_REVERT.toJS;
+    _removeImageDomElement!.addEventListener('mouseover', ((web.Event e) => _markForRemove()).toJS);
+    _removeImageDomElement!.addEventListener('mouseleave', ((web.Event e) => _clearMark()).toJS);
+    _removeImageDomElement!.addEventListener('click', _removeImage.toJS);
+    _removeImageDomElement!.addEventListener('contextmenu', _removeImage.toJS);
+    web.document.body?.appendChild(_removeImageDomElement!);
   }
 
   void _mark() {
@@ -145,23 +144,23 @@ class Image {
         _isHighlighted ? _DEFAULT_MARK_BOX_SHADOW : _originalBoxShadow;
   }
 
-  int _getOffsetTop(html.Element el) {
+  int _getOffsetTop(web.HTMLElement? el) {
     int res = 0;
 
     while(el != null) {
-      res += el.offsetTop;
-      el = el.offsetParent;
+      res += el.offsetTop.round();
+      el = el.offsetParent as web.HTMLElement?;
     }
 
     return res;
   }
 
-  int _getOffsetLeft(html.Element el) {
+  int _getOffsetLeft(web.HTMLElement? el) {
     int res = 0;
 
     while(el != null) {
-      res += el.offsetLeft;
-      el = el.offsetParent;
+      res += el.offsetLeft.round();
+      el = el.offsetParent as web.HTMLElement?;
     }
 
     return res;
@@ -173,25 +172,27 @@ class Image {
 
     _mark();
 
-    _addImageDomElement.style
-      ..left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth -
+    final addStyle = _addImageDomElement?.style;
+    if (addStyle != null) {
+      addStyle.left = (_getOffsetLeft(_domElement) +
+                  _domElement.offsetWidth.round() -
                   _DEFAULT_BUTTON_SIZE * 2)
               .toString() +
-          "px"
-      ..top =
-          (_getOffsetTop(_domElement) - _DEFAULT_BUTTON_SIZE / 2).toString() + "px"
-      ..display = "block";
+          "px";
+      addStyle.top = (_getOffsetTop(_domElement) - _DEFAULT_BUTTON_SIZE / 2).toString() + "px";
+      addStyle.display = "block";
+    }
 
-    _removeImageDomElement.style
-      ..left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth -
+    final removeStyle = _removeImageDomElement?.style;
+    if (removeStyle != null) {
+      removeStyle.left = (_getOffsetLeft(_domElement) +
+                  _domElement.offsetWidth.round() -
                   _DEFAULT_BUTTON_SIZE / 2)
               .toString() +
-          "px"
-      ..top =
-          (_getOffsetTop(_domElement) - _DEFAULT_BUTTON_SIZE / 2).toString() + "px"
-      ..display = "block";
+          "px";
+      removeStyle.top = (_getOffsetTop(_domElement) - _DEFAULT_BUTTON_SIZE / 2).toString() + "px";
+      removeStyle.display = "block";
+    }
   }
 
   void normalise() {
@@ -199,14 +200,14 @@ class Image {
 
     _clearMark();
 
-    _addImageDomElement.style..display = "none";
+    _addImageDomElement?.style.display = "none";
 
-    _removeImageDomElement.style..display = "none";
+    _removeImageDomElement?.style.display = "none";
   }
 
   void render() {
-    
-    var image = _domElement as html.ImageElement;
+
+    final image = _domElement as web.HTMLImageElement;
 
     if(!_hasContent) {
       image.src = _templateSrc;
@@ -214,109 +215,112 @@ class Image {
       return;
     }
 
-    var suffix = "?" + new DateTime.now().millisecondsSinceEpoch.toString();
+    final suffix = "?" + DateTime.now().millisecondsSinceEpoch.toString();
 
     image.src = "./" + _key + "." + _type + suffix;
-    StringBuffer sb = new StringBuffer();
-    if(_width != null ) {
-      _width.forEach((i)=>sb.write("./" + _key + "-" + i.toString() + "w." + _type + suffix +" " + i.toString() + "w,"));
-    }
-    if(_pixelDensity != null ) {
-      _pixelDensity.forEach((f)=>sb.write("./" + _key + "-" + f.toStringAsFixed(1) + "x." + _type + suffix + " " + f.toStringAsFixed(1) + "x,"));
-    }
+    final sb = StringBuffer();
+    _width?.forEach((i)=>sb.write("./" + _key + "-" + i.toString() + "w." + _type + suffix +" " + i.toString() + "w,"));
+    _pixelDensity?.forEach((f)=>sb.write("./" + _key + "-" + f.toStringAsFixed(1) + "x." + _type + suffix + " " + f.toStringAsFixed(1) + "x,"));
     image.srcset = sb.toString();
   }
 
-  void _stopEvent(html.MouseEvent e) {
+  void _stopEvent(web.MouseEvent e) {
     e.stopPropagation();
     e.stopImmediatePropagation();
     e.preventDefault();
   }
 
-  void _addImage(html.MouseEvent e) {
+  void _addImage(web.MouseEvent e) {
     _stopEvent(e);
 
-    _fileUploadDomElement.style
-      ..left = _addImageDomElement.offsetLeft.toString() + "px"
-      ..top = _addImageDomElement.offsetTop.toString() + "px";
-    _fileUploadDomElement.focus();
-    _fileUploadDomElement.click();
+    final addElement = _addImageDomElement;
+    final uploadElement = _fileUploadDomElement;
+    if (addElement != null && uploadElement != null) {
+      uploadElement.style.left = addElement.offsetLeft.toString() + "px";
+      uploadElement.style.top = addElement.offsetTop.toString() + "px";
+      uploadElement.focus();
+      uploadElement.click();
+    }
   }
 
-  void _removeImage(html.MouseEvent e) {
+  void _removeImage(web.MouseEvent e) {
 
     _type = "";
     _hasContent = false;
 
     render();
 
-  _page.save(null, null);
+    _page.save(() {}, () {});
 
     _stopEvent(e);
   }
 
-  void _uploadFile(html.Event e) {
-    final html.File file = _fileUploadDomElement.files.first;
+  void _uploadFile(web.Event e) {
+    final files = _fileUploadDomElement?.files;
+    if (files == null || files.length == 0) {
+      return;
+    }
 
+    final file = files.item(0);
     if (file == null) {
       return;
     }
 
-    final reader = new html.FileReader();
-    reader.onLoad.listen((e) {
+    final reader = web.FileReader();
+    reader.addEventListener('load', ((web.Event e) {
       _sendDataToServer(file.name, reader.result);
-    });
+    }).toJS);
     reader.readAsArrayBuffer(file);
   }
 
-  void _sendDataToServer(String name, dynamic data) {
-    final request = new html.HttpRequest();
-    request.onReadyStateChange.listen((html.Event e) {
-      if (request.readyState != html.HttpRequest.DONE) {
-        return;
-      }
+  void _sendDataToServer(String name, JSAny? data) async {
+    final url = web.window.location.protocol + "//" + web.window.location.host + "/~?k=" + _key + "&n=" + name + "&p=" + web.window.location.pathname;
 
-      if (request.status == 200 || request.status == 0) {
-        _processImageUploadSuccess(request);
+    try {
+      final response = await web.window.fetch(url.toJS, web.RequestInit(
+        method: 'POST',
+        body: data,
+      )).toDart;
+
+      if (response.ok) {
+        final text = await response.text().toDart;
+        _processImageUploadSuccess(text as String);
       } else {
-        _processImageUploadError(request);
+        _processImageUploadError();
       }
-    });
-
-    var url = html.window.location.protocol + "//" + html.window.location.host + "/~?k=" + _key + "&n=" + name + "&p=" + html.window.location.pathname;
-    //var url = html.window.location.href.replaceAll("/!/", "/!image/") + name + "?key=" + _key;
-    request.open("POST", url);
-    request.send(data);
+    } catch (e) {
+      _processImageUploadError();
+    }
   }
 
-  void _processImageUploadSuccess(html.HttpRequest request) {
-    Map map = convert.json.decode(request.responseText);
-    
-    _type = map[IMAGE_TYPE];
-    _width = map[IMAGE_WIDTH];
-    _pixelDensity = map[IMAGE_PIXEL_DENSITY];
+  void _processImageUploadSuccess(String responseText) {
+    final Map<String, dynamic> map = convert.json.decode(responseText) as Map<String, dynamic>;
+
+    _type = (map[IMAGE_TYPE] as String?) ?? '';
+    _width = (map[IMAGE_WIDTH] as List?)?.cast<int>();
+    _pixelDensity = (map[IMAGE_PIXEL_DENSITY] as List?)?.cast<double>();
     _hasContent = true;
-    
+
     render();
 
     print("upload complete");
 
-    _page.save(null, null);
+    _page.save(() {}, () {});
   }
 
-  void _processImageUploadError(html.HttpRequest request) {
+  void _processImageUploadError() {
     print("fail");
   }
 
   void prepareDomForHtmlSave() {
-    _fileUploadDomElement.remove();
-    _addImageDomElement.remove();
-    _removeImageDomElement.remove();
+    _fileUploadDomElement?.remove();
+    _addImageDomElement?.remove();
+    _removeImageDomElement?.remove();
   }
 
   void restoreDomAfterHtmlSave() {
-    html.document.body.children.add(_fileUploadDomElement);
-    html.document.body.children.add(_addImageDomElement);
-    html.document.body.children.add(_removeImageDomElement);
+    if (_fileUploadDomElement != null) web.document.body?.appendChild(_fileUploadDomElement!);
+    if (_addImageDomElement != null) web.document.body?.appendChild(_addImageDomElement!);
+    if (_removeImageDomElement != null) web.document.body?.appendChild(_removeImageDomElement!);
   }
 }
