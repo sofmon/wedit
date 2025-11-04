@@ -1,0 +1,29 @@
+{
+    "templateFolder": "template",
+    "contentFolder": "content",
+    "publicFolder": "public",
+    "variationFolderName": "-",
+    "rootJsonFile": "root.json",
+    "rootKeyPrefix": "!",
+    "editAttribute": "wedit",
+    "repeatAttribute": "wedit-repeat",
+    "includeAttribute": "wedit-include",
+    "keepAttributes": false,
+    "defaultPage": "index.html",
+    "allowedPageExt": [".html"],
+    "host": "localhost",
+    "port": 5566,
+    "openBrowser": true,
+    "darkMode": true,
+    "sitemapHost": "https://example.com",
+    "commands": [
+        {
+            "name": "Deploy",
+            "color": "green"
+        },
+        {
+            "name": "Test",
+            "color": "blue"
+        }
+    ]
+}
