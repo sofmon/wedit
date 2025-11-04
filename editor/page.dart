@@ -13,10 +13,12 @@ class Page {
   Map<String, Map<String, dynamic>> _mappedElementsData = {};
   Map<String, Map<String, dynamic>> _mappedRepeatsData = {};
   Map<String, Map<String, dynamic>> _mappedImagesData = {};
+  Map<String, Map<String, dynamic>> _mappedClassesData = {};
 
   Map<String, Element> _elements = {};
   Map<String, Image> _images = {};
   Map<String, Repeat> _repeats = {};
+  Map<String, Class> _classes = {};
 
   bool _ctrlPressed = false;
   bool get ctrlPressed => _ctrlPressed;
@@ -25,6 +27,8 @@ class Page {
   String get editAttribute => _editAttribute;
   String _repeatAttribute = '';
   String get repeatAttribute => _repeatAttribute;
+  String _classAttribute = '';
+  String get classAttribute => _classAttribute;
   bool _darkMode = false;
   bool get darkMode => _darkMode;
 
@@ -41,6 +45,7 @@ class Page {
     if (settings != null) {
       _editAttribute = settings[PAGE_SETTINGS_EDITATTR] as String? ?? '';
       _repeatAttribute = settings[PAGE_SETTINGS_REPEATATTR] as String? ?? '';
+      _classAttribute = settings[PAGE_SETTINGS_CLASSATTR] as String? ?? '';
       _darkMode = settings[PAGE_SETTINGS_DARK_MODE] as bool? ?? false;
 
       _commands = <String, String>{};
@@ -59,6 +64,7 @@ class Page {
     _elements = <String, Element>{};
     _images = <String, Image>{};
     _repeats = <String, Repeat>{};
+    _classes = <String, Class>{};
 
     _mappedElementsData = <String, Map<String, dynamic>>{};
     (map[PAGE_ELEMENTS] as List?)?.forEach((e) => _mappedElementsData[(e as Map)[ELEMENT_KEY] as String] = e as Map<String, dynamic>);
@@ -68,6 +74,9 @@ class Page {
 
     _mappedImagesData = <String, Map<String, dynamic>>{};
     (map[PAGE_IMAGES] as List?)?.forEach((r) => _mappedImagesData[(r as Map)[IMAGE_KEY] as String] = r as Map<String, dynamic>);
+
+    _mappedClassesData = <String, Map<String, dynamic>>{};
+    (map[PAGE_CLASSES] as List?)?.forEach((c) => _mappedClassesData[(c as Map)[CLASS_KEY] as String] = c as Map<String, dynamic>);
 
     _syncElements();
     _bindEvents();
@@ -99,6 +108,10 @@ class Page {
     final iList = <Map<String, dynamic>>[];
     _images.values.forEach((i) => iList.add(i.toMap()));
     map[PAGE_IMAGES] = iList;
+
+    final cList = <Map<String, dynamic>>[];
+    _classes.values.forEach((c) => cList.add(c.toMap()));
+    map[PAGE_CLASSES] = cList;
 
     return map;
   }
@@ -147,11 +160,20 @@ class Page {
     web.document.title = _title;
 
     final domElements = web.document.querySelectorAll(
-        "[$_editAttribute],[$_repeatAttribute]");
+        "[$_editAttribute],[$_repeatAttribute],[$_classAttribute]");
 
     for (int i = 0; i < domElements.length; i++) {
       final domElement = domElements.item(i) as web.HTMLElement?;
       if (domElement == null) continue;
+
+      // Check for class attribute first
+      final classKey = domElement.getAttribute(_classAttribute);
+      if (classKey != null && classKey.isNotEmpty) {
+        final cmsData = _mappedClassesData[classKey];
+        final classObj = Class.fromMap(this, classKey, domElement, cmsData);
+        _classes[classKey] = classObj;
+        // Don't continue - element may also have edit attribute
+      }
 
       final key = domElement.getAttribute(_repeatAttribute);
 
@@ -211,6 +233,7 @@ class Page {
       _elements.values.forEach((e) => e.highlight());
       _images.values.forEach((e) => e.highlight());
       _repeats.values.forEach((r) => r.highlight());
+      _classes.values.forEach((c) => c.highlight());
     }
   }
 
@@ -220,6 +243,7 @@ class Page {
     _elements.values.forEach((e) => e.normalise());
     _images.values.forEach((e) => e.normalise());
     _repeats.values.forEach((r) => r.normalise());
+    _classes.values.forEach((c) => c.normalise());
   }
 
   void save(Function onSuccess, Function onFailure) {

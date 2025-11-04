@@ -59,6 +59,12 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	for k, v := range oldPage.Classes {
+		if _, ok := page.Classes[k]; !ok {
+			page.Classes[k] = v
+		}
+	}
+
 	err = builder.WritePage(path, page)
 	if err != nil {
 		log.Printf("✘ unable to save page for path '%v'; error: %v", path, err)

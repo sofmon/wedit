@@ -134,6 +134,7 @@ type Page struct {
     Repeats  PageRepeats   // map[Key]Repeat
     Elements PageElements  // map[Key]Element
     Images   PageImages    // map[Key]Image
+    Classes  PageClasses   // map[Key]Class
 }
 ```
 
@@ -217,6 +218,25 @@ type Repeat struct {
 - Copy keys: `["item", "1234567890123", "9876543210987"]`
 - Element keys become: `"text"`, `"text1234567890123"`, `"text9876543210987"`
 
+#### Class (`class.go`)
+
+```go
+type Class struct {
+    Key   Key    `json:"k"`
+    Value string `json:"v"` // Selected CSS class name
+}
+```
+
+**Usage**: Represents a CSS class selection for an element
+- Stores which class is currently selected from available options
+- Available options are parsed from the `wedit-class` attribute (comma-separated)
+- Selected value replaces the element's class attribute in generated HTML
+
+**Example**:
+```json
+{"k": "hero-section", "v": "theme-dark"}
+```
+
 #### Key (`key.go`)
 
 ```go
@@ -235,6 +255,7 @@ func (k Key) IsGlobal() bool {
 type Settings struct {
     EditAttribute    string    `json:"ea"`
     RepeatAttribute  string    `json:"ra"`
+    ClassAttribute   string    `json:"ca"`
     DarkMode         bool      `json:"dm"`
     Commands         []Command `json:"cm,omitempty"`
 }
@@ -619,6 +640,12 @@ func renderProcessNode(n *html.Node, page *model.Page) {
             processRepeat(model.Key(repeatKey), n, page)
             return // Don't process children (repeat does it)
         }
+
+        // Check for class attribute
+        if classKey := getAttr(n, config.ClassAttribute); classKey != "" {
+            removeAttr(n, config.ClassAttribute)
+            processClass(model.Key(classKey), n, page)
+        }
     }
 
     // Recurse children
@@ -706,6 +733,39 @@ func processElement(key model.Key, n *html.Node, page *model.Page) {
 - Tables
 - Fenced code blocks
 - Heading IDs
+
+#### Class Processing (`class.go`)
+
+**processClass**: Applies selected CSS class to element
+
+```go
+func processClass(key model.Key, n *html.Node, page *model.Page) {
+    class, exists := page.Classes[key]
+    if !exists || class.Value == "" {
+        return // No selection, leave template as-is
+    }
+
+    // Find and update class attribute
+    for i := range n.Attr {
+        if n.Attr[i].Key == "class" {
+            n.Attr[i].Val = class.Value
+            return
+        }
+    }
+
+    // Add class attribute if it doesn't exist
+    n.Attr = append(n.Attr, html.Attribute{
+        Key: "class",
+        Val: class.Value,
+    })
+}
+```
+
+**Behavior**:
+- Replaces entire class attribute value with selected class
+- Does nothing if no class is selected (Value is empty)
+- Adds class attribute if element doesn't have one
+- Available options are defined in template attribute, stored selection in content JSON
 
 #### Image Processing (`image.go`)
 

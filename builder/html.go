@@ -112,6 +112,14 @@ func renderProcessNode(n *html.Node, page *model.Page) {
 				n.Attr = append(n.Attr[:i], n.Attr[i+1:]...)
 			}
 		}
+
+		if a.Key == cfg.ClassAttr {
+			k := model.Key(a.Val)
+			processClass(k, n, page)
+			if !cfg.KeepWeditAttrs {
+				n.Attr = append(n.Attr[:i], n.Attr[i+1:]...)
+			}
+		}
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {

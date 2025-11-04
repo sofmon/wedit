@@ -20,6 +20,7 @@ var cfg = struct {
 	RootKeyPrefix       string   `json:"rootKeyPrefix"`
 	EditAttr            string   `json:"editAttribute"`
 	RepeatAttr          string   `json:"repeatAttribute"`
+	ClassAttr           string   `json:"classAttribute"`
 	IncludeAttr         string   `json:"includeAttribute"`
 	KeepWeditAttrs      bool     `json:"keepAttributes"`
 	DefaultPage         string   `json:"defaultPage"`

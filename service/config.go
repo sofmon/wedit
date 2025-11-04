@@ -17,6 +17,7 @@ var cfg = struct {
 	OpenBrowser    bool     `json:"openBrowser"`
 	EditAttr       string   `json:"editAttribute"`
 	RepeatAttr     string   `json:"repeatAttribute"`
+	ClassAttr      string   `json:"classAttribute"`
 	DefaultPage    string   `json:"defaultPage"`
 	AllowedPageExt []string `json:"allowedPageExt"`
 	DarkMode       bool     `json:"darkMode"`

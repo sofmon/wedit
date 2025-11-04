@@ -13,6 +13,7 @@ part 'element.dart';
 part 'image.dart';
 part 'repeat.dart';
 part 'repeatShadow.dart';
+part 'class.dart';
 part 'page.dart';
 part 'pageMenu.dart';
 

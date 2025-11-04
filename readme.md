@@ -290,6 +290,40 @@ Mark elements that should be repeatable with `wedit-repeat`:
 - Elements inside get the same suffix (e.g., `member-name1234567890`)
 - All operations are instant and auto-saved
 
+### CSS Class Selection
+
+Mark elements with `wedit-class` to enable dynamic CSS class switching:
+
+```html
+<div wedit-class="theme-light,theme-dark,theme-blue" class="theme-light">
+    <h2 wedit="section-title">Section Title</h2>
+    <p wedit="section-content">Section content goes here.</p>
+</div>
+```
+
+**Usage**:
+- Add comma-separated class names to the `wedit-class` attribute value
+- Press and hold **CTRL** to show the class dropdown
+- Click a class name to apply it to the element
+- The selected class replaces the element's entire class attribute
+- Changes auto-save immediately
+
+**Example use cases**:
+- Theme switchers (light/dark mode)
+- Layout variations (grid/list view)
+- Color schemes (primary/secondary/accent)
+- Size variations (small/medium/large)
+- State indicators (active/inactive/disabled)
+
+**JSON Storage**:
+```json
+{
+  "c": [
+    {"k": "hero-section", "v": "theme-dark"}
+  ]
+}
+```
+
 ### Global Content
 
 Prefix keys with `!` to make content global across all pages:
@@ -394,6 +428,7 @@ The `wedit.json` file controls all wedit behavior:
     "rootKeyPrefix": "!",
     "editAttribute": "wedit",
     "repeatAttribute": "wedit-repeat",
+    "classAttribute": "wedit-class",
     "includeAttribute": "wedit-include",
     "keepAttributes": false,
     "defaultPage": "index.html",
@@ -428,6 +463,7 @@ The `wedit.json` file controls all wedit behavior:
 | `rootKeyPrefix` | string | `"!"` | Prefix for global keys |
 | `editAttribute` | string | `"wedit"` | Attribute name for editables |
 | `repeatAttribute` | string | `"wedit-repeat"` | Attribute name for repeats |
+| `classAttribute` | string | `"wedit-class"` | Attribute name for class selection |
 | `includeAttribute` | string | `"wedit-include"` | Attribute name for includes |
 | `keepAttributes` | boolean | `false` | Keep wedit attributes in output |
 | `defaultPage` | string | `"index.html"` | Default page for directories |

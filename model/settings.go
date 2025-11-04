@@ -7,6 +7,7 @@ package model
 type Settings struct {
 	EditAttribute   string    `json:"e"`
 	RepeatAttribute string    `json:"r"`
+	ClassAttribute  string    `json:"ca"`
 	MenuTextColor   string    `json:"m"`
 	Commands        []Command `json:"c"`
 	DarkMode        bool      `json:"d"`
