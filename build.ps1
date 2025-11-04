@@ -1,6 +1,6 @@
 Write-Host "=== Start building dart applicaiton === "
 cd ./editor; pub get; cd ..
-dart2js ./editor/editor.dart -m -o ./editor/editor.js
+dart compile js ./editor/editor.dart -m -o ./editor/editor.js
 If (Test-Path ./editor/editor.go) {
     Remove-Item ./editor/editor.go 
 }

@@ -8,10 +8,8 @@ class PageMenu {
   static const _DEFAULT_MENU_WIDTH = 400;
   static const _DEFAULT_MENU_TRIGGER_SIZE = 20;
   static const _DEFAULT_MENU_BUTTON_HEIGHT = 40;
-  static const _DEFAULT_MENU_BOX_SHADOW =
-      "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  static const _DEFAULT_MENU_HOVER_BOX_SHADOW =
-      "0 0 2vw 0 rgba(0, 0, 0, 1), inset 0 0 2vw 0 rgba(255, 255, 255, 1)";
+  static const _DEFAULT_MENU_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  static const _DEFAULT_MENU_HOVER_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, 1), inset 0 0 2vw 0 rgba(255, 255, 255, 1)";
   static const _DEFAULT_COMMAND_SUCCESS_TEXT = "ok";
   static const _DEFAULT_COMMAND_FAILURE_TEXT = "ERROR";
 
@@ -26,7 +24,7 @@ class PageMenu {
   bool _lockMenu = false;
 
   PageMenu(this._page, this._commands, this._menuTextColor) {
-    if(_commands == null || _commands!.length <= 0) {
+    if (_commands == null || _commands!.length <= 0) {
       return;
     }
 
@@ -46,10 +44,8 @@ class PageMenu {
       ..top = "0px"
       ..left = "50%"
       ..overflow = "hidden"
-      ..borderBottomLeftRadius =
-          (_DEFAULT_MENU_TRIGGER_SIZE / 2).toString() + "px"
-      ..borderBottomRightRadius =
-          (_DEFAULT_MENU_TRIGGER_SIZE / 2).toString() + "px"
+      ..borderBottomLeftRadius = (_DEFAULT_MENU_TRIGGER_SIZE / 2).toString() + "px"
+      ..borderBottomRightRadius = (_DEFAULT_MENU_TRIGGER_SIZE / 2).toString() + "px"
       ..opacity = _DEFAULT_MENU_OPACITY
       ..boxShadow = _DEFAULT_MENU_BOX_SHADOW
       ..zIndex = "1000000"
@@ -128,13 +124,11 @@ class PageMenu {
     if (el == null) return;
 
     final cmd = el.textContent ?? '';
-    if (cmd == _DEFAULT_COMMAND_SUCCESS_TEXT ||
-        cmd == _DEFAULT_COMMAND_FAILURE_TEXT) {
+    if (cmd == _DEFAULT_COMMAND_SUCCESS_TEXT || cmd == _DEFAULT_COMMAND_FAILURE_TEXT) {
       return;
     }
 
-    _page.command(cmd, () => el.textContent = _DEFAULT_COMMAND_SUCCESS_TEXT,
-        () => el.textContent = _DEFAULT_COMMAND_FAILURE_TEXT);
+    _page.command(cmd, () => el.textContent = _DEFAULT_COMMAND_SUCCESS_TEXT, () => el.textContent = _DEFAULT_COMMAND_FAILURE_TEXT);
   }
 
   void show() {

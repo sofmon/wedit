@@ -2,7 +2,6 @@
 
 [![Website](https://img.shields.io/badge/website-wedit.dev-blue)](https://wedit.dev)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Go Version](https://img.shields.io/badge/go-%3E%3D1.11-blue)](https://golang.org)
 
 Wedit is a command-line WYSIWYG editor that enables content management for static HTML websites directly in the browser. Edit text, manage images, and organize repeating sections with an intuitive CTRL+click interface.
 
@@ -166,7 +165,7 @@ wedit edit
 ```
 
 This will:
-1. Start a local HTTP server (default: `http://localhost:5000`)
+1. Start a local HTTP server (default: `http://localhost:5566`)
 2. Open your default browser
 3. Load the website in edit mode
 
@@ -436,7 +435,7 @@ The `wedit.json` file controls all wedit behavior:
     "defaultPage": "index.html",
     "allowedPageExt": [".html"],
     "host": "localhost",
-    "port": 5000,
+    "port": 5566,
     "openBrowser": true,
     "darkMode": true,
     "sitemapHost": "https://example.com",
@@ -471,7 +470,7 @@ The `wedit.json` file controls all wedit behavior:
 | `defaultPage` | string | `"index.html"` | Default page for directories |
 | `allowedPageExt` | array | `[".html"]` | Allowed page extensions |
 | `host` | string | `"localhost"` | Server hostname |
-| `port` | number | `5000` | Server port |
+| `port` | number | `5566` | Server port |
 | `openBrowser` | boolean | `true` | Auto-open browser on start |
 | `darkMode` | boolean | `true` | Dark mode for editor UI |
 | `sitemapHost` | string | `""` | Base URL for sitemap.xml |
@@ -790,7 +789,7 @@ Generated HTML will include `wedit`, `wedit-repeat`, and `wedit-include` attribu
 
 ### Port Already in Use
 
-If port 5000 is already in use:
+If port 5566 is already in use:
 
 ```json
 {
@@ -808,7 +807,7 @@ If the browser doesn't open automatically:
 }
 ```
 
-Then manually navigate to `http://localhost:5000`
+Then manually navigate to `http://localhost:5566`
 
 ### Changes Not Appearing
 
@@ -860,7 +859,7 @@ git clone https://github.com/sofmon/wedit.git
 cd wedit
 go mod download
 cd editor
-pub get
+dart pub get
 ```
 
 ### Running Tests

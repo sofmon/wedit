@@ -67,7 +67,7 @@ class Repeat {
         beforeTemplate = false;
         continue;
       }
-      if(beforeTemplate){
+      if (beforeTemplate) {
         before.add(copyKeys[i]);
       } else {
         after.add(copyKeys[i]);
@@ -81,7 +81,7 @@ class Repeat {
       _shadows[key] = RepeatShadow.fromRepeat(this, key, copyElement);
     }
 
-    for(int i=after.length-1; i>=0; i--) {
+    for (int i = after.length - 1; i >= 0; i--) {
       final key = after[i];
       final copyElement = _createCopyDomElement(key);
       _domElement.insertAdjacentElement('afterend', copyElement);

@@ -40,7 +40,6 @@ class Page {
     //_site = map[PAGE_SITE];
     _path = map[PAGE_PATH] as String? ?? '';
 
-
     final settings = map[PAGE_SETTINGS] as Map<String, dynamic>?;
     if (settings != null) {
       _editAttribute = settings[PAGE_SETTINGS_EDITATTR] as String? ?? '';
@@ -53,8 +52,7 @@ class Page {
       if (shellCommands != null) {
         for (var c in shellCommands) {
           final cmd = c as Map<String, dynamic>;
-          _commands[cmd[PAGE_SETTINGS_COMMANDS_NAME] as String] =
-              cmd[PAGE_SETTINGS_COMMANDS_COLOR] as String;
+          _commands[cmd[PAGE_SETTINGS_COMMANDS_NAME] as String] = cmd[PAGE_SETTINGS_COMMANDS_COLOR] as String;
         }
       }
     }
@@ -159,8 +157,7 @@ class Page {
   void _syncElements() {
     web.document.title = _title;
 
-    final domElements = web.document.querySelectorAll(
-        "[$_editAttribute],[$_repeatAttribute],[$_classAttribute]");
+    final domElements = web.document.querySelectorAll("[$_editAttribute],[$_repeatAttribute],[$_classAttribute]");
 
     for (int i = 0; i < domElements.length; i++) {
       final domElement = domElements.item(i) as web.HTMLElement?;
@@ -281,22 +278,26 @@ class Page {
     final headers = web.Headers();
     headers.set('Content-Type', 'application/json');
 
-    final options = web.RequestInit(
-      method: method,
-      body: data.toJS,
-      headers: headers,
-    );
+    final options = web.RequestInit(method: method, body: data.toJS, headers: headers);
 
-    web.window.fetch(url.toJS, options).toDart.then((response) {
-      response.text().toDart.then((text) {
-        print((text as JSString).toDart);
-        onSuccess();
-      }).catchError((_) {
-        onFailure();
-      });
-    }).catchError((_) {
-      onFailure();
-    });
+    web.window
+        .fetch(url.toJS, options)
+        .toDart
+        .then((response) {
+          response
+              .text()
+              .toDart
+              .then((text) {
+                print((text as JSString).toDart);
+                onSuccess();
+              })
+              .catchError((_) {
+                onFailure();
+              });
+        })
+        .catchError((_) {
+          onFailure();
+        });
   }
 
   void prepareDomForHtmlSave() {

@@ -10,12 +10,9 @@ class Image {
   static const _DEFAULT_BUTTON_OPACITY = ".3";
   static const _DEFAULT_BUTTON_SIZE = 20;
 
-  static const _DEFAULT_MARK_BOX_SHADOW =
-      "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  static const _DEFAULT_MARK_BOX_SHADOW_ADD =
-      "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  static const _DEFAULT_MARK_BOX_SHADOW_REMOVE =
-      "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  static const _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  static const _DEFAULT_MARK_BOX_SHADOW_ADD = "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  static const _DEFAULT_MARK_BOX_SHADOW_REMOVE = "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
 
   static const SVG_UPLOAD =
       '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#fff" style="margin:3px;position:absolute" width="14" height="14" viewBox="0 0 32 32"><path d="M29.996 4c0.001 0.001 0.003 0.002 0.004 0.004v23.993c-0.001 0.001-0.002 0.003-0.004 0.004h-27.993c-0.001-0.001-0.003-0.002-0.004-0.004v-23.993c0.001-0.001 0.002-0.003 0.004-0.004h27.993zM30 2h-28c-1.1 0-2 0.9-2 2v24c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-24c0-1.1-0.9-2-2-2v0z"></path><path d="M26 9c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3z"></path><path d="M28 26h-24v-4l7-12 8 10h2l7-6z"></path></svg>';
@@ -140,14 +137,13 @@ class Image {
   }
 
   void _clearMark() {
-    _domElement.style.boxShadow =
-        _isHighlighted ? _DEFAULT_MARK_BOX_SHADOW : _originalBoxShadow;
+    _domElement.style.boxShadow = _isHighlighted ? _DEFAULT_MARK_BOX_SHADOW : _originalBoxShadow;
   }
 
   int _getOffsetTop(web.HTMLElement? el) {
     int res = 0;
 
-    while(el != null) {
+    while (el != null) {
       res += el.offsetTop.round();
       el = el.offsetParent as web.HTMLElement?;
     }
@@ -158,14 +154,13 @@ class Image {
   int _getOffsetLeft(web.HTMLElement? el) {
     int res = 0;
 
-    while(el != null) {
+    while (el != null) {
       res += el.offsetLeft.round();
       el = el.offsetParent as web.HTMLElement?;
     }
 
     return res;
   }
-
 
   void highlight() {
     _isHighlighted = true;
@@ -174,22 +169,14 @@ class Image {
 
     final addStyle = _addImageDomElement?.style;
     if (addStyle != null) {
-      addStyle.left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth.round() -
-                  _DEFAULT_BUTTON_SIZE * 2)
-              .toString() +
-          "px";
+      addStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _DEFAULT_BUTTON_SIZE * 2).toString() + "px";
       addStyle.top = (_getOffsetTop(_domElement) - _DEFAULT_BUTTON_SIZE / 2).toString() + "px";
       addStyle.display = "block";
     }
 
     final removeStyle = _removeImageDomElement?.style;
     if (removeStyle != null) {
-      removeStyle.left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth.round() -
-                  _DEFAULT_BUTTON_SIZE / 2)
-              .toString() +
-          "px";
+      removeStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _DEFAULT_BUTTON_SIZE / 2).toString() + "px";
       removeStyle.top = (_getOffsetTop(_domElement) - _DEFAULT_BUTTON_SIZE / 2).toString() + "px";
       removeStyle.display = "block";
     }
@@ -206,10 +193,9 @@ class Image {
   }
 
   void render() {
-
     final image = _domElement as web.HTMLImageElement;
 
-    if(!_hasContent) {
+    if (!_hasContent) {
       image.src = _templateSrc;
       image.srcset = _templateSrcset;
       return;
@@ -219,8 +205,10 @@ class Image {
 
     image.src = "./" + _key + "." + _type + suffix;
     final sb = StringBuffer();
-    _width?.forEach((i)=>sb.write("./" + _key + "-" + i.toString() + "w." + _type + suffix +" " + i.toString() + "w,"));
-    _pixelDensity?.forEach((f)=>sb.write("./" + _key + "-" + f.toStringAsFixed(1) + "x." + _type + suffix + " " + f.toStringAsFixed(1) + "x,"));
+    _width?.forEach((i) => sb.write("./" + _key + "-" + i.toString() + "w." + _type + suffix + " " + i.toString() + "w,"));
+    _pixelDensity?.forEach(
+      (f) => sb.write("./" + _key + "-" + f.toStringAsFixed(1) + "x." + _type + suffix + " " + f.toStringAsFixed(1) + "x,"),
+    );
     image.srcset = sb.toString();
   }
 
@@ -244,7 +232,6 @@ class Image {
   }
 
   void _removeImage(web.MouseEvent e) {
-
     _type = "";
     _hasContent = false;
 
@@ -267,20 +254,29 @@ class Image {
     }
 
     final reader = web.FileReader();
-    reader.addEventListener('load', ((web.Event e) {
-      _sendDataToServer(file.name, reader.result);
-    }).toJS);
+    reader.addEventListener(
+      'load',
+      ((web.Event e) {
+        _sendDataToServer(file.name, reader.result);
+      }).toJS,
+    );
     reader.readAsArrayBuffer(file);
   }
 
   void _sendDataToServer(String name, JSAny? data) async {
-    final url = web.window.location.protocol + "//" + web.window.location.host + "/~?k=" + _key + "&n=" + name + "&p=" + web.window.location.pathname;
+    final url =
+        web.window.location.protocol +
+        "//" +
+        web.window.location.host +
+        "/~?k=" +
+        _key +
+        "&n=" +
+        name +
+        "&p=" +
+        web.window.location.pathname;
 
     try {
-      final response = await web.window.fetch(url.toJS, web.RequestInit(
-        method: 'POST',
-        body: data,
-      )).toDart;
+      final response = await web.window.fetch(url.toJS, web.RequestInit(method: 'POST', body: data)).toDart;
 
       if (response.ok) {
         final text = await response.text().toDart;

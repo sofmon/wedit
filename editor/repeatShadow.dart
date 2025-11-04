@@ -20,7 +20,7 @@ class RepeatShadow {
 
     _bindControls();
 
-    if(_repeat._page.darkMode) {
+    if (_repeat._page.darkMode) {
       _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(255, 255, 255, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
       _DEFAULT_MARK_BOX_SHADOW_ADD = "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
       _DEFAULT_MARK_BOX_SHADOW_REMOVE = "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
@@ -44,16 +44,11 @@ class RepeatShadow {
   static const _DEFAULT_BUTTON_COLOR_MOVE_DOWN = "#00f";
   static const _DEFAULT_BUTTON_OPACITY = ".3";
 
-  String _DEFAULT_MARK_BOX_SHADOW =
-      "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_MARK_BOX_SHADOW_ADD =
-      "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_MARK_BOX_SHADOW_REMOVE =
-      "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_MARK_BOX_SHADOW_MOVE_UP =
-      "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_MARK_BOX_SHADOW_MOVE_DOWN =
-      "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW_ADD = "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW_REMOVE = "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW_MOVE_UP = "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW_MOVE_DOWN = "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
 
   static const SVG_UP =
       '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#fff" style="margin:3px;position:absolute" width="14" height="14" viewBox="0 0 32 32"><path d="M16 1l-15 15h9v16h12v-16h9z"></path></svg>';
@@ -85,8 +80,7 @@ class RepeatShadow {
   }
 
   void _clearMark() {
-    _domElement.style.boxShadow =
-        _isShown ? _DEFAULT_MARK_BOX_SHADOW : _originalBoxShadow;
+    _domElement.style.boxShadow = _isShown ? _DEFAULT_MARK_BOX_SHADOW : _originalBoxShadow;
   }
 
   void _bindControls() {
@@ -166,7 +160,7 @@ class RepeatShadow {
   int _getOffsetTop(web.HTMLElement? el) {
     int res = 0;
 
-    while(el != null) {
+    while (el != null) {
       res += el.offsetTop.round();
       el = el.offsetParent as web.HTMLElement?;
     }
@@ -177,7 +171,7 @@ class RepeatShadow {
   int _getOffsetLeft(web.HTMLElement? el) {
     int res = 0;
 
-    while(el != null) {
+    while (el != null) {
       res += el.offsetLeft.round();
       el = el.offsetParent as web.HTMLElement?;
     }
@@ -192,11 +186,7 @@ class RepeatShadow {
 
     final addStyle = _addDomElement?.style;
     if (addStyle != null) {
-      addStyle.left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth.round() -
-                  _REPEAT_BUTTON_SIZE * 4)
-              .toString() +
-          "px";
+      addStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _REPEAT_BUTTON_SIZE * 4).toString() + "px";
       addStyle.top = (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
       addStyle.display = "block";
     }
@@ -204,11 +194,7 @@ class RepeatShadow {
     if (_canBeDeleted) {
       final removeStyle = _removeDomElement?.style;
       if (removeStyle != null) {
-        removeStyle.left = (_getOffsetLeft(_domElement) +
-                    _domElement.offsetWidth.round() -
-                    _REPEAT_BUTTON_SIZE * 2.5)
-                .toString() +
-            "px";
+        removeStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _REPEAT_BUTTON_SIZE * 2.5).toString() + "px";
         removeStyle.top = (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
         removeStyle.display = "block";
       }
@@ -216,22 +202,14 @@ class RepeatShadow {
 
     final moveUpStyle = _moveUpDomElement?.style;
     if (moveUpStyle != null) {
-      moveUpStyle.left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth.round() -
-                  _REPEAT_BUTTON_SIZE / 2)
-              .toString() +
-          "px";
+      moveUpStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
       moveUpStyle.top = (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
       moveUpStyle.display = "block";
     }
 
     final moveDownStyle = _moveDownDomElement?.style;
     if (moveDownStyle != null) {
-      moveDownStyle.left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth.round() -
-                  _REPEAT_BUTTON_SIZE / 2)
-              .toString() +
-          "px";
+      moveDownStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
       moveDownStyle.top = (_getOffsetTop(_domElement) + _REPEAT_BUTTON_SIZE * 0.6).toString() + "px";
       moveDownStyle.display = "block";
     }
