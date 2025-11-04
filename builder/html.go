@@ -92,7 +92,10 @@ func renderHTML(targetFilePath, templateFilePath string, page model.Page) error 
 }
 
 func renderProcessNode(n *html.Node, page *model.Page) {
-	for i, a := range n.Attr {
+	// Process attributes in reverse order to safely remove them
+	for i := len(n.Attr) - 1; i >= 0; i-- {
+		a := n.Attr[i]
+
 		if a.Key == cfg.EditAttr {
 			k := model.Key(a.Val)
 			if strings.ToLower(string(n.Data)) == "img" {

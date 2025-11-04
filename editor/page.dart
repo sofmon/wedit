@@ -167,11 +167,17 @@ class Page {
       if (domElement == null) continue;
 
       // Check for class attribute first
-      final classKey = domElement.getAttribute(_classAttribute);
-      if (classKey != null && classKey.isNotEmpty) {
+      final classAttrValue = domElement.getAttribute(_classAttribute);
+      if (classAttrValue != null && classAttrValue.isNotEmpty) {
+        // Parse key from attribute value (format: "key:class1,class2" or just "key")
+        String classKey = classAttrValue;
+        if (classAttrValue.contains(':')) {
+          classKey = classAttrValue.split(':')[0];
+        }
         final cmsData = _mappedClassesData[classKey];
         final classObj = Class.fromMap(this, classKey, domElement, cmsData);
         _classes[classKey] = classObj;
+        classObj.render();
         // Don't continue - element may also have edit attribute
       }
 

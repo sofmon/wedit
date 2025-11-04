@@ -295,14 +295,16 @@ Mark elements that should be repeatable with `wedit-repeat`:
 Mark elements with `wedit-class` to enable dynamic CSS class switching:
 
 ```html
-<div wedit-class="theme-light,theme-dark,theme-blue" class="theme-light">
+<div wedit-class="hero:theme-light,theme-dark,theme-blue" class="theme-light">
     <h2 wedit="section-title">Section Title</h2>
     <p wedit="section-content">Section content goes here.</p>
 </div>
 ```
 
 **Usage**:
-- Add comma-separated class names to the `wedit-class` attribute value
+- Format: `wedit-class="key:class1,class2,class3"`
+- The part before `:` is the unique identifier (key)
+- The part after `:` is comma-separated available class options
 - Press and hold **CTRL** to show the class dropdown
 - Click a class name to apply it to the element
 - The selected class replaces the element's entire class attribute
