@@ -1,0 +1,5 @@
+name: wedit
+version: 0.0.1
+dependencies:
+  markdown: 2.0.2
+  html_unescape: 1.0.1+2

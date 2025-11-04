@@ -1,0 +1,16 @@
+# github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+## explicit
+github.com/nfnt/resize
+# github.com/russross/blackfriday v1.6.0
+## explicit; go 1.13
+github.com/russross/blackfriday
+# github.com/sofmon/wedit v0.0.0-20190322162328-922e9af612fb
+## explicit
+github.com/sofmon/wedit/builder
+github.com/sofmon/wedit/editor
+github.com/sofmon/wedit/model
+github.com/sofmon/wedit/service
+# golang.org/x/net v0.46.0
+## explicit; go 1.24.0
+golang.org/x/net/html
+golang.org/x/net/html/atom
