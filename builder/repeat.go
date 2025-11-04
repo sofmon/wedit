@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/net/html"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 func processRepeat(k model.Key, n *html.Node, p *model.Page) {

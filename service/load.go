@@ -8,8 +8,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/sofmon/wedit/builder"
-	"github.com/sofmon/wedit/model"
+	"wedit/builder"
+	"wedit/model"
 )
 
 func loadHandler(w http.ResponseWriter, r *http.Request) {

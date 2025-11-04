@@ -7,7 +7,7 @@ import (
 
 	"github.com/russross/blackfriday"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 func processElement(k model.Key, n *html.Node, p *model.Page) {

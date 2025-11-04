@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/net/html"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 func openTemlateHTML(templateFilePath string) (doc *html.Node, err error) {

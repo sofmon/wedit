@@ -11,7 +11,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 // ReadPageData based on relative path

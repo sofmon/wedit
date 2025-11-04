@@ -11,7 +11,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 var (

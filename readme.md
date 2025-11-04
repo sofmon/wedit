@@ -1,6 +1,6 @@
 # Wedit - WYSIWYG Static Website Editor
 
-[![Website](https://img.shields.io/badge/website-wedit.io-blue)](https://wedit.io)
+[![Website](https://img.shields.io/badge/website-wedit.dev-blue)](https://wedit.dev)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Go Version](https://img.shields.io/badge/go-%3E%3D1.11-blue)](https://golang.org)
 

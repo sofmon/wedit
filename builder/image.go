@@ -18,7 +18,7 @@ import (
 	"github.com/nfnt/resize"
 	"golang.org/x/net/html"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 func processImage(k model.Key, n *html.Node, p *model.Page) {

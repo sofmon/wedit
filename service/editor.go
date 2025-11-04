@@ -6,7 +6,7 @@ package service
 import (
 	"net/http"
 
-	"github.com/sofmon/wedit/editor"
+	"wedit/editor"
 )
 
 const (

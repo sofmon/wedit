@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/sofmon/wedit/builder"
-	"github.com/sofmon/wedit/model"
+	"wedit/builder"
+	"wedit/model"
 )
 
 func imageHandler(w http.ResponseWriter, r *http.Request) {
