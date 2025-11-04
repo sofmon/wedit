@@ -10,17 +10,17 @@
 
 <body>
   <header>
-    <p wedit="chapeau">static website editing tool
+    <p>static website editing tool
 </p>
-    <h1 wedit="header">WEDIT
+    <h1>WEDIT
 </h1>
   </header>
   <div class="container">
     <div class="center">
-      <div class="content">
-        <h2 wedit="about-h">what is it?
+      <div class="c2">
+        <h2>What is it?
 </h2>
-        <div wedit="about-p"><p>Wedit is command line tool designed to help website content management.</p>
+        <div><p>Wedit is command line tool designed to help website content management.</p>
 
 <p>Wedit uses static HTML website as template and enables the content to be changed through WYSIWYG editing using the web browser. All changes are immediate and align with the intended website design.</p>
 
@@ -31,9 +31,9 @@
     <div style="clear:both"></div>
     <div class="center">
       <div class="content">
-        <h2 wedit="action-h">wedit in action
+        <h2>Wedit in action
 </h2>
-        <div wedit="action-p">See how wedit is used for the <a href="https://www.peaks.nl">Peaks</a> website.
+        <div>See how wedit is used for the <a href="https://www.peaks.nl">Peaks</a> website.
 </div>
         <p>
           <img style="width:100%;border-radius:20px;" src="action.gif"/>
@@ -44,9 +44,9 @@
     <div class="half">
       <div class="content">
         <div>
-          <h2 wedit="text-h">text editing
+          <h2>Text editing
 </h2>
-          <div wedit="text-p"><p>Any HTML element within the template marked with <code>wedit=&#34;...&#34;</code> attribute is editable using markdown.</p>
+          <div><p>Any HTML element within the template marked with <code>wedit=&#34;...&#34;</code> attribute is editable using markdown.</p>
 
 <p>The markdown supports paragraphs <a href="https://wedit.io">links</a>, headers, bullet points, basic <em>text</em> <em>decorations</em>, inline images or even free form HTML.</p>
 
@@ -60,21 +60,24 @@
     <div class="half">
       <div class="content">
         <div>
-          <h2 wedit="repeat-h">repeat sections
+          <h2>Repeat sections
 </h2>
-          <div wedit="repeat-p"><p>Any HTML element can be marked with <code>wedit-repeat=&#34;...&#34;</code> attribute to make it repeatable.</p>
+          <div><p>Any HTML element can be marked with <code>wedit-repeat=&#34;...&#34;</code> attribute to make it repeatable.</p>
 
 <p>This is useful technique to add dynamic number of:</p>
 </div>
           <ul>
-            <li wedit-repeat="repeat-r" style="margin:20px">
-              <div wedit="repeat-r-p">paragraphs
+            <li style="margin:20px">
+              <div>paragraphs
 </div>
             </li><li style="margin:20px">
-              <div wedit="repeat-r-p1550873460790">list items
+              <div>list items
 </div>
             </li><li style="margin:20px">
-              <div wedit="repeat-r-p1550873484912">carousels items
+              <div>repeatable content
+</div>
+            </li><li style="margin:20px">
+              <div>carousels items
 </div>
             </li>
           </ul>
@@ -85,12 +88,12 @@
     <div class="center">
       <div class="content">
         <div>
-          <h2 wedit="images-h">images support
+          <h2>Images support
 </h2>
           <div style="text-align:center">
-            <img srcset="img.jpeg" style="width:80%;border-radius: 20px" wedit="images-i"/>
+            <img srcset="img.jpeg" style="width:80%;border-radius: 20px"/>
           </div>
-          <div wedit="images-p"><p>Wedit supports the <code>img</code> HTML elements. Similar with ant other text
+          <div><p>Wedit supports the <code>img</code> HTML elements. Similar with ant other text
 element <code>img</code> elements are made editable with the <code>wedit=&#34;...&#34;</code>
 attribute.</p>
 
@@ -106,9 +109,9 @@ each descriptor.</p>
     <div class="half">
       <div class="content">
         <div>
-          <h2 wedit="variations-h">page variations
+          <h2>Page variations
 </h2>
-          <div wedit="variations-p"><p>Wedit follows the template folder structure for the static website. The one exception is the variation folder, which will be mapped to any string while wedit is in edit mode. By default the variation folder name is a single hyphen (‐).</p>
+          <div><p>Wedit follows the template folder structure for the static website. The one exception is the variation folder, which will be mapped to any string while wedit is in edit mode. By default the variation folder name is a single hyphen (‐).</p>
 
 <p>As an example, the file in template folder</p>
 
@@ -144,9 +147,9 @@ each descriptor.</p>
     <div class="half">
       <div class="content">
         <div>
-          <h2 wedit="includes-h">root content &amp; snippet includes
+          <h2>Root content &amp; snippet includes
 </h2>
-          <div wedit="includes-p"><p>Wedit has the concept of a root key. Any key with prefix <code>!</code> used in an attribute like <code>wedit=&#34;!...&#34;</code> is considered a root key.</p>
+          <div><p>Wedit has the concept of a root key. Any key with prefix <code>!</code> used in an attribute like <code>wedit=&#34;!...&#34;</code> is considered a root key.</p>
 
 <p>A root key instructs wedit that associated content must be the same for all pages.</p>
 
@@ -165,9 +168,9 @@ each descriptor.</p>
     <div class="center">
       <div class="content">
         <div>
-          <h2 wedit="flow-h">development flow
+          <h2>development flow
 </h2>
-          <div wedit="flow-p"><p>Every tool has a purpose, and wedit is not different.</p>
+          <div><p>Every tool has a purpose, and wedit is not different.</p>
 
 <p>Wedit does not try to replace any existing web development tools or frameworks.</p>
 
@@ -184,9 +187,9 @@ version control systems like GIT.</p>
     <div class="third">
       <div class="content">
         <div>
-          <h2 wedit="license-h">license
+          <h2>license
 </h2>
-          <div wedit="license-p"><p>The wedit tool is free and open source, under an MIT license.</p>
+          <div><p>The wedit tool is free and open source, under an MIT license.</p>
 
 <p>Source code and documentation can be found on the <a href="https://github.com/sofmon/wedit" title="title">GitHub repository</a>.</p>
 </div>
@@ -196,9 +199,9 @@ version control systems like GIT.</p>
     <div class="third">
       <div class="content">
         <div>
-          <h2 wedit="get-h">get wedit
+          <h2>get wedit
 </h2>
-          <div wedit="get-p"><h3>Go get</h3>
+          <div><h3>Go get</h3>
 
 <p>Requires <a href="https://golang.org">Go</a> environment.</p>
 
@@ -222,9 +225,9 @@ version control systems like GIT.</p>
     <div class="third">
       <div class="content">
         <div>
-          <h2 wedit="maintainers-h">maintainers
+          <h2>maintainers
 </h2>
-          <div wedit="maintainers-p"><p>Wedit is currently maintained by:</p>
+          <div><p>Wedit is currently maintained by:</p>
 
 <p>Haralampi Staykov <a href="https://haralampi.com">About</a>|<a href="https://github.com/sofmon/">GitHub</a>|<a href="https://linkedin.com/in/haralampi/">LinkedIn</a></p>
 </div>

@@ -8,8 +8,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/sofmon/wedit/builder"
-	"github.com/sofmon/wedit/model"
+	"wedit/builder"
+	"wedit/model"
 )
 
 func loadHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,6 +30,7 @@ func loadHandler(w http.ResponseWriter, r *http.Request) {
 		Settings: model.Settings{
 			EditAttribute:   cfg.EditAttr,
 			RepeatAttribute: cfg.RepeatAttr,
+			ClassAttribute:  cfg.ClassAttr,
 			DarkMode:        cfg.DarkMode,
 		},
 	}

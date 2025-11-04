@@ -7,7 +7,7 @@ import (
 
 	"github.com/russross/blackfriday"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 func processElement(k model.Key, n *html.Node, p *model.Page) {
@@ -17,7 +17,7 @@ func processElement(k model.Key, n *html.Node, p *model.Page) {
 		return
 	}
 
-	text := string(blackfriday.Run([]byte(element.Text)))
+	text := string(blackfriday.MarkdownCommon([]byte(element.Text)))
 
 	if strings.Index(text, "<p>") == strings.LastIndex(text, "<p>") {
 		text = strings.Replace(text, "<p>", "", 1)

@@ -3,80 +3,91 @@
 part of wedit;
 
 class Page {
-  String _host, _site, _path;
+  String _host = '';
+  String _path = '';
 
-  String _title;
+  String _title = '';
   String get title => _title;
   set title(String t) => _title = t;
 
-  Map<String, Map> _mappedElementsData;
-  Map<String, Map> _mappedRepeatsData;
-  Map<String, Map> _mappedImagesData;
+  Map<String, Map<String, dynamic>> _mappedElementsData = {};
+  Map<String, Map<String, dynamic>> _mappedRepeatsData = {};
+  Map<String, Map<String, dynamic>> _mappedImagesData = {};
+  Map<String, Map<String, dynamic>> _mappedClassesData = {};
 
-  Map<String, Element> _elements;
-  Map<String, Image> _images;
-  Map<String, Repeat> _repeats;
+  Map<String, Element> _elements = {};
+  Map<String, Image> _images = {};
+  Map<String, Repeat> _repeats = {};
+  Map<String, Class> _classes = {};
 
   bool _ctrlPressed = false;
   bool get ctrlPressed => _ctrlPressed;
 
-  String _editAttribute;
+  String _editAttribute = '';
   String get editAttribute => _editAttribute;
-  String _repeatAttribute;
+  String _repeatAttribute = '';
   String get repeatAttribute => _repeatAttribute;
-  bool _darkMode;
+  String _classAttribute = '';
+  String get classAttribute => _classAttribute;
+  bool _darkMode = false;
   bool get darkMode => _darkMode;
 
-  PageMenu _pageMenu;
-  Map<String, String> _commands;
+  PageMenu? _pageMenu;
+  Map<String, String> _commands = {};
 
-  Page.fromMap(Map map) {
-    _host = map[PAGE_HOST];
+  Page.fromMap(Map<String, dynamic> map) {
+    _host = map[PAGE_HOST] as String? ?? '';
     //_site = map[PAGE_SITE];
-    _path = map[PAGE_PATH];
+    _path = map[PAGE_PATH] as String? ?? '';
 
-    
-    var settings = map[PAGE_SETTINGS];
-    _editAttribute = settings[PAGE_SETTINGS_EDITATTR];
-    _repeatAttribute = settings[PAGE_SETTINGS_REPEATATTR];
-    _darkMode = settings[PAGE_SETTINGS_DARK_MODE];
+    final settings = map[PAGE_SETTINGS] as Map<String, dynamic>?;
+    if (settings != null) {
+      _editAttribute = settings[PAGE_SETTINGS_EDITATTR] as String? ?? '';
+      _repeatAttribute = settings[PAGE_SETTINGS_REPEATATTR] as String? ?? '';
+      _classAttribute = settings[PAGE_SETTINGS_CLASSATTR] as String? ?? '';
+      _darkMode = settings[PAGE_SETTINGS_DARK_MODE] as bool? ?? false;
 
-    _commands = new Map<String, String>();
-    List shellCommands = settings[PAGE_SETTINGS_COMMANDS];
-    if (shellCommands != null) {
-      settings[PAGE_SETTINGS_COMMANDS].forEach((c) =>
-          _commands[c[PAGE_SETTINGS_COMMANDS_NAME]] =
-              c[PAGE_SETTINGS_COMMANDS_COLOR]);
+      _commands = <String, String>{};
+      final shellCommands = settings[PAGE_SETTINGS_COMMANDS] as List?;
+      if (shellCommands != null) {
+        for (var c in shellCommands) {
+          final cmd = c as Map<String, dynamic>;
+          _commands[cmd[PAGE_SETTINGS_COMMANDS_NAME] as String] = cmd[PAGE_SETTINGS_COMMANDS_COLOR] as String;
+        }
+      }
     }
 
-    _title = map[PAGE_TITLE];
+    _title = map[PAGE_TITLE] as String? ?? '';
 
-    _elements = new Map<String, Element>();
-    _images = new Map<String, Image>();
-    _repeats = new Map<String, Repeat>();
+    _elements = <String, Element>{};
+    _images = <String, Image>{};
+    _repeats = <String, Repeat>{};
+    _classes = <String, Class>{};
 
-    _mappedElementsData = new Map<String, Map>();
-    map[PAGE_ELEMENTS].forEach((e) => _mappedElementsData[e[ELEMENT_KEY]] = e);
+    _mappedElementsData = <String, Map<String, dynamic>>{};
+    (map[PAGE_ELEMENTS] as List?)?.forEach((e) => _mappedElementsData[(e as Map)[ELEMENT_KEY] as String] = e as Map<String, dynamic>);
 
-    _mappedRepeatsData = new Map<String, Map>();
-    map[PAGE_REPEATS].forEach((r) => _mappedRepeatsData[r[REPEAT_KEY]] = r);
+    _mappedRepeatsData = <String, Map<String, dynamic>>{};
+    (map[PAGE_REPEATS] as List?)?.forEach((r) => _mappedRepeatsData[(r as Map)[REPEAT_KEY] as String] = r as Map<String, dynamic>);
 
-    _mappedImagesData = new Map<String, Map>();
-    map[PAGE_IMAGES].forEach((r) => _mappedImagesData[r[IMAGE_KEY]] = r);
+    _mappedImagesData = <String, Map<String, dynamic>>{};
+    (map[PAGE_IMAGES] as List?)?.forEach((r) => _mappedImagesData[(r as Map)[IMAGE_KEY] as String] = r as Map<String, dynamic>);
+
+    _mappedClassesData = <String, Map<String, dynamic>>{};
+    (map[PAGE_CLASSES] as List?)?.forEach((c) => _mappedClassesData[(c as Map)[CLASS_KEY] as String] = c as Map<String, dynamic>);
 
     _syncElements();
     _bindEvents();
 
-    html.window.dispatchEvent(new html.Event("wedit-ready"));
+    web.window.dispatchEvent(web.Event('wedit-ready'));
 
-    _pageMenu =
-        new PageMenu(this, _commands, settings[PAGE_SETTINGS_MENUTEXTCOLOR]);
+    _pageMenu = PageMenu(this, _commands, (settings?[PAGE_SETTINGS_MENUTEXTCOLOR] as String?) ?? '');
 
-    html.window.postMessage("wedit.loaded", "*"); 
+    web.window.postMessage("wedit.loaded".toJS, "*".toJS);
   }
 
-  Map toMap() {
-    Map map = new Map();
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
 
     map[PAGE_HOST] = _host;
     //map[PAGE_SITE] = _site;
@@ -84,30 +95,34 @@ class Page {
 
     map[PAGE_TITLE] = _title;
 
-    List eList = new List();
+    final eList = <Map<String, dynamic>>[];
     _elements.values.forEach((e) => eList.add(e.toMap()));
     map[PAGE_ELEMENTS] = eList;
 
-    List rList = new List();
+    final rList = <Map<String, dynamic>>[];
     _repeats.values.forEach((r) => rList.add(r.toMap()));
     map[PAGE_REPEATS] = rList;
 
-    List iList = new List();
+    final iList = <Map<String, dynamic>>[];
     _images.values.forEach((i) => iList.add(i.toMap()));
     map[PAGE_IMAGES] = iList;
+
+    final cList = <Map<String, dynamic>>[];
+    _classes.values.forEach((c) => cList.add(c.toMap()));
+    map[PAGE_CLASSES] = cList;
 
     return map;
   }
 
-  void registerElement(html.Element domElement) {
-    var key = domElement.getAttribute(_editAttribute);
+  void registerElement(web.HTMLElement domElement) {
+    final key = domElement.getAttribute(_editAttribute);
 
     if (key == null || key.isEmpty) return;
 
     if (Image.SUPPORTED_IMAGE_TAGS.contains(domElement.tagName.toLowerCase())) {
-      Map cmsData = _mappedImagesData[key];
+      final cmsData = _mappedImagesData[key];
 
-      Image image = new Image.fromMap(this, key, domElement, cmsData);
+      final image = Image.fromMap(this, key, domElement, cmsData);
 
       _images[key] = image;
 
@@ -115,50 +130,63 @@ class Page {
       return;
     }
 
-    Map cmsData = _mappedElementsData[key];
+    final cmsData = _mappedElementsData[key];
 
-    Element element = new Element.fromMap(this, key, domElement, cmsData);
+    final element = Element.fromMap(this, key, domElement, cmsData);
 
     _elements[key] = element;
 
     element.render();
   }
 
-  void unregisterElement(html.Element domElement) {
-    var key = domElement.getAttribute(_editAttribute);
+  void unregisterElement(web.HTMLElement domElement) {
+    final key = domElement.getAttribute(_editAttribute);
 
     if (Image.SUPPORTED_IMAGE_TAGS.contains(domElement.tagName.toLowerCase())) {
-      var image = _images[key];
-      image.prepareDomForHtmlSave();
+      final image = _images[key];
+      image?.prepareDomForHtmlSave();
       _images.remove(key);
       return;
     }
 
-    var element = _elements[key];
-    element.prepareDomForHtmlSave();
+    final element = _elements[key];
+    element?.prepareDomForHtmlSave();
     _elements.remove(key);
   }
 
   void _syncElements() {
-    html.document.title = _title;
+    web.document.title = _title;
 
-    //List<html.Element> repeatedDomElements = new List<html.Element>();
-
-    html.ElementList<html.Element> domElements = html.querySelectorAll(
-        "[" + _editAttribute + "],[" + _repeatAttribute + "]");
+    final domElements = web.document.querySelectorAll("[$_editAttribute],[$_repeatAttribute],[$_classAttribute]");
 
     for (int i = 0; i < domElements.length; i++) {
-      html.Element domElement = domElements[i];
+      final domElement = domElements.item(i) as web.HTMLElement?;
+      if (domElement == null) continue;
 
-      String key = domElement.getAttribute(_repeatAttribute);
+      // Check for class attribute first
+      final classAttrValue = domElement.getAttribute(_classAttribute);
+      if (classAttrValue != null && classAttrValue.isNotEmpty) {
+        // Parse key from attribute value (format: "key:class1,class2" or just "key")
+        String classKey = classAttrValue;
+        if (classAttrValue.contains(':')) {
+          classKey = classAttrValue.split(':')[0];
+        }
+        final cmsData = _mappedClassesData[classKey];
+        final classObj = Class.fromMap(this, classKey, domElement, cmsData);
+        _classes[classKey] = classObj;
+        classObj.render();
+        // Don't continue - element may also have edit attribute
+      }
 
-      if (key != null && !key.isEmpty) {
-        Map cmsData = _mappedRepeatsData[key];
+      final key = domElement.getAttribute(_repeatAttribute);
 
-        Repeat repeat = new Repeat.fromMap(this, key, domElement, cmsData);
+      if (key != null && key.isNotEmpty) {
+        final cmsData = _mappedRepeatsData[key];
+
+        final repeat = Repeat.fromMap(this, key, domElement, cmsData);
         _repeats[key] = repeat;
 
-        List<html.Element> repeatedElements = repeat.render();
+        final repeatedElements = repeat.render();
 
         for (int ri = 0; ri < repeatedElements.length; ri++) {
           _processDomElement(repeatedElements[ri]);
@@ -171,122 +199,105 @@ class Page {
     }
   }
 
-  void _processDomElement(html.Element domElement) {
-    String key = domElement.getAttribute(_editAttribute);
+  void _processDomElement(web.HTMLElement domElement) {
+    final key = domElement.getAttribute(_editAttribute);
 
     if (key == null || key.isEmpty) return;
 
-    String elementTag = domElement.tagName.toLowerCase();
+    final elementTag = domElement.tagName.toLowerCase();
 
     if (Image.SUPPORTED_IMAGE_TAGS.contains(elementTag)) {
-      Map cmsData = _mappedImagesData[key];
+      final cmsData = _mappedImagesData[key];
 
-      Image image = new Image.fromMap(this, key, domElement, cmsData);
+      final image = Image.fromMap(this, key, domElement, cmsData);
       _images[key] = image;
 
       image.render();
       return;
     }
 
-    Map cmsData = _mappedElementsData[key];
+    final cmsData = _mappedElementsData[key];
 
-    Element element = new Element.fromMap(this, key, domElement, cmsData);
+    final element = Element.fromMap(this, key, domElement, cmsData);
     _elements[key] = element;
 
     element.render();
   }
 
   void _bindEvents() {
-    html.window.onKeyDown.listen(_windowKeyDown);
-    html.window.onKeyUp.listen(_windowKeyUp);
+    web.window.addEventListener('keydown', _windowKeyDown.toJS);
+    web.window.addEventListener('keyup', _windowKeyUp.toJS);
   }
 
-  void _windowKeyDown(html.KeyboardEvent e) {
+  void _windowKeyDown(web.KeyboardEvent e) {
     _ctrlPressed = e.ctrlKey;
 
     if (e.ctrlKey) {
       _elements.values.forEach((e) => e.highlight());
       _images.values.forEach((e) => e.highlight());
       _repeats.values.forEach((r) => r.highlight());
+      _classes.values.forEach((c) => c.highlight());
     }
   }
 
-  void _windowKeyUp(html.KeyboardEvent e) {
+  void _windowKeyUp(web.KeyboardEvent e) {
     _ctrlPressed = e.ctrlKey;
 
     _elements.values.forEach((e) => e.normalise());
     _images.values.forEach((e) => e.normalise());
     _repeats.values.forEach((r) => r.normalise());
+    _classes.values.forEach((c) => c.normalise());
   }
 
   void save(Function onSuccess, Function onFailure) {
-
-    if(isDemo) {
-      html.window.postMessage("wedit.saved", "*");
+    if (isDemo) {
+      web.window.postMessage("wedit.saved".toJS, "*".toJS);
       return;
     }
 
-    Map pageData = toMap();
+    final pageData = toMap();
+    final jsonData = convert.json.encode(pageData);
 
-    String jsonData = convert.json.encode(pageData);
+    final url = "${web.window.location.protocol}//${web.window.location.host}/~?p=${web.window.location.pathname}";
 
-    html.HttpRequest request =
-        new html.HttpRequest(); // create a new XHR./wedit
+    _sendRequest(url, "PUT", jsonData, onSuccess, onFailure);
 
-    // add an event handler that is called when the request finishes
-    request.onReadyStateChange.listen((_) {
-      if (request.readyState == html.HttpRequest.DONE &&
-          (request.status == 200 || request.status == 0)) {
-        // data saved OK.
-        print(request.responseText);
-        // output the response from the server
-        if (onSuccess != null) {
-          onSuccess();
-        }
-      } else {
-        if (onFailure != null) {
-          onFailure();
-        }
-      }
-    });
-
-    var url = html.window.location.protocol + "//" + html.window.location.host + "/~?p=" + html.window.location.pathname;
-
-    request.open("PUT", url, async: false);
-    request.send(jsonData);
-
-    html.window.postMessage("wedit.saved", "*");
+    web.window.postMessage("wedit.saved".toJS, "*".toJS);
   }
 
   void command(String cmd, Function onSuccess, Function onFailure) {
-    Map pageData = toMap();
+    final pageData = toMap();
+    final jsonData = convert.json.encode(pageData);
 
-    String jsonData = convert.json.encode(pageData);
+    final url = web.window.location.href.replaceAll("/!/", "/!$cmd/");
 
-    html.HttpRequest request =
-        new html.HttpRequest(); // create a new XHR./wedit
+    _sendRequest(url, "POST", jsonData, onSuccess, onFailure);
+  }
 
-    // add an event handler that is called when the request finishes
-    request.onReadyStateChange.listen((_) {
-      if (request.readyState == html.HttpRequest.DONE &&
-          (request.status == 200 || request.status == 0)) {
-        // data saved OK.
-        print(request.responseText);
-        // output the response from the server
-        if (onSuccess != null) {
-          onSuccess();
-        }
-      } else {
-        if (onFailure != null) {
+  void _sendRequest(String url, String method, String data, Function onSuccess, Function onFailure) {
+    final headers = web.Headers();
+    headers.set('Content-Type', 'application/json');
+
+    final options = web.RequestInit(method: method, body: data.toJS, headers: headers);
+
+    web.window
+        .fetch(url.toJS, options)
+        .toDart
+        .then((response) {
+          response
+              .text()
+              .toDart
+              .then((text) {
+                print((text as JSString).toDart);
+                onSuccess();
+              })
+              .catchError((_) {
+                onFailure();
+              });
+        })
+        .catchError((_) {
           onFailure();
-        }
-      }
-    });
-
-    var url = html.window.location.href.replaceAll("/!/", "/!" + cmd + "/");
-
-    request.open("POST", url, async: false);
-    request.send(jsonData);
+        });
   }
 
   void prepareDomForHtmlSave() {

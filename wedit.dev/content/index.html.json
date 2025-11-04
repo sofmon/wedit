@@ -6,6 +6,7 @@
       "c": [
         "repeat-r",
         "1550873460790",
+        "1762275558110",
         "1550873484912"
       ]
     }
@@ -13,7 +14,7 @@
   "e": [
     {
       "k": "about-h",
-      "t": "what is it?"
+      "t": "What is it?"
     },
     {
       "k": "about-p",
@@ -21,7 +22,7 @@
     },
     {
       "k": "action-h",
-      "t": "wedit in action"
+      "t": "Wedit in action"
     },
     {
       "k": "action-p",
@@ -53,7 +54,7 @@
     },
     {
       "k": "images-h",
-      "t": "images support\n"
+      "t": "Images support\n"
     },
     {
       "k": "images-p",
@@ -69,7 +70,7 @@
     },
     {
       "k": "includes-h",
-      "t": "root content \u0026 snippet includes"
+      "t": "Root content \u0026 snippet includes"
     },
     {
       "k": "includes-p",
@@ -93,7 +94,7 @@
     },
     {
       "k": "repeat-h",
-      "t": "repeat sections"
+      "t": "Repeat sections"
     },
     {
       "k": "repeat-h1550852628816",
@@ -476,8 +477,32 @@
       "t": "repeatable content"
     },
     {
+      "k": "repeat-r-p1762275558004",
+      "t": "repeatable content"
+    },
+    {
+      "k": "repeat-r-p1762275558110",
+      "t": "repeatable content"
+    },
+    {
+      "k": "repeat-r-p1762275563295",
+      "t": "repeatable content v2"
+    },
+    {
+      "k": "repeat-r-p1762275563387",
+      "t": "repeatable content"
+    },
+    {
+      "k": "repeat-r-p1762275565817",
+      "t": "repeatable content"
+    },
+    {
+      "k": "repeat-r-p1762275565912",
+      "t": "repeatable content v3"
+    },
+    {
       "k": "text-h",
-      "t": "text editing"
+      "t": "Text editing"
     },
     {
       "k": "text-p",
@@ -485,7 +510,7 @@
     },
     {
       "k": "variations-h",
-      "t": "page variations"
+      "t": "Page variations"
     },
     {
       "k": "variations-p",
@@ -505,5 +530,6 @@
       "w": null,
       "x": null
     }
-  ]
+  ],
+  "c": []
 }

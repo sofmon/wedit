@@ -11,7 +11,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 var (
@@ -174,10 +174,12 @@ func splitRootData(page model.Page) (local model.Page, root model.Page) {
 	local.Repeats = make(map[model.Key]model.Repeat)
 	local.Elements = make(map[model.Key]model.Element)
 	local.Images = make(map[model.Key]model.Image)
+	local.Classes = make(map[model.Key]model.Class)
 
 	root.Repeats = make(map[model.Key]model.Repeat)
 	root.Elements = make(map[model.Key]model.Element)
 	root.Images = make(map[model.Key]model.Image)
+	root.Classes = make(map[model.Key]model.Class)
 
 	for k, v := range page.Elements {
 		if strings.HasPrefix(string(k), cfg.RootKeyPrefix) {
@@ -200,6 +202,14 @@ func splitRootData(page model.Page) (local model.Page, root model.Page) {
 			root.Repeats[k] = v
 		} else {
 			local.Repeats[k] = v
+		}
+	}
+
+	for k, v := range page.Classes {
+		if strings.HasPrefix(string(k), cfg.RootKeyPrefix) {
+			root.Classes[k] = v
+		} else {
+			local.Classes[k] = v
 		}
 	}
 

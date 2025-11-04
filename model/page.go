@@ -14,6 +14,7 @@ type Page struct {
 	Repeats  PageRepeats  `json:"r"`
 	Elements PageElements `json:"e"`
 	Images   PageImages   `json:"i"`
+	Classes  PageClasses  `json:"c"`
 }
 
 // PageWithSettings is used to transmit page and global settings
@@ -29,6 +30,7 @@ func NewEmptyPage() Page {
 		Repeats:  make(map[Key]Repeat),
 		Elements: make(map[Key]Element),
 		Images:   make(map[Key]Image),
+		Classes:  make(map[Key]Class),
 	}
 }
 
@@ -128,6 +130,40 @@ func (x *PageRepeats) UnmarshalJSON(data []byte) (err error) {
 		return
 	}
 	*x = make(map[Key]Repeat)
+	for _, v := range l {
+		(*x)[v.Key] = v
+	}
+	return
+}
+
+// PageClasses is map[Key]Class that serializes as list
+type PageClasses map[Key]Class
+
+// MarshalJSON converts a map to a json list
+func (x PageClasses) MarshalJSON() ([]byte, error) {
+	l := []Class{}
+
+	var keys []string
+	for k := range x {
+		keys = append(keys, string(k))
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		l = append(l, x[Key(k)])
+	}
+
+	return json.Marshal(l)
+}
+
+// UnmarshalJSON converts a json list to a
+func (x *PageClasses) UnmarshalJSON(data []byte) (err error) {
+	l := []Class{}
+	err = json.Unmarshal(data, &l)
+	if err != nil {
+		return
+	}
+	*x = make(map[Key]Class)
 	for _, v := range l {
 		(*x)[v.Key] = v
 	}

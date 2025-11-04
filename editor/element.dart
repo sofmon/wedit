@@ -2,47 +2,45 @@
 // Use of this source code is governed by MIT license that can be found in the LICENSE file.
 part of wedit;
 
-uesc.HtmlUnescape htmlUnescape = new uesc.HtmlUnescape();
-convert.HtmlEscape htmlEscape = new convert.HtmlEscape();
+uesc.HtmlUnescape htmlUnescape = uesc.HtmlUnescape();
+convert.HtmlEscape htmlEscape = convert.HtmlEscape();
 
 class Element {
   Page _page;
 
   String _key;
 
-  String _text; // in Markdown
+  String _text = ''; // in Markdown
   String get _html => _getHtml(_text); // in HTML
 
   String _getHtml(String text) {
-    var result = md.markdownToHtml(text).toString();
+    final result = md.markdownToHtml(text).toString();
     if (result.indexOf("<p>") == result.lastIndexOf("<p>")) {
-      result = result.replaceAll("<p>", "").replaceAll("</p>", "");
+      return result.replaceAll("<p>", "").replaceAll("</p>", "");
     }
     return result;
   }
 
-  html.Element _domElement;
+  web.HTMLElement _domElement;
 
-  String _DEFAULT_MARK_BOX_SHADOW =
-      "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_EDIT_BOX_SHADOW =
-      "0 0 2vw 0 rgba(0, 0, 0, 1), inset 0 0 2vw 0 rgba(255, 255, 255, 1)";
+  String _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_EDIT_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, 1), inset 0 0 2vw 0 rgba(255, 255, 255, 1)";
 
   static const _DEFAULT_EDIT_CURSOR = "pointer";
 
-  String _originalBoxShadow;
-  String _originalCursor;
-  bool _isHighlighted;
-  bool _isEditing;
+  String _originalBoxShadow = '';
+  String _originalCursor = '';
+  bool _isHighlighted = false;
+  bool _isEditing = false;
 
-  bool _wasEmpty;
+  bool _wasEmpty = false;
   static const _NON_BREAKING_SPACE_HTML = "&nbsp;";
 
-  String _originalPointerEvents;
+  String _originalPointerEvents = '';
 
-  Element.fromMap(this._page, this._key, this._domElement, Map map) {
+  Element.fromMap(this._page, this._key, this._domElement, Map<String, dynamic>? map) {
     if (map != null) {
-      _text = map[ELEMENT_TEXT];
+      _text = map[ELEMENT_TEXT] as String? ?? '';
       _text = _text.replaceAll("<br>", "\n").replaceAll("<q>", "\"");
     }
 
@@ -54,20 +52,20 @@ class Element {
       highlight();
     }
 
-    _wasEmpty = _domElement.text == "";
+    _wasEmpty = _domElement.textContent == "";
 
-    if(_page.darkMode) {
+    if (_page.darkMode) {
       _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(255, 255, 255, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
       _DEFAULT_EDIT_BOX_SHADOW = "0 0 2vw 0 rgba(255, 255, 255, 1), inset 0 0 2vw 0 rgba(0, 0, 0, 1)";
     }
   }
 
-  Map toMap() {
-    var map = new Map();
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
 
     map[ELEMENT_KEY] = _key;
 
-    //_text = _domElement.text;
+    //_text = _domElement.textContent;
     map[ELEMENT_TEXT] = _text;
 
     return map;
@@ -79,8 +77,8 @@ class Element {
     _originalPointerEvents = _domElement.style.pointerEvents;
 
     // Bind text
-    if (_text == null || _text.isEmpty) {
-      _text = _domElement.text;
+    if (_text.isEmpty) {
+      _text = _domElement.textContent ?? '';
     }
   }
 
@@ -88,10 +86,9 @@ class Element {
     _isHighlighted = false;
     _isEditing = false;
 
-    _domElement.onClick.listen(_elementClick);
-    _domElement.onContextMenu.listen(_elementClick);
-
-    _domElement.onBlur.listen(_elementBlur);
+    _domElement.addEventListener('click', _elementClick.toJS);
+    _domElement.addEventListener('contextmenu', _elementClick.toJS);
+    _domElement.addEventListener('blur', _elementBlur.toJS);
   }
 
   void highlight() {
@@ -100,7 +97,7 @@ class Element {
     _domElement.style.pointerEvents = "all";
 
     if (_wasEmpty) {
-      _domElement.innerHtml = _NON_BREAKING_SPACE_HTML;
+      _domElement.innerHTML = _NON_BREAKING_SPACE_HTML.toJS;
     }
 
     _isHighlighted = true;
@@ -115,14 +112,14 @@ class Element {
     _domElement.style.cursor = _originalCursor;
     _domElement.style.pointerEvents = _originalPointerEvents;
 
-    if (_wasEmpty && _domElement.innerHtml == _NON_BREAKING_SPACE_HTML) {
-      _domElement.text = "";
+    if (_wasEmpty && _domElement.innerHTML == _NON_BREAKING_SPACE_HTML) {
+      _domElement.textContent = "";
     }
 
     _isHighlighted = false;
   }
 
-  void _elementClick(html.MouseEvent e) {
+  void _elementClick(web.MouseEvent e) {
     if (!_isHighlighted) return;
 
     _domElement.style.boxShadow = _DEFAULT_EDIT_BOX_SHADOW;
@@ -135,7 +132,7 @@ class Element {
       return;
     }
 
-    _domElement.innerHtml = htmlEscape.convert(_text).replaceAll("\n", "<br>");
+    _domElement.innerHTML = htmlEscape.convert(_text).replaceAll("\n", "<br>").toJS;
     _isEditing = true;
 
     // Ensure that no links will be triggered
@@ -144,25 +141,25 @@ class Element {
     e.preventDefault();
   }
 
-  void _elementBlur(html.Event e) {
+  void _elementBlur(web.Event e) {
     if (!_isEditing) return;
     _domElement.style.boxShadow = _originalBoxShadow;
     _domElement.style.cursor = _originalCursor;
     _domElement.style.pointerEvents = _originalPointerEvents;
     _domElement.contentEditable = "false";
 
-    _wasEmpty = _domElement.text == "";
+    _wasEmpty = _domElement.textContent == "";
 
     _isHighlighted = _isEditing = false;
 
-    _text = _htmlToMd(_domElement.innerHtml);
-    _domElement.setInnerHtml(_html, treeSanitizer: html.NodeTreeSanitizer.trusted);
+    _text = _htmlToMd((_domElement.innerHTML as JSString).toDart);
+    _domElement.innerHTML = _html.toJS;
 
-    _page.save(null, null);
+    _page.save(() {}, () {});
   }
 
   void render() {
-    _domElement.setInnerHtml(_html, treeSanitizer: html.NodeTreeSanitizer.trusted);
+    _domElement.innerHTML = _html.toJS;
   }
 
   void prepareDomForHtmlSave() {}
@@ -170,12 +167,7 @@ class Element {
   void restoreDomAfterHtmlSave() {}
 
   String _htmlToMd(String raw) {
-
-    raw = raw.replaceAll("</p>", "\n")
-      .replaceAll("<br>", "\n")
-      .replaceAll("<p>", "")
-      .replaceAll("</div>", "\n")
-      .replaceAll("<div>", "");
+    raw = raw.replaceAll("</p>", "\n").replaceAll("<br>", "\n").replaceAll("<p>", "").replaceAll("</div>", "\n").replaceAll("<div>", "");
 
     while (raw.lastIndexOf("\n\n\n") != -1) {
       raw = raw.replaceAll("\n\n\n", "\n\n");

@@ -5,13 +5,13 @@ part of wedit;
 class RepeatShadow {
   Repeat _repeat;
 
-  html.Element _domElement;
-  html.Element get domElement => _domElement;
+  final web.HTMLElement _domElement;
+  web.HTMLElement get domElement => _domElement;
 
-  bool _isShown;
+  bool _isShown = false;
 
   String _key;
-  bool _canBeDeleted;
+  bool _canBeDeleted = false;
 
   RepeatShadow.fromRepeat(this._repeat, this._key, this._domElement) {
     _isShown = false;
@@ -20,7 +20,7 @@ class RepeatShadow {
 
     _bindControls();
 
-    if(_repeat._page.darkMode) {
+    if (_repeat._page.darkMode) {
       _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(255, 255, 255, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
       _DEFAULT_MARK_BOX_SHADOW_ADD = "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
       _DEFAULT_MARK_BOX_SHADOW_REMOVE = "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(0, 0, 0, .5)";
@@ -29,14 +29,14 @@ class RepeatShadow {
     }
   }
 
-  html.Element _addDomElement;
-  html.Element _removeDomElement;
-  html.Element _moveUpDomElement;
-  html.Element _moveDownDomElement;
+  web.HTMLElement? _addDomElement;
+  web.HTMLElement? _removeDomElement;
+  web.HTMLElement? _moveUpDomElement;
+  web.HTMLElement? _moveDownDomElement;
 
   static const _REPEAT_BUTTON_SIZE = 20;
 
-  String _originalBoxShadow;
+  String _originalBoxShadow = '';
 
   static const _DEFAULT_BUTTON_COLOR_ADD = "#0a0";
   static const _DEFAULT_BUTTON_COLOR_REMOVE = "#f00";
@@ -44,16 +44,11 @@ class RepeatShadow {
   static const _DEFAULT_BUTTON_COLOR_MOVE_DOWN = "#00f";
   static const _DEFAULT_BUTTON_OPACITY = ".3";
 
-  String _DEFAULT_MARK_BOX_SHADOW =
-      "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_MARK_BOX_SHADOW_ADD =
-      "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_MARK_BOX_SHADOW_REMOVE =
-      "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_MARK_BOX_SHADOW_MOVE_UP =
-      "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
-  String _DEFAULT_MARK_BOX_SHADOW_MOVE_DOWN =
-      "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW = "0 0 2vw 0 rgba(0, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW_ADD = "0 0 2vw 0 rgba(0, 155, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW_REMOVE = "0 0 2vw 0 rgba(255, 0, 0, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW_MOVE_UP = "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
+  String _DEFAULT_MARK_BOX_SHADOW_MOVE_DOWN = "0 0 2vw 0 rgba(0, 50, 255, .5), inset 0 0 2vw 0 rgba(255, 255, 255, .5)";
 
   static const SVG_UP =
       '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#fff" style="margin:3px;position:absolute" width="14" height="14" viewBox="0 0 32 32"><path d="M16 1l-15 15h9v16h12v-16h9z"></path></svg>';
@@ -85,15 +80,14 @@ class RepeatShadow {
   }
 
   void _clearMark() {
-    _domElement.style.boxShadow =
-        _isShown ? _DEFAULT_MARK_BOX_SHADOW : _originalBoxShadow;
+    _domElement.style.boxShadow = _isShown ? _DEFAULT_MARK_BOX_SHADOW : _originalBoxShadow;
   }
 
   void _bindControls() {
     _originalBoxShadow = _domElement.style.boxShadow;
 
-    _addDomElement = new html.Element.div();
-    _addDomElement.style
+    _addDomElement = web.document.createElement('div') as web.HTMLElement;
+    _addDomElement!.style
       ..display = "none"
       ..position = "absolute"
       ..backgroundColor = _DEFAULT_BUTTON_COLOR_ADD
@@ -102,17 +96,16 @@ class RepeatShadow {
       ..borderRadius = (_REPEAT_BUTTON_SIZE).toString() + "px"
       ..opacity = _DEFAULT_BUTTON_OPACITY
       ..cursor = "pointer";
-    _addDomElement
-      ..children.add(new svg.SvgElement.svg(SVG_PLUS))
-      ..onMouseOver.listen((m) => _markForAdd())
-      ..onMouseLeave.listen((m) => _clearMark())
-      ..onClick.listen(_addCopy)
-      ..onContextMenu.listen(_addCopy);
-    html.document.body.children.add(_addDomElement);
+    _addDomElement!.innerHTML = SVG_PLUS.toJS;
+    _addDomElement!.addEventListener('mouseover', ((web.Event m) => _markForAdd()).toJS);
+    _addDomElement!.addEventListener('mouseleave', ((web.Event m) => _clearMark()).toJS);
+    _addDomElement!.addEventListener('click', _addCopy.toJS);
+    _addDomElement!.addEventListener('contextmenu', _addCopy.toJS);
+    web.document.body?.appendChild(_addDomElement!);
 
     if (_canBeDeleted) {
-      _removeDomElement = new html.Element.div();
-      _removeDomElement.style
+      _removeDomElement = web.document.createElement('div') as web.HTMLElement;
+      _removeDomElement!.style
         ..display = "none"
         ..position = "absolute"
         ..backgroundColor = _DEFAULT_BUTTON_COLOR_REMOVE
@@ -121,17 +114,16 @@ class RepeatShadow {
         ..borderRadius = (_REPEAT_BUTTON_SIZE).toString() + "px"
         ..opacity = _DEFAULT_BUTTON_OPACITY
         ..cursor = "pointer";
-      _removeDomElement
-        ..children.add(new svg.SvgElement.svg(SVG_REMOVE))
-        ..onMouseOver.listen((m) => _markForRemove())
-        ..onMouseLeave.listen((m) => _clearMark())
-        ..onClick.listen(_removeCopy)
-        ..onContextMenu.listen(_removeCopy);
-      html.document.body.children.add(_removeDomElement);
+      _removeDomElement!.innerHTML = SVG_REMOVE.toJS;
+      _removeDomElement!.addEventListener('mouseover', ((web.Event m) => _markForRemove()).toJS);
+      _removeDomElement!.addEventListener('mouseleave', ((web.Event m) => _clearMark()).toJS);
+      _removeDomElement!.addEventListener('click', _removeCopy.toJS);
+      _removeDomElement!.addEventListener('contextmenu', _removeCopy.toJS);
+      web.document.body?.appendChild(_removeDomElement!);
     }
 
-    _moveUpDomElement = new html.Element.div();
-    _moveUpDomElement.style
+    _moveUpDomElement = web.document.createElement('div') as web.HTMLElement;
+    _moveUpDomElement!.style
       ..display = "none"
       ..position = "absolute"
       ..backgroundColor = _DEFAULT_BUTTON_COLOR_MOVE_UP
@@ -140,16 +132,15 @@ class RepeatShadow {
       ..borderRadius = _REPEAT_BUTTON_SIZE.toString() + "px"
       ..opacity = _DEFAULT_BUTTON_OPACITY
       ..cursor = "pointer";
-    _moveUpDomElement
-      ..children.add(new svg.SvgElement.svg(SVG_UP))
-      ..onMouseOver.listen((m) => _markForMoveUp())
-      ..onMouseLeave.listen((m) => _clearMark())
-      ..onClick.listen(_moveUp)
-      ..onContextMenu.listen(_moveUp);
-    html.document.body.children.add(_moveUpDomElement);
+    _moveUpDomElement!.innerHTML = SVG_UP.toJS;
+    _moveUpDomElement!.addEventListener('mouseover', ((web.Event m) => _markForMoveUp()).toJS);
+    _moveUpDomElement!.addEventListener('mouseleave', ((web.Event m) => _clearMark()).toJS);
+    _moveUpDomElement!.addEventListener('click', _moveUp.toJS);
+    _moveUpDomElement!.addEventListener('contextmenu', _moveUp.toJS);
+    web.document.body?.appendChild(_moveUpDomElement!);
 
-    _moveDownDomElement = new html.Element.div();
-    _moveDownDomElement.style
+    _moveDownDomElement = web.document.createElement('div') as web.HTMLElement;
+    _moveDownDomElement!.style
       ..display = "none"
       ..position = "absolute"
       ..backgroundColor = _DEFAULT_BUTTON_COLOR_MOVE_DOWN
@@ -158,32 +149,31 @@ class RepeatShadow {
       ..borderRadius = _REPEAT_BUTTON_SIZE.toString() + "px"
       ..opacity = _DEFAULT_BUTTON_OPACITY
       ..cursor = "pointer";
-    _moveDownDomElement
-      ..children.add(new svg.SvgElement.svg(SVG_DOWN))
-      ..onMouseOver.listen((m) => _markForMoveDown())
-      ..onMouseLeave.listen((m) => _clearMark())
-      ..onClick.listen(_moveDown)
-      ..onContextMenu.listen(_moveDown);
-    html.document.body.children.add(_moveDownDomElement);
+    _moveDownDomElement!.innerHTML = SVG_DOWN.toJS;
+    _moveDownDomElement!.addEventListener('mouseover', ((web.Event m) => _markForMoveDown()).toJS);
+    _moveDownDomElement!.addEventListener('mouseleave', ((web.Event m) => _clearMark()).toJS);
+    _moveDownDomElement!.addEventListener('click', _moveDown.toJS);
+    _moveDownDomElement!.addEventListener('contextmenu', _moveDown.toJS);
+    web.document.body?.appendChild(_moveDownDomElement!);
   }
 
-  int _getOffsetTop(html.Element el) {
+  int _getOffsetTop(web.HTMLElement? el) {
     int res = 0;
 
-    while(el != null) {
-      res += el.offsetTop;
-      el = el.offsetParent;
+    while (el != null) {
+      res += el.offsetTop.round();
+      el = el.offsetParent as web.HTMLElement?;
     }
 
     return res;
   }
 
-  int _getOffsetLeft(html.Element el) {
+  int _getOffsetLeft(web.HTMLElement? el) {
     int res = 0;
 
-    while(el != null) {
-      res += el.offsetLeft;
-      el = el.offsetParent;
+    while (el != null) {
+      res += el.offsetLeft.round();
+      el = el.offsetParent as web.HTMLElement?;
     }
 
     return res;
@@ -194,47 +184,35 @@ class RepeatShadow {
 
     _mark();
 
-    _addDomElement.style
-      ..left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth -
-                  _REPEAT_BUTTON_SIZE * 4)
-              .toString() +
-          "px"
-      ..top =
-          (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
-      ..display = "block";
-
-    if (_canBeDeleted) {
-      _removeDomElement.style
-        ..left = (_getOffsetLeft(_domElement) +
-                    _domElement.offsetWidth -
-                    _REPEAT_BUTTON_SIZE * 2.5)
-                .toString() +
-            "px"
-        ..top =
-            (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
-        ..display = "block";
+    final addStyle = _addDomElement?.style;
+    if (addStyle != null) {
+      addStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _REPEAT_BUTTON_SIZE * 4).toString() + "px";
+      addStyle.top = (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
+      addStyle.display = "block";
     }
 
-    _moveUpDomElement.style
-      ..left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth -
-                  _REPEAT_BUTTON_SIZE / 2)
-              .toString() +
-          "px"
-      ..top =
-          (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px"
-      ..display = "block";
+    if (_canBeDeleted) {
+      final removeStyle = _removeDomElement?.style;
+      if (removeStyle != null) {
+        removeStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _REPEAT_BUTTON_SIZE * 2.5).toString() + "px";
+        removeStyle.top = (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
+        removeStyle.display = "block";
+      }
+    }
 
-    _moveDownDomElement.style
-      ..left = (_getOffsetLeft(_domElement) +
-                  _domElement.offsetWidth -
-                  _REPEAT_BUTTON_SIZE / 2)
-              .toString() +
-          "px"
-      ..top =
-          (_getOffsetTop(_domElement) + _REPEAT_BUTTON_SIZE * 0.6).toString() + "px"
-      ..display = "block";
+    final moveUpStyle = _moveUpDomElement?.style;
+    if (moveUpStyle != null) {
+      moveUpStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
+      moveUpStyle.top = (_getOffsetTop(_domElement) - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
+      moveUpStyle.display = "block";
+    }
+
+    final moveDownStyle = _moveDownDomElement?.style;
+    if (moveDownStyle != null) {
+      moveDownStyle.left = (_getOffsetLeft(_domElement) + _domElement.offsetWidth.round() - _REPEAT_BUTTON_SIZE / 2).toString() + "px";
+      moveDownStyle.top = (_getOffsetTop(_domElement) + _REPEAT_BUTTON_SIZE * 0.6).toString() + "px";
+      moveDownStyle.display = "block";
+    }
   }
 
   void hide() {
@@ -242,18 +220,18 @@ class RepeatShadow {
 
     _clearMark();
 
-    _addDomElement.style..display = "none";
+    _addDomElement?.style.display = "none";
 
     if (_canBeDeleted) {
-      _removeDomElement.style..display = "none";
+      _removeDomElement?.style.display = "none";
     }
 
-    _moveUpDomElement.style..display = "none";
+    _moveUpDomElement?.style.display = "none";
 
-    _moveDownDomElement.style..display = "none";
+    _moveDownDomElement?.style.display = "none";
   }
 
-  void _addCopy(html.MouseEvent e) {
+  void _addCopy(web.MouseEvent e) {
     hide();
     _repeat.addCopy(_key, _domElement);
     show();
@@ -263,19 +241,19 @@ class RepeatShadow {
     e.stopImmediatePropagation();
     e.preventDefault();
 
-    _repeat._page.save(null, null);
+    _repeat._page.save(() {}, () {});
   }
 
-  void _removeCopy(html.MouseEvent e) {
+  void _removeCopy(web.MouseEvent e) {
     _repeat.removeCopy(_key, _domElement);
 
-    _addDomElement.remove();
+    _addDomElement?.remove();
 
-    _moveUpDomElement.remove();
-    _moveDownDomElement.remove();
+    _moveUpDomElement?.remove();
+    _moveDownDomElement?.remove();
 
     if (_canBeDeleted) {
-      _removeDomElement.remove();
+      _removeDomElement?.remove();
     }
 
     // Ensure that no links will be triggered
@@ -283,10 +261,10 @@ class RepeatShadow {
     e.stopImmediatePropagation();
     e.preventDefault();
 
-    _repeat._page.save(null, null);
+    _repeat._page.save(() {}, () {});
   }
 
-  void _moveUp(html.MouseEvent e) {
+  void _moveUp(web.MouseEvent e) {
     _repeat.moveCopyUp(_key);
 
     // Ensure that no links will be triggered
@@ -294,10 +272,10 @@ class RepeatShadow {
     e.stopImmediatePropagation();
     e.preventDefault();
 
-    _repeat._page.save(null, null);
+    _repeat._page.save(() {}, () {});
   }
 
-  void _moveDown(html.MouseEvent e) {
+  void _moveDown(web.MouseEvent e) {
     _repeat.moveCopyDown(_key);
 
     // Ensure that no links will be triggered
@@ -305,23 +283,20 @@ class RepeatShadow {
     e.stopImmediatePropagation();
     e.preventDefault();
 
-    _repeat._page.save(null, null);
+    _repeat._page.save(() {}, () {});
   }
 
   void prepareDomForHtmlSave() {
-    if (_addDomElement != null) _addDomElement.remove();
-    if (_removeDomElement != null) _removeDomElement.remove();
-    if (_moveUpDomElement != null) _moveUpDomElement.remove();
-    if (_moveDownDomElement != null) _moveDownDomElement.remove();
+    _addDomElement?.remove();
+    _removeDomElement?.remove();
+    _moveUpDomElement?.remove();
+    _moveDownDomElement?.remove();
   }
 
   void restoreDomAfterHtmlSave() {
-    if (_addDomElement != null) html.document.body.children.add(_addDomElement);
-    if (_removeDomElement != null)
-      html.document.body.children.add(_removeDomElement);
-    if (_moveUpDomElement != null)
-      html.document.body.children.add(_moveUpDomElement);
-    if (_moveDownDomElement != null)
-      html.document.body.children.add(_moveDownDomElement);
+    if (_addDomElement != null) web.document.body?.appendChild(_addDomElement!);
+    if (_removeDomElement != null) web.document.body?.appendChild(_removeDomElement!);
+    if (_moveUpDomElement != null) web.document.body?.appendChild(_moveUpDomElement!);
+    if (_moveDownDomElement != null) web.document.body?.appendChild(_moveDownDomElement!);
   }
 }

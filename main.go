@@ -15,8 +15,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sofmon/wedit/builder"
-	"github.com/sofmon/wedit/service"
+	"wedit/builder"
+	"wedit/service"
 )
 
 const version = "1"

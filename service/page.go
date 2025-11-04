@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sofmon/wedit/builder"
+	"wedit/builder"
 )
 
 const editorScriptTag = `<script async="" src="/~.js"></script>`

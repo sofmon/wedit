@@ -9,7 +9,7 @@ import (
 
 	"golang.org/x/net/html"
 
-	"github.com/sofmon/wedit/model"
+	"wedit/model"
 )
 
 func openTemlateHTML(templateFilePath string) (doc *html.Node, err error) {
@@ -92,7 +92,10 @@ func renderHTML(targetFilePath, templateFilePath string, page model.Page) error 
 }
 
 func renderProcessNode(n *html.Node, page *model.Page) {
-	for i, a := range n.Attr {
+	// Process attributes in reverse order to safely remove them
+	for i := len(n.Attr) - 1; i >= 0; i-- {
+		a := n.Attr[i]
+
 		if a.Key == cfg.EditAttr {
 			k := model.Key(a.Val)
 			if strings.ToLower(string(n.Data)) == "img" {
@@ -108,6 +111,14 @@ func renderProcessNode(n *html.Node, page *model.Page) {
 		if a.Key == cfg.RepeatAttr {
 			k := model.Key(a.Val)
 			processRepeat(k, n, page)
+			if !cfg.KeepWeditAttrs {
+				n.Attr = append(n.Attr[:i], n.Attr[i+1:]...)
+			}
+		}
+
+		if a.Key == cfg.ClassAttr {
+			k := model.Key(a.Val)
+			processClass(k, n, page)
 			if !cfg.KeepWeditAttrs {
 				n.Attr = append(n.Attr[:i], n.Attr[i+1:]...)
 			}
